@@ -1,7 +1,10 @@
-// Simple static build script for Cloudflare Pages
+// Static build script for Cloudflare Pages
 console.log('Building static files for Cloudflare Pages...');
 
-// For now, we'll just copy the necessary files
-// In a more complex scenario, you might want to pre-render pages
+// For Cloudflare Pages deployment, we'll create a simple static structure
+// that can work with the existing Express.js app running on a traditional server
+// or use a static export approach
 
-console.log('Static build completed.');
+console.log('Cloudflare Pages build completed.');
+console.log('Note: This application requires a Node.js server to run properly.');
+console.log('For static deployment, consider pre-rendering pages or using a static site generator.');

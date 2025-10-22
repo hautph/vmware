@@ -86,9 +86,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
+// Export the app for both Node.js and Cloudflare Workers
 export { app };
+
+// Conditional server start for Node.js environment
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
