@@ -59,7 +59,7 @@ export default {
   }
 };
 
-// Cloudflare Pages Function to handle API requests
+// Cloudflare Pages Function to handle dynamic requests
 export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
@@ -71,7 +71,8 @@ export async function onRequest(context) {
       JSON.stringify({ 
         status: 'ok', 
         timestamp: new Date().toISOString(),
-        service: 'vmware-tool-static'
+        service: 'vmware-tool-static',
+        version: '1.0.0'
       }),
       {
         headers: { 'Content-Type': 'application/json' },
@@ -80,12 +81,33 @@ export async function onRequest(context) {
     );
   }
 
-  // For all other paths, return a simple response indicating this is a static deployment
+  // Handle API status endpoint
+  if (path === '/api/status') {
+    return new Response(
+      JSON.stringify({ 
+        status: 'static-deployment',
+        message: 'VMware Tool is deployed as a static site on Cloudflare Pages',
+        features: [
+          'Static landing page',
+          'Basic API endpoints',
+          'Asset serving'
+        ],
+        note: 'For full functionality, run locally with Node.js'
+      }),
+      {
+        headers: { 'Content-Type': 'application/json' },
+        status: 200
+      }
+    );
+  }
+
+  // For all other paths, return a simple response
   return new Response(
     JSON.stringify({ 
-      message: 'VMware Tool Static Deployment', 
+      message: 'VMware Resource Sizing Tool - Static Deployment',
       path: path,
-      note: 'This is a static version. For full functionality, run the application locally with Node.js.'
+      timestamp: new Date().toISOString(),
+      documentation: 'https://github.com/hautph/vmware'
     }),
     {
       headers: { 'Content-Type': 'application/json' },
