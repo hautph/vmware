@@ -1,16 +1,16 @@
 {
   "name": "vmware-tool",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "VMware Resource Sizing Tool",
+  "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "build": "echo \"No build step required for Express app\"",
+    "build": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["vmware", "resource", "sizing", "calculator"],
+  "author": "VMware Tool Team",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
@@ -25,5 +25,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
