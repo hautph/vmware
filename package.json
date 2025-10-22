@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "build": "node build.js",
+    "build": "node build-static.js",
+    "export": "node export.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["vmware", "resource", "sizing", "calculator"],
