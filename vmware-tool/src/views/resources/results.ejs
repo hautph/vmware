@@ -1,0 +1,117 @@
+<%- include('../partials/header.ejs', { title: 'Resource Calculation Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-calculator"></i> Resource Calculation Results</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info text-center">
+                            <h4>Multi-Tier Application Architecture</h4>
+                            <p class="mb-0">Components: <%= results.selectedComponents.join(', ') || 'None selected' %></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-cpu"></i> CPU</h5>
+                            <h3><%= results.totalCPU %> cores</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-memory"></i> RAM</h5>
+                            <h3><%= results.totalRAM %> GB</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd"></i> Storage</h5>
+                            <h3><%= results.totalStorage %> GB</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Component Details</h3>
+            </div>
+            <div class="card-body">
+                <% if (results.componentDetails.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>VMs</th>
+                                    <th>Deployment</th>
+                                    <th>CPU/VM</th>
+                                    <th>RAM/VM</th>
+                                    <th>Storage/VM</th>
+                                    <th>Total CPU</th>
+                                    <th>Total RAM</th>
+                                    <th>Total Storage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% results.componentDetails.forEach(detail => { %>
+                                    <tr>
+                                        <td><%= detail.type %></td>
+                                        <td><%= detail.numVMs %></td>
+                                        <td><%= detail.deploymentType %></td>
+                                        <td><%= detail.cpuPerVM %> cores</td>
+                                        <td><%= detail.ramPerVM %> GB</td>
+                                        <td><%= detail.storagePerVM %> GB</td>
+                                        <td><%= detail.totalCPU %> cores</td>
+                                        <td><%= detail.totalRAM %> GB</td>
+                                        <td><%= detail.totalStorage %> GB</td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-warning">
+                        No components were selected for calculation.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Recommendations for Selected Components</h3>
+            </div>
+            <div class="card-body">
+                <% if (results.recommendations.length > 0) { %>
+                    <ul>
+                        <% results.recommendations.forEach(rec => { %>
+                            <li><%= rec %></li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No specific recommendations available for the selected components.</p>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/resources" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Results
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

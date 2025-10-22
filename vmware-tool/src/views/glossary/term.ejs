@@ -1,0 +1,90 @@
+<%- include('../partials/header.ejs', { title: term.title }) %>
+
+<div class="row">
+    <div class="col-12">
+        <!-- Enhanced header with better styling -->
+        <div class="d-flex justify-content-between align-items-center glossary-term-header">
+            <h1 class="mb-0"><i class="bi bi-book"></i> <%= term.title %></h1>
+            <span class="badge bg-primary glossary-category-badge"><%= t('glossary.categories.' + term.category.replace(/[^a-zA-Z0-9]+/g, '_')) || term.category %></span>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <!-- Full content section -->
+                <div class="mb-4">
+                    <div class="glossary-content">
+                        <%- term.fullContentHtml %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Terms section -->
+        <% if (typeof relatedTerms !== 'undefined' && relatedTerms.length > 0) { %>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-link-45deg"></i> Related Terms</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <% relatedTerms.forEach(relatedTerm => { %>
+                            <div class="col-md-6 col-lg-4 mb-2">
+                                <a href="/glossary/term/<%= relatedTerm.fileKey || relatedTerm.title.toLowerCase().replace(/\s+/g, '-') %>" 
+                                   class="btn btn-outline-info w-100 text-start related-term-btn">
+                                    <i class="bi bi-bookmark"></i> <%= relatedTerm.title %>
+                                </a>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+        
+        <!-- Navigation buttons -->
+        <div class="d-flex justify-content-between">
+            <a href="/glossary" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Glossary
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Add clipboard.js for copy functionality -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize clipboard.js for any code blocks
+    const clipboard = new ClipboardJS('.copy-btn');
+    
+    // Add success and error handlers
+    clipboard.on('success', function(e) {
+        const originalText = e.trigger.innerHTML;
+        e.trigger.innerHTML = '<i class="bi bi-check"></i> Copied!';
+        e.trigger.classList.remove('btn-outline-primary');
+        e.trigger.classList.add('btn-success');
+        
+        setTimeout(function() {
+            e.trigger.innerHTML = originalText;
+            e.trigger.classList.remove('btn-success');
+            e.trigger.classList.add('btn-outline-primary');
+        }, 2000);
+        
+        e.clearSelection();
+    });
+    
+    clipboard.on('error', function(e) {
+        const originalText = e.trigger.innerHTML;
+        e.trigger.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Failed!';
+        e.trigger.classList.remove('btn-outline-primary');
+        e.trigger.classList.add('btn-danger');
+        
+        setTimeout(function() {
+            e.trigger.innerHTML = originalText;
+            e.trigger.classList.remove('btn-danger');
+            e.trigger.classList.add('btn-outline-primary');
+        }, 2000);
+    });
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

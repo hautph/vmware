@@ -1,0 +1,96 @@
+<%- include('../partials/header.ejs', { title: 'VMware Calculators' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-calculator"></i> VMware Calculators</h1>
+        <p class="lead">Specialized calculators for planning your VMware infrastructure.</p>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-server"></i> VM Density Calculator</h5>
+                        <p class="card-text">Calculate how many virtual machines can run on a physical host based on CPU and memory resources.</p>
+                        <a href="/calculators/vm-density" class="btn btn-primary">Use Calculator</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-hdd"></i> Storage Capacity Planner</h5>
+                        <p class="card-text">Plan storage requirements considering growth, backups, and VMware overhead.</p>
+                        <a href="/calculators/storage" class="btn btn-success">Use Calculator</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-diagram-3"></i> Network Bandwidth Estimator</h5>
+                        <p class="card-text">Estimate network bandwidth requirements for your virtual environment.</p>
+                        <a href="/calculators/network" class="btn btn-info">Use Calculator</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-database"></i> vSAN Sizing Calculator</h5>
+                        <p class="card-text">Calculate storage requirements for VMware vSAN clusters with redundancy and overhead.</p>
+                        <a href="/calculators/vsan-sizing" class="btn btn-warning">Use Calculator</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-shield-lock"></i> Disaster Recovery Calculator</h5>
+                        <p class="card-text">Calculate storage and bandwidth requirements for disaster recovery solutions.</p>
+                        <a href="/calculators/disaster-recovery" class="btn btn-danger">Use Calculator</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Planned Calculators</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-graph-up"></i> Performance</h5>
+                            <p class="text-muted">Coming soon</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-currency-dollar"></i> Cost Estimator</h5>
+                            <p class="text-muted">Coming soon</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-cloud"></i> Cloud Migration</h5>
+                            <p class="text-muted">Coming soon</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-cpu"></i> Resource Optimization</h5>
+                            <p class="text-muted">Coming soon</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

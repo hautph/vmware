@@ -1,0 +1,134 @@
+<%- include('../partials/header.ejs', { title: 'vSAN Sizing Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-database"></i> vSAN Sizing Results</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info text-center">
+                            <h4>vSAN Cluster Configuration</h4>
+                            <p class="mb-0"><%= results.numHosts %> hosts, <%= results.numVMs %> VMs, <%= results.avgVMSize %> GB average VM size</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd"></i> Raw Capacity</h5>
+                            <h3><%= results.rawCapacity.toFixed(0) %> GB</h3>
+                            <p class="text-muted">Total VM storage</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd-fill"></i> Usable Capacity</h5>
+                            <h3><%= results.usableCapacity.toFixed(0) %> GB</h3>
+                            <p class="text-muted">After redundancy</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-server"></i> Per Host</h5>
+                            <h3><%= results.perHostCapacity.toFixed(0) %> GB</h3>
+                            <p class="text-muted">Capacity per host</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-lightning"></i> Cache Tier</h5>
+                            <h3><%= results.cacheTierSize.toFixed(0) %> GB</h3>
+                            <p class="text-muted">Cache reservation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Detailed Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Value</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Raw VM Capacity</td>
+                                <td><%= results.rawCapacity.toFixed(0) %> GB</td>
+                                <td>Total storage required for all VMs</td>
+                            </tr>
+                            <tr>
+                                <td>Redundancy Overhead</td>
+                                <td><%= (results.rawCapacityNeeded - results.rawCapacity).toFixed(0) %> GB</td>
+                                <td>Storage overhead for <%= results.redundancy === 'raid1' ? 'RAID 1' : results.redundancy === 'raid5' ? 'RAID 5' : 'RAID 6' %></td>
+                            </tr>
+                            <tr>
+                                <td>vSAN Overhead</td>
+                                <td><%= results.vsanOverhead.toFixed(0) %> GB</td>
+                                <td>Metadata and slack space (10%)</td>
+                            </tr>
+                            <tr>
+                                <td>Total Raw Capacity</td>
+                                <td><%= results.totalRawCapacity.toFixed(0) %> GB</td>
+                                <td>Total storage needed across all hosts</td>
+                            </tr>
+                            <tr>
+                                <td>Per Host Capacity</td>
+                                <td><%= results.perHostCapacity.toFixed(0) %> GB</td>
+                                <td>Storage required per host (<%= results.numHosts %> hosts)</td>
+                            </tr>
+                            <% if (results.allFlash) { %>
+                            <tr>
+                                <td>Cache Tier Size</td>
+                                <td><%= results.cacheTierSize.toFixed(0) %> GB</td>
+                                <td><%= results.cacheReserve %>% cache reservation per host</td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Recommendations</h3>
+            </div>
+            <div class="card-body">
+                <% if (results.recommendations.length > 0) { %>
+                    <ul>
+                        <% results.recommendations.forEach(rec => { %>
+                            <li><%= rec %></li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No specific recommendations available.</p>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/calculators/vsan-sizing" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Results
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

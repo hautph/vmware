@@ -1,0 +1,100 @@
+<%- include('../partials/header.ejs', { title: 'vSAN Sizing Calculator' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-database"></i> vSAN Sizing Calculator</h1>
+        <p class="lead">Calculate storage requirements for VMware vSAN clusters.</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>vSAN Configuration</h3>
+            </div>
+            <div class="card-body">
+                <form id="vsanForm" action="/calculators/vsan-sizing" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="numHosts" class="form-label">Number of Hosts</label>
+                                <input type="number" class="form-control" id="numHosts" name="numHosts" min="1" value="3" required>
+                                <div class="form-text">Minimum 3 hosts for vSAN cluster</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" value="50" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="avgVMSize" class="form-label">Average VM Size (GB)</label>
+                                <input type="number" class="form-control" id="avgVMSize" name="avgVMSize" min="1" step="1" value="100" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="redundancy" class="form-label">Redundancy Policy</label>
+                                <select class="form-select" id="redundancy" name="redundancy" required>
+                                    <option value="raid1">RAID 1 (Mirroring) - 2x overhead</option>
+                                    <option value="raid5" selected>RAID 5 (Erasure Coding) - 1.33x overhead</option>
+                                    <option value="raid6">RAID 6 (Erasure Coding) - 1.5x overhead</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="allFlash" class="form-label">Configuration Type</label>
+                                <select class="form-select" id="allFlash" name="allFlash" required>
+                                    <option value="no">Hybrid (SSD + HDD)</option>
+                                    <option value="yes" selected>All-Flash</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cacheReserve" class="form-label">Cache Reserve (%)</label>
+                                <input type="number" class="form-control" id="cacheReserve" name="cacheReserve" min="5" max="20" value="10" required>
+                                <div class="form-text">Percentage of capacity reserved for cache tier</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Calculate vSAN Sizing
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>vSAN Sizing Guidelines</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Redundancy Options</h5>
+                        <ul>
+                            <li><strong>RAID 1 (Mirroring):</strong> Best performance, 2x storage overhead</li>
+                            <li><strong>RAID 5 (Erasure Coding):</strong> Good balance of performance and capacity, 1.33x overhead</li>
+                            <li><strong>RAID 6 (Erasure Coding):</strong> Maximum capacity efficiency, 1.5x overhead</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Configuration Types</h5>
+                        <ul>
+                            <li><strong>Hybrid:</strong> Combination of SSD cache tier and HDD capacity tier</li>
+                            <li><strong>All-Flash:</strong> Pure SSD configuration for maximum performance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial focus
+    document.getElementById('numHosts').focus();
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

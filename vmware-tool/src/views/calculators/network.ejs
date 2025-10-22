@@ -1,0 +1,67 @@
+<%- include('../partials/header.ejs', { title: 'Network Bandwidth Estimator' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-diagram-3"></i> Network Bandwidth Estimator</h1>
+        <p class="lead">Estimate network bandwidth requirements for your virtual environment.</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Network Requirements</h3>
+            </div>
+            <div class="card-body">
+                <form action="/calculators/network" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="avgBandwidth" class="form-label">Average Bandwidth per VM (Mbps)</label>
+                                <input type="number" class="form-control" id="avgBandwidth" name="avgBandwidth" min="1" value="10" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="peakMultiplier" class="form-label">Peak Usage Multiplier</label>
+                                <input type="number" class="form-control" id="peakMultiplier" name="peakMultiplier" step="0.1" min="1" value="1.5" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="redundancy" class="form-label">Redundancy Required</label>
+                                <select class="form-select" id="redundancy" name="redundancy" required>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Calculate Bandwidth
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Best Practices</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Consider jumbo frames for better network performance</li>
+                    <li>Separate management, vMotion, and VM traffic on different networks</li>
+                    <li>Monitor network utilization to optimize allocation</li>
+                    <li>Plan for network bursts during VM migrations</li>
+                    <li>Implement quality of service (QoS) policies</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

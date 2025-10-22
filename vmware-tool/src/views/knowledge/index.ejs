@@ -1,0 +1,40 @@
+<%- include('../partials/header.ejs', { title: 'Knowledge Base' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-journals"></i> Knowledge Base</h1>
+        <p class="lead">Access articles, guides, and best practices in Markdown format.</p>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <form action="/knowledge/search" method="GET">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="q" placeholder="Search knowledge base..." required>
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="row">
+            <% articles.forEach(article => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= article.title %></h5>
+                            <h6 class="card-subtitle mb-2 text-muted"><%= article.category %></h6>
+                            <p class="card-text"><%= article.excerpt %></p>
+                            <a href="/knowledge/article/<%= article.id %>" class="btn btn-primary btn-sm">
+                                Read Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

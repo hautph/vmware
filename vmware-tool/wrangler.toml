@@ -1,0 +1,17 @@
+name = "vmware-tool"
+type = "javascript"
+account_id = ""
+workers_dev = true
+route = ""
+zone_id = ""
+
+[build]
+command = "npm install && npm run build"
+watch_dir = "src"
+
+[build.upload]
+format = "service-worker"
+
+[dev]
+port = 3000
+local_protocol = "http"

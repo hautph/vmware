@@ -1,0 +1,64 @@
+<%- include('../partials/header.ejs', { title: 'Storage Capacity Planner' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-hdd"></i> Storage Capacity Planner</h1>
+        <p class="lead">Plan storage requirements considering growth, backups, and VMware overhead.</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Storage Requirements</h3>
+            </div>
+            <div class="card-body">
+                <form action="/calculators/storage" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="avgVMSize" class="form-label">Average VM Size (GB)</label>
+                                <input type="number" class="form-control" id="avgVMSize" name="avgVMSize" min="1" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="growthRate" class="form-label">Expected Growth Rate (%)</label>
+                                <input type="number" class="form-control" id="growthRate" name="growthRate" min="0" value="20" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="retentionPeriod" class="form-label">Backup Retention (Days)</label>
+                                <input type="number" class="form-control" id="retentionPeriod" name="retentionPeriod" min="1" value="30" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Calculate Storage
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Best Practices</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Include snapshots in your storage calculations</li>
+                    <li>Account for vSAN overhead (approximately 10%)</li>
+                    <li>Consider thin provisioning to save space</li>
+                    <li>Plan for storage performance, not just capacity</li>
+                    <li>Implement storage policies based on workload requirements</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

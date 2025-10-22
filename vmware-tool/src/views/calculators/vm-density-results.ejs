@@ -1,0 +1,90 @@
+<%- include('../partials/header.ejs', { title: 'VM Density Calculation Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-calculator"></i> VM Density Calculation Results</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Host Specifications</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">Physical CPU Cores: <%= results.physicalCores %></li>
+                            <li class="list-group-item">Core Speed: <%= results.coreSpeed %> GHz</li>
+                            <li class="list-group-item">Total Memory: <%= results.memoryGB %> GB</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>VM Specifications</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">CPU Cores per VM: <%= results.vmCores %></li>
+                            <li class="list-group-item">RAM per VM: <%= results.vmRamGB %> GB</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Density Calculation</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5>CPU-Based</h5>
+                            <h3><%= results.cpuBasedDensity %> VMs</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5>Memory-Based</h5>
+                            <h3><%= results.memoryBasedDensity %> VMs</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5>Recommended</h5>
+                            <h3><%= results.recommendedDensity %> VMs</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5>Conservative</h5>
+                            <h3><%= results.conservativeDensity %> VMs</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Recommendations</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <% results.recommendations.forEach(rec => { %>
+                        <li><%= rec %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/calculators/vm-density" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Results
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

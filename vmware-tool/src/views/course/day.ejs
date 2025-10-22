@@ -1,0 +1,132 @@
+<%- include('../partials/header.ejs', { title: 'Course Day' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/course">Course Notes</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Day <%= day.day %>: <%= day.title %></li>
+            </ol>
+        </nav>
+        
+        <h1><i class="bi bi-calendar"></i> Day <%= day.day %>: <%= day.title %></h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Course Content</h5>
+            </div>
+            <div class="card-body">
+                <div id="course-content">
+                    <%- day.contentHtml %>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Your Notes for Day <%= day.day %></h5>
+            </div>
+            <div class="card-body">
+                <form id="notes-form">
+                    <input type="hidden" id="day-input" value="<%= day.id %>">
+                    
+                    <div class="mb-3">
+                        <label for="notes-textarea" class="form-label">Your Notes</label>
+                        <textarea class="form-control" id="notes-textarea" rows="6" placeholder="Add your notes here..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Save Notes
+                    </button>
+                </form>
+                
+                <div id="notes-display" class="mt-4">
+                    <h5>Saved Notes</h5>
+                    <div id="notes-list">
+                        <!-- Notes will be displayed here -->
+                        <p class="text-muted">No notes saved yet for this day.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <a href="/course" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Course Overview
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notesForm = document.getElementById('notes-form');
+    const dayInput = document.getElementById('day-input');
+    const notesTextarea = document.getElementById('notes-textarea');
+    const notesList = document.getElementById('notes-list');
+    const dayId = dayInput.value;
+    
+    // Load saved notes from localStorage
+    loadNotes(dayId);
+    
+    notesForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const notes = notesTextarea.value;
+        
+        if (!notes) {
+            alert('Please enter notes.');
+            return;
+        }
+        
+        // Save notes to localStorage
+        saveNotes(dayId, notes);
+        
+        // Clear form
+        notesTextarea.value = '';
+        
+        // Reload notes display
+        loadNotes(dayId);
+        
+        alert('Notes saved successfully!');
+    });
+    
+    function saveNotes(dayId, notes) {
+        // Get existing notes for this day
+        let savedNotes = JSON.parse(localStorage.getItem(`courseNotes_${dayId}`)) || [];
+        
+        // Add new note
+        const timestamp = new Date().toLocaleString();
+        savedNotes.push({
+            text: notes,
+            timestamp: timestamp
+        });
+        
+        // Save to localStorage
+        localStorage.setItem(`courseNotes_${dayId}`, JSON.stringify(savedNotes));
+    }
+    
+    function loadNotes(dayId) {
+        const savedNotes = JSON.parse(localStorage.getItem(`courseNotes_${dayId}`)) || [];
+        
+        if (savedNotes.length === 0) {
+            notesList.innerHTML = '<p class="text-muted">No notes saved yet for this day.</p>';
+            return;
+        }
+        
+        let notesHTML = '';
+        
+        // Display notes in reverse chronological order (newest first)
+        savedNotes.slice().reverse().forEach(note => {
+            notesHTML += `<div class="border-start border-primary ps-3 mb-3">
+                <p class="mb-1">${note.text}</p>
+                <small class="text-muted">${note.timestamp}</small>
+            </div>`;
+        });
+        
+        notesList.innerHTML = notesHTML;
+    }
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

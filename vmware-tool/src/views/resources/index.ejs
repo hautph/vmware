@@ -1,0 +1,719 @@
+<%- include('../partials/header.ejs', { title: 'VMware Resource Sizing Tool' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-cpu"></i> VMware Resource Sizing Tool</h1>
+        <p class="lead">Calculate optimal CPU, RAM, and Storage requirements for your multi-tier application architecture.</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Resource Calculator</h3>
+            </div>
+            <div class="card-body">
+                <form id="resourceForm" action="/resources/calculate" method="POST">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Application Components (Select and configure each component)</label>
+                                
+                                <div class="workload-components">
+                                    <!-- Database Servers Section -->
+                                    <div class="component-section border rounded p-3 mb-4">
+                                        <h4 class="text-primary"><i class="bi bi-database"></i> Database Servers</h4>
+                                        <hr>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[mysql][selected]" value="true" id="mysql">
+                                                        <label class="form-check-label" for="mysql">
+                                                            MySQL
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="mysql_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="mysql_vms" name="components[mysql][vms]" min="1" value="1" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="mysql_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="mysql_cpu" name="components[mysql][cpu]" min="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="mysql_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="mysql_ram" name="components[mysql][ram]" min="1" step="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="mysql_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="mysql_storage" name="components[mysql][storage]" min="10" value="200" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="mysql_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="mysql_deployment" name="components[mysql][deployment]" data-component="mysql" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="master-slave">Master-Slave (semi-sync)</option>
+                                                        <option value="cluster">3 nodes Galera (sync multi-master)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[postgresql][selected]" value="true" id="postgresql">
+                                                        <label class="form-check-label" for="postgresql">
+                                                            PostgreSQL
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="postgresql_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="postgresql_vms" name="components[postgresql][vms]" min="1" value="1" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="postgresql_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="postgresql_cpu" name="components[postgresql][cpu]" min="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="postgresql_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="postgresql_ram" name="components[postgresql][ram]" min="1" step="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="postgresql_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="postgresql_storage" name="components[postgresql][storage]" min="10" value="200" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="postgresql_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="postgresql_deployment" name="components[postgresql][deployment]" data-component="postgresql" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="replication">Streaming (hot standby)</option>
+                                                        <option value="patroni">Patroni (3 nodes, auto-failover)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[oracle][selected]" value="true" id="oracle">
+                                                        <label class="form-check-label" for="oracle">
+                                                            Oracle Database
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="oracle_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="oracle_vms" name="components[oracle][vms]" min="1" value="1" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="oracle_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="oracle_cpu" name="components[oracle][cpu]" min="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="oracle_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="oracle_ram" name="components[oracle][ram]" min="1" step="1" value="16" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="oracle_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="oracle_storage" name="components[oracle][storage]" min="10" value="500" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="oracle_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="oracle_deployment" name="components[oracle][deployment]" data-component="oracle" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="rac">Oracle RAC</option>
+                                                        <option value="dataguard">Data Guard</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[mongodb][selected]" value="true" id="mongodb">
+                                                        <label class="form-check-label" for="mongodb">
+                                                            MongoDB
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="mongodb_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="mongodb_vms" name="components[mongodb][vms]" min="1" value="3" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="mongodb_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="mongodb_cpu" name="components[mongodb][cpu]" min="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="mongodb_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="mongodb_ram" name="components[mongodb][ram]" min="1" step="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="mongodb_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="mongodb_storage" name="components[mongodb][storage]" min="10" value="300" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="mongodb_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="mongodb_deployment" name="components[mongodb][deployment]" data-component="mongodb" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="replica-set">Replica Set (3 nodes: 1 primary + 2 secondary)</option>
+                                                        <option value="sharded-cluster">Sharded (3 shards, config server)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Cache Servers Section -->
+                                    <div class="component-section border rounded p-3 mb-4">
+                                        <h4 class="text-success"><i class="bi bi-stack"></i> Cache & NoSQL Servers</h4>
+                                        <hr>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[redis][selected]" value="true" id="redis">
+                                                        <label class="form-check-label" for="redis">
+                                                            Redis
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="redis_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="redis_vms" name="components[redis][vms]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="redis_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="redis_cpu" name="components[redis][cpu]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="redis_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="redis_ram" name="components[redis][ram]" min="1" step="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="redis_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="redis_storage" name="components[redis][storage]" min="10" value="50" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="redis_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="redis_deployment" name="components[redis][deployment]" data-component="redis" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="replication">Master-Slave (sentinel cho HA)</option>
+                                                        <option value="redis-cluster">Redis Cluster (3+ masters, sharding, auto-rebalance)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[memcached][selected]" value="true" id="memcached">
+                                                        <label class="form-check-label" for="memcached">
+                                                            Memcached
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="memcached_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="memcached_vms" name="components[memcached][vms]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="memcached_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="memcached_cpu" name="components[memcached][cpu]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="memcached_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="memcached_ram" name="components[memcached][ram]" min="1" step="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="memcached_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="memcached_storage" name="components[memcached][storage]" min="10" value="20" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="memcached_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="memcached_deployment" name="components[memcached][deployment]" data-component="memcached" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="cluster" selected>Cluster</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[cassandra][selected]" value="true" id="cassandra">
+                                                        <label class="form-check-label" for="cassandra">
+                                                            Cassandra
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="cassandra_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="cassandra_vms" name="components[cassandra][vms]" min="1" value="3" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="cassandra_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="cassandra_cpu" name="components[cassandra][cpu]" min="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="cassandra_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="cassandra_ram" name="components[cassandra][ram]" min="1" step="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="cassandra_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="cassandra_storage" name="components[cassandra][storage]" min="10" value="500" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label for="cassandra_deployment" class="form-label">Deployment Type</label>
+                                                    <select class="form-select deployment-type" id="cassandra_deployment" name="components[cassandra][deployment]" data-component="cassandra" disabled>
+                                                        <option value="standalone">Standalone</option>
+                                                        <option value="replication">Multi-DC (RF=3)</option>
+                                                        <option value="cluster">Ring (5-10 nodes, gossip protocol)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Application Servers Section -->
+                                    <div class="component-section border rounded p-3 mb-4">
+                                        <h4 class="text-info"><i class="bi bi-app"></i> Application & Web Servers</h4>
+                                        <hr>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[web][selected]" value="true" id="web">
+                                                        <label class="form-check-label" for="web">
+                                                            Web Server
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="web_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="web_vms" name="components[web][vms]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="web_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="web_cpu" name="components[web][cpu]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="web_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="web_ram" name="components[web][ram]" min="1" step="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="web_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="web_storage" name="components[web][storage]" min="10" value="50" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[app][selected]" value="true" id="app">
+                                                        <label class="form-check-label" for="app">
+                                                            Application Server
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="app_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="app_vms" name="components[app][vms]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="app_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="app_cpu" name="components[app][cpu]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="app_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="app_ram" name="components[app][ram]" min="1" step="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="app_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="app_storage" name="components[app][storage]" min="10" value="100" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[loadbalancer][selected]" value="true" id="loadbalancer">
+                                                        <label class="form-check-label" for="loadbalancer">
+                                                            Load Balancer
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="loadbalancer_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="loadbalancer_vms" name="components[loadbalancer][vms]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="loadbalancer_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="loadbalancer_cpu" name="components[loadbalancer][cpu]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="loadbalancer_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="loadbalancer_ram" name="components[loadbalancer][ram]" min="1" step="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="loadbalancer_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="loadbalancer_storage" name="components[loadbalancer][storage]" min="10" value="20" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Desktop & High Performance Section -->
+                                    <div class="component-section border rounded p-3 mb-4">
+                                        <h4 class="text-warning"><i class="bi bi-person"></i> Desktop & High Performance</h4>
+                                        <hr>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[desktop][selected]" value="true" id="desktop">
+                                                        <label class="form-check-label" for="desktop">
+                                                            Desktop
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="desktop_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="desktop_vms" name="components[desktop][vms]" min="1" value="1" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="desktop_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="desktop_cpu" name="components[desktop][cpu]" min="1" value="2" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="desktop_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="desktop_ram" name="components[desktop][ram]" min="1" step="1" value="4" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="desktop_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="desktop_storage" name="components[desktop][storage]" min="10" value="100" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="component-row border rounded p-3 mb-3">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input component-checkbox" type="checkbox" name="components[highperf][selected]" value="true" id="highperf">
+                                                        <label class="form-check-label" for="highperf">
+                                                            High Performance
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="highperf_vms" class="form-label">VMs</label>
+                                                    <input type="number" class="form-control vm-count" id="highperf_vms" name="components[highperf][vms]" min="1" value="1" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="highperf_cpu" class="form-label">CPU</label>
+                                                    <input type="number" class="form-control cpu-input" id="highperf_cpu" name="components[highperf][cpu]" min="1" value="8" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="highperf_ram" class="form-label">RAM (GB)</label>
+                                                    <input type="number" class="form-control ram-input" id="highperf_ram" name="components[highperf][ram]" min="1" step="1" value="16" disabled>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="highperf_storage" class="form-label">Storage (GB)</label>
+                                                    <input type="number" class="form-control storage-input" id="highperf_storage" name="components[highperf][storage]" min="10" value="500" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Calculate Resources
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Component Guidelines</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-database"></i> Database Servers</h5>
+                        <ul>
+                            <li><strong>MySQL:</strong> Typical deployment with 1-3 VMs for replication</li>
+                            <li><strong>PostgreSQL:</strong> 1-3 VMs for master-slave or cluster setups</li>
+                            <li><strong>Oracle:</strong> 1-2 VMs for RAC or Data Guard configurations</li>
+                            <li><strong>MongoDB:</strong> 3+ VMs for replica sets, 5+ for sharded clusters</li>
+                        </ul>
+                        
+                        <h5><i class="bi bi-stack"></i> Cache & NoSQL Servers</h5>
+                        <ul>
+                            <li><strong>Redis:</strong> 2-3 VMs for replication or clustering</li>
+                            <li><strong>Memcached:</strong> 2+ VMs for distributed caching</li>
+                            <li><strong>Cassandra:</strong> 3+ VMs for cluster deployment</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-app"></i> Application & Web Servers</h5>
+                        <ul>
+                            <li><strong>Web Server:</strong> 2+ VMs behind load balancer</li>
+                            <li><strong>Application Server:</strong> 2+ VMs for load distribution</li>
+                            <li><strong>Load Balancer:</strong> 2+ VMs for high availability</li>
+                        </ul>
+                        
+                        <h5><i class="bi bi-person"></i> Desktop & High Performance</h5>
+                        <ul>
+                            <li><strong>Desktop:</strong> 1 VM per user or shared pools</li>
+                            <li><strong>High Performance:</strong> Dedicated resources with 100% reservation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to checkboxes to enable/disable inputs
+    const checkboxes = document.querySelectorAll('.component-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const row = this.closest('.component-row');
+            const inputs = row.querySelectorAll('input[type="number"], select');
+            
+            inputs.forEach(input => {
+                input.disabled = !this.checked;
+            });
+            
+            // If component is selected, update defaults based on deployment type
+            if (this.checked) {
+                const deploymentSelect = row.querySelector('.deployment-type');
+                if (deploymentSelect) {
+                    updateComponentDefaults(deploymentSelect);
+                }
+            }
+        });
+    });
+    
+    // Add event listeners to deployment type selects
+    const deploymentSelects = document.querySelectorAll('.deployment-type');
+    
+    deploymentSelects.forEach(select => {
+        select.addEventListener('change', function() {
+            updateComponentDefaults(this);
+        });
+    });
+    
+    // Function to update component defaults based on deployment type
+    function updateComponentDefaults(select) {
+        const component = select.getAttribute('data-component');
+        const deploymentType = select.value;
+        const row = select.closest('.component-row');
+        
+        // Get input fields
+        const vmCountInput = row.querySelector('.vm-count');
+        const cpuInput = row.querySelector('.cpu-input');
+        const ramInput = row.querySelector('.ram-input');
+        const storageInput = row.querySelector('.storage-input');
+        
+        // Update defaults based on component and deployment type
+        switch(component) {
+            case 'mysql':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 200;
+                        break;
+                    case 'master-slave':
+                        vmCountInput.value = 2;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 200;
+                        break;
+                    case 'cluster':
+                        vmCountInput.value = 3;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 200;
+                        break;
+                }
+                break;
+                
+            case 'postgresql':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 200;
+                        break;
+                    case 'replication':
+                        vmCountInput.value = 2;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 200;
+                        break;
+                    case 'patroni':
+                        vmCountInput.value = 3;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 200;
+                        break;
+                }
+                break;
+                
+            case 'oracle':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 8;
+                        ramInput.value = 16;
+                        storageInput.value = 500;
+                        break;
+                    case 'rac':
+                        vmCountInput.value = 2;
+                        cpuInput.value = 8;
+                        ramInput.value = 16;
+                        storageInput.value = 500;
+                        break;
+                    case 'dataguard':
+                        vmCountInput.value = 2;
+                        cpuInput.value = 8;
+                        ramInput.value = 16;
+                        storageInput.value = 500;
+                        break;
+                }
+                break;
+                
+            case 'mongodb':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 300;
+                        break;
+                    case 'replica-set':
+                        vmCountInput.value = 3;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 300;
+                        break;
+                    case 'sharded-cluster':
+                        vmCountInput.value = 5;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 300;
+                        break;
+                }
+                break;
+                
+            case 'redis':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 2;
+                        ramInput.value = 8;
+                        storageInput.value = 50;
+                        break;
+                    case 'replication':
+                        vmCountInput.value = 2;
+                        cpuInput.value = 2;
+                        ramInput.value = 8;
+                        storageInput.value = 50;
+                        break;
+                    case 'cluster':
+                        vmCountInput.value = 3;
+                        cpuInput.value = 2;
+                        ramInput.value = 8;
+                        storageInput.value = 50;
+                        break;
+                }
+                break;
+                
+            case 'memcached':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 2;
+                        ramInput.value = 4;
+                        storageInput.value = 20;
+                        break;
+                    case 'cluster':
+                        vmCountInput.value = 3;
+                        cpuInput.value = 2;
+                        ramInput.value = 4;
+                        storageInput.value = 20;
+                        break;
+                }
+                break;
+                
+            case 'cassandra':
+                switch(deploymentType) {
+                    case 'standalone':
+                        vmCountInput.value = 1;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 500;
+                        break;
+                    case 'cluster':
+                        vmCountInput.value = 3;
+                        cpuInput.value = 4;
+                        ramInput.value = 8;
+                        storageInput.value = 500;
+                        break;
+                }
+                break;
+        }
+    }
+    
+    // Set initial focus to the first checkbox
+    if (checkboxes.length > 0) {
+        checkboxes[0].focus();
+    }
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

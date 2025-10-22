@@ -1,0 +1,158 @@
+<%- include('../partials/header.ejs', { title: 'Disaster Recovery Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-shield-lock"></i> Disaster Recovery Results</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info text-center">
+                            <h4>DR Configuration Summary</h4>
+                            <p class="mb-0"><%= results.primaryVMs %> VMs, <%= results.avgVMSize %> GB average size, <%= results.replicationType === 'synchronous' ? 'Synchronous' : 'Asynchronous' %> replication</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd"></i> Primary Storage</h5>
+                            <h3><%= results.primaryStorage.toFixed(0) %> GB</h3>
+                            <p class="text-muted">Primary site</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd-fill"></i> Replica Storage</h5>
+                            <h3><%= results.replicaStorage.toFixed(0) %> GB</h3>
+                            <p class="text-muted">DR site</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-diagram-3"></i> Bandwidth Required</h5>
+                            <h3><%= results.bandwidthRequirement.toFixed(2) %> MB/s</h3>
+                            <p class="text-muted">Replication traffic</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-lightning"></i> Daily Change Rate</h5>
+                            <h3><%= results.dailyChangeRate.toFixed(0) %> GB</h3>
+                            <p class="text-muted">Data changes per day</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-alarm"></i> RTO Assessment</h5>
+                            <h4 class="<%= results.rtoAssessment.includes('Excellent') ? 'text-success' : results.rtoAssessment.includes('Good') ? 'text-warning' : 'text-danger' %>">
+                                <%= results.rtoAssessment %>
+                            </h4>
+                            <p class="text-muted">Target: <%= results.rto %> hours</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-clock"></i> RPO Assessment</h5>
+                            <h4 class="<%= results.rpoAssessment.includes('Excellent') ? 'text-success' : results.rpoAssessment.includes('Good') ? 'text-warning' : 'text-danger' %>">
+                                <%= results.rpoAssessment %>
+                            </h4>
+                            <p class="text-muted">Target: <%= results.rpo %> minutes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Detailed Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Value</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Primary Storage</td>
+                                <td><%= results.primaryStorage.toFixed(0) %> GB</td>
+                                <td>Storage required for primary VMs</td>
+                            </tr>
+                            <tr>
+                                <td>Replica Storage</td>
+                                <td><%= results.replicaStorage.toFixed(0) %> GB</td>
+                                <td>Storage required for replica VMs (1.3x primary)</td>
+                            </tr>
+                            <tr>
+                                <td>Total Storage Required</td>
+                                <td><%= results.totalStorage.toFixed(0) %> GB</td>
+                                <td>Combined storage for both sites</td>
+                            </tr>
+                            <tr>
+                                <td>Daily Data Change</td>
+                                <td><%= results.dailyChangeRate.toFixed(0) %> GB</td>
+                                <td>Estimated daily data changes</td>
+                            </tr>
+                            <tr>
+                                <td>Bandwidth Requirement</td>
+                                <td><%= results.bandwidthRequirement.toFixed(2) %> MB/s</td>
+                                <td>Network bandwidth needed for replication</td>
+                            </tr>
+                            <tr>
+                                <td>Available Bandwidth</td>
+                                <td><%= results.bandwidth %> MB/s</td>
+                                <td>Network bandwidth available</td>
+                            </tr>
+                            <tr>
+                                <td>Bandwidth Utilization</td>
+                                <td><%= (results.bandwidthRequirement / results.bandwidth * 100).toFixed(1) %>%</td>
+                                <td>Percentage of available bandwidth</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Recommendations</h3>
+            </div>
+            <div class="card-body">
+                <% if (results.recommendations.length > 0) { %>
+                    <ul>
+                        <% results.recommendations.forEach(rec => { %>
+                            <li><%= rec %></li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No specific recommendations available.</p>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/calculators/disaster-recovery" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Results
+            </button>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

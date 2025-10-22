@@ -1,0 +1,93 @@
+{
+  "home": {
+    "title": "Công cụ VMware",
+    "welcome": "Chào mừng đến với Công cụ Tính toán Tài nguyên VMware",
+    "description": "Tính toán yêu cầu CPU, RAM và Lưu trữ tối ưu cho kiến trúc ứng dụng nhiều tầng của bạn.",
+    "get_started": "Bắt đầu"
+  },
+  "navigation": {
+    "home": "Trang chủ",
+    "resources": "Tính toán Tài nguyên",
+    "calculators": "Máy tính",
+    "glossary": "Thuật ngữ",
+    "knowledge": "Kiến thức",
+    "course": "Ghi chú Khóa học",
+    "login": "Đăng nhập",
+    "error_404": "Không tìm thấy trang",
+    "page_not_found": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại.",
+    "error_500": "Lỗi",
+    "something_went_wrong": "Đã xảy ra lỗi!"
+  },
+  "resources": {
+    "title": "Công cụ Tính toán Tài nguyên VMware",
+    "description": "Tính toán yêu cầu CPU, RAM và Lưu trữ tối ưu cho kiến trúc ứng dụng nhiều tầng của bạn.",
+    "calculator": "Máy tính Tài nguyên",
+    "components": "Các thành phần Ứng dụng",
+    "database_servers": "Máy chủ Cơ sở dữ liệu",
+    "cache_servers": "Máy chủ Cache & NoSQL",
+    "app_servers": "Máy chủ Ứng dụng & Web",
+    "desktop": "Máy tính để bàn & Hiệu suất Cao",
+    "calculate": "Tính toán Tài nguyên"
+  },
+  "glossary": {
+    "title": "Thuật ngữ VMware",
+    "description": "Tra cứu thuật ngữ VMware và hiểu các thành phần và khái niệm chính.",
+    "search_placeholder": "Tìm kiếm thuật ngữ VMware...",
+    "search": "Tìm kiếm",
+    "filter_category": "Lọc theo Danh mục",
+    "all_categories": "Tất cả Danh mục",
+    "results_info": "Hiển thị {{count}} trong số {{total}} thuật ngữ {{categoryText}}",
+    "results_info_category": "trong danh mục \"{{category}}\"",
+    "results_info_all": "trong tất cả các danh mục",
+    "no_results": "Không tìm thấy thuật ngữ phù hợp với tiêu chí của bạn.",
+    "learn_more": "Tìm hiểu Thêm",
+    "categories": {
+      "Core Architecture": "Kiến trúc Lõi",
+      "Networking": "Mạng",
+      "Storage": "Lưu trữ",
+      "Availability & Migration": "Khả dụng & Di chuyển",
+      "Security": "Bảo mật",
+      "Management": "Quản lý",
+      "Backup & Disaster Recovery": "Sao lưu & Phục hồi Thảm họa",
+      "Core_Architecture": "Kiến trúc Lõi",
+      "Availability_Migration": "Khả dụng & Di chuyển",
+      "Backup_Disaster_Recovery": "Sao lưu & Phục hồi Thảm họa",
+      "Advanced_Features": "Tính năng Nâng cao",
+      "Advanced_Technologies": "Công nghệ Nâng cao",
+      "Cloud_Integration": "Điện toán đám mây & Tích hợp",
+      "Cloud_Native": "Cloud Native",
+      "Cloud_Technologies": "Công nghệ Đám mây",
+      "Compliance_Hardening": "Tuân thủ & Tăng cường bảo mật",
+      "Data_Protection": "Bảo vệ Dữ liệu",
+      "Hardware": "Phần cứng",
+      "High_Availability": "Tính sẵn sàng cao",
+      "Hypervisor": "Hypervisor",
+      "Integration_APIs": "Tích hợp & API",
+      "Licensing_Editions": "Giấy phép & Phiên bản",
+      "Lifecycle_Management": "Quản lý Vòng đời",
+      "Management_Tools": "Công cụ Quản lý",
+      "Migration": "Di chuyển",
+      "Monitoring": "Giám sát",
+      "Monitoring_Management": "Giám sát & Quản lý",
+      "Monitoring_Performance": "Giám sát & Hiệu suất",
+      "Resource_Management": "Quản lý Tài nguyên"
+    }
+  },
+  "calculators": {
+    "title": "Máy tính VMware",
+    "description": "Các máy tính chuyên dụng để lập kế hoạch cơ sở hạ tầng VMware của bạn.",
+    "vm_density": "Máy tính Mật độ VM",
+    "storage": "Kế hoạch Dung lượng Lưu trữ",
+    "network": "Ước tính Băng thông Mạng",
+    "vsan": "Máy tính Kích thước vSAN",
+    "disaster_recovery": "Máy tính Phục hồi Thảm họa"
+  },
+  "knowledge": {
+    "title": "Cơ sở Kiến thức",
+    "description": "Các bài viết kỹ thuật và thực hành tốt nhất cho môi trường VMware."
+  },
+  "language": {
+    "en": "English",
+    "vi": "Tiếng Việt"
+  }
+}

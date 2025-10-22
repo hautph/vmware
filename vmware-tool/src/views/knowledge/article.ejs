@@ -1,0 +1,34 @@
+<%- include('../partials/header.ejs', { title: article.title }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-journal-text"></i> <%= article.title %></h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span class="badge bg-secondary"><%= article.category %></span>
+                    </div>
+                    <div>
+                        <small class="text-muted">Article ID: <%= article.id %></small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="article-content">
+                    <%- article.contentHtml %>
+                </div>
+            </div>
+        </div>
+        
+        <a href="/knowledge" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Knowledge Base
+        </a>
+        <button class="btn btn-outline-secondary" onclick="window.print()">
+            <i class="bi bi-printer"></i> Print Article
+        </button>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

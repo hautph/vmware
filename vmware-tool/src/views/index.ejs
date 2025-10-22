@@ -1,0 +1,186 @@
+<%- include('partials/header.ejs') %>
+
+<!-- Hero Section -->
+<div class="bg-primary text-white py-5 rounded mb-4">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold"><%= t('home.welcome') %></h1>
+                <p class="lead mb-4"><%= t('home.description') %></p>
+                <div class="d-flex gap-3">
+                    <a class="btn btn-light btn-lg" href="/resources" role="button">
+                        <i class="bi bi-cpu"></i> <%= t('home.get_started') %>
+                    </a>
+                    <a class="btn btn-outline-light btn-lg" href="/course" role="button">
+                        <i class="bi bi-book"></i> Course Notes
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block text-center">
+                <i class="bi bi-server" style="font-size: 8rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Features -->
+<div class="row g-4 mb-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-primary border-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-cpu text-primary fs-1 me-3"></i>
+                    <h5 class="card-title mb-0"><%= t('navigation.resources') %></h5>
+                </div>
+                <p class="card-text">Calculate optimal CPU, RAM, and Storage requirements for your multi-tier application architecture with our advanced sizing tool.</p>
+                <a href="/resources" class="btn btn-primary">Calculate Resources</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-success border-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-calculator text-success fs-1 me-3"></i>
+                    <h5 class="card-title mb-0"><%= t('navigation.calculators') %></h5>
+                </div>
+                <p class="card-text">Specialized calculators for VM density, storage capacity, network bandwidth, vSAN sizing, and disaster recovery planning.</p>
+                <a href="/calculators" class="btn btn-success">Explore Calculators</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-info border-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-journals text-info fs-1 me-3"></i>
+                    <h5 class="card-title mb-0"><%= t('navigation.knowledge') %></h5>
+                </div>
+                <p class="card-text">Access technical articles, guides, and best practices for VMware environments in Markdown format.</p>
+                <a href="/knowledge" class="btn btn-info">Browse Knowledge Base</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-warning border-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-book text-warning fs-1 me-3"></i>
+                    <h5 class="card-title mb-0"><%= t('navigation.glossary') %></h5>
+                </div>
+                <p class="card-text">Look up VMware terminology and understand key components and concepts with our comprehensive glossary.</p>
+                <a href="/glossary" class="btn btn-warning">Explore Glossary</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-secondary border-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-mortarboard text-secondary fs-1 me-3"></i>
+                    <h5 class="card-title mb-0"><%= t('navigation.course') %></h5>
+                </div>
+                <p class="card-text">Take notes on VMware course content and track your learning progress with our course notes module.</p>
+                <a href="/course" class="btn btn-secondary">View Course Notes</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-danger border-2">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-tools text-danger fs-1 me-3"></i>
+                    <h5 class="card-title mb-0">Tools & Utilities</h5>
+                </div>
+                <p class="card-text">Access additional VMware tools and utilities to help with your infrastructure planning and management.</p>
+                <a href="#" class="btn btn-danger disabled">Coming Soon</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Benefits -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Why Choose Our VMware Planning Tools?</h3>
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <i class="bi bi-lightning-charge-fill text-primary fs-1"></i>
+                        <h5>Fast & Accurate</h5>
+                        <p class="text-muted">Get precise resource calculations in seconds</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <i class="bi bi-shield-lock-fill text-success fs-1"></i>
+                        <h5>Secure & Reliable</h5>
+                        <p class="text-muted">Built with enterprise security in mind</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <i class="bi bi-globe-americas text-info fs-1"></i>
+                        <h5>Multilingual</h5>
+                        <p class="text-muted">Available in English and Vietnamese</p>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <i class="bi bi-cloud-arrow-up-fill text-warning fs-1"></i>
+                        <h5>Cloud Ready</h5>
+                        <p class="text-muted">Optimized for cloud deployment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Updates -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="mb-4">Recent Updates & Resources</h3>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">VMware vSphere 8 Features</h5>
+                        <p class="card-text">Learn about the latest features and improvements in VMware vSphere 8 compared to previous versions.</p>
+                        <a href="/knowledge/article/vsphere-8-vs-vsphere-7-whats-new" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">vSAN 8 ESA Deep Dive</h5>
+                        <p class="card-text">Explore the new Express Storage Architecture in vSAN 8 and its performance benefits.</p>
+                        <a href="/knowledge/article/vsan-8-esa-deep-dive" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Security Best Practices</h5>
+                        <p class="card-text">Implement comprehensive security measures for your vSphere environment with these best practices.</p>
+                        <a href="/knowledge/article/vsphere-security-hardening-best-practices" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center py-5">
+                <h3 class="card-title">Ready to Optimize Your VMware Infrastructure?</h3>
+                <p class="card-text lead">Start planning your resources today with our comprehensive VMware tools.</p>
+                <a href="/resources" class="btn btn-light btn-lg">
+                    <i class="bi bi-rocket-takeoff"></i> Get Started Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer.ejs') %>
