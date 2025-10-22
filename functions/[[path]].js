@@ -58,3 +58,38 @@ export default {
     return new Response('Not Found', { status: 404 });
   }
 };
+
+// Cloudflare Pages Function to handle API requests
+export async function onRequest(context) {
+  const { request } = context;
+  const url = new URL(request.url);
+  const path = url.pathname;
+
+  // Handle API health check
+  if (path === '/api/health') {
+    return new Response(
+      JSON.stringify({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        service: 'vmware-tool-static'
+      }),
+      {
+        headers: { 'Content-Type': 'application/json' },
+        status: 200
+      }
+    );
+  }
+
+  // For all other paths, return a simple response indicating this is a static deployment
+  return new Response(
+    JSON.stringify({ 
+      message: 'VMware Tool Static Deployment', 
+      path: path,
+      note: 'This is a static version. For full functionality, run the application locally with Node.js.'
+    }),
+    {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200
+    }
+  );
+}
