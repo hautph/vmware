@@ -1,39 +1,39 @@
-<%- include('../partials/header.ejs', { title: 'Resource Calculation Results' }) %>
+<%- include('../partials/header.ejs', { title: t('resources.results.title') }) %>
 
 <div class="row">
     <div class="col-12">
-        <h1><i class="bi bi-calculator"></i> Resource Calculation Results</h1>
+        <h1><i class="bi bi-calculator"></i> <%= t('resources.results.title') %></h1>
         
         <div class="card">
             <div class="card-header">
-                <h3>Summary</h3>
+                <h3><%= t('resources.results.summary') %></h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-info text-center">
-                            <h4>Multi-Tier Application Architecture</h4>
-                            <p class="mb-0">Components: <%= results.selectedComponents.join(', ') || 'None selected' %></p>
+                            <h4><%= t('resources.results.multi_tier_architecture') %></h4>
+                            <p class="mb-0"><%= t('resources.results.components') %>: <%= results.selectedComponents.join(', ') || t('resources.results.none_selected') %></p>
                         </div>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <div class="border rounded p-3 text-center">
-                            <h5><i class="bi bi-cpu"></i> CPU</h5>
-                            <h3><%= results.totalCPU %> cores</h3>
+                            <h5><i class="bi bi-cpu"></i> <%= t('resources.results.total_cpu') %></h5>
+                            <h3><%= results.totalCPU %> <%= t('resources.results.cores') %></h3>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="border rounded p-3 text-center">
-                            <h5><i class="bi bi-memory"></i> RAM</h5>
-                            <h3><%= results.totalRAM %> GB</h3>
+                            <h5><i class="bi bi-memory"></i> <%= t('resources.results.total_ram') %></h5>
+                            <h3><%= results.totalRAM %> <%= t('resources.results.gb') %></h3>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="border rounded p-3 text-center">
-                            <h5><i class="bi bi-hdd"></i> Storage</h5>
-                            <h3><%= results.totalStorage %> GB</h3>
+                            <h5><i class="bi bi-hdd"></i> <%= t('resources.results.total_storage') %></h5>
+                            <h3><%= results.totalStorage %> <%= t('resources.results.gb') %></h3>
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3>Component Details</h3>
+                <h3><%= t('resources.results.component_details') %></h3>
             </div>
             <div class="card-body">
                 <% if (results.componentDetails.length > 0) { %>
@@ -50,15 +50,15 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Component</th>
-                                    <th>VMs</th>
-                                    <th>Deployment</th>
-                                    <th>CPU/VM</th>
-                                    <th>RAM/VM</th>
-                                    <th>Storage/VM</th>
-                                    <th>Total CPU</th>
-                                    <th>Total RAM</th>
-                                    <th>Total Storage</th>
+                                    <th><%= t('resources.results.component') %></th>
+                                    <th><%= t('resources.results.vms') %></th>
+                                    <th><%= t('resources.results.deployment') %></th>
+                                    <th><%= t('resources.results.cpu_per_vm') %></th>
+                                    <th><%= t('resources.results.ram_per_vm') %></th>
+                                    <th><%= t('resources.results.storage_per_vm') %></th>
+                                    <th><%= t('resources.results.total_cpu') %></th>
+                                    <th><%= t('resources.results.total_ram') %></th>
+                                    <th><%= t('resources.results.total_storage') %></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -67,12 +67,12 @@
                                         <td><%= detail.type %></td>
                                         <td><%= detail.numVMs %></td>
                                         <td><%= detail.deploymentType %></td>
-                                        <td><%= detail.cpuPerVM %> cores</td>
-                                        <td><%= detail.ramPerVM %> GB</td>
-                                        <td><%= detail.storagePerVM %> GB</td>
-                                        <td><%= detail.totalCPU %> cores</td>
-                                        <td><%= detail.totalRAM %> GB</td>
-                                        <td><%= detail.totalStorage %> GB</td>
+                                        <td><%= detail.cpuPerVM %> <%= t('resources.results.cores') %></td>
+                                        <td><%= detail.ramPerVM %> <%= t('resources.results.gb') %></td>
+                                        <td><%= detail.storagePerVM %> <%= t('resources.results.gb') %></td>
+                                        <td><%= detail.totalCPU %> <%= t('resources.results.cores') %></td>
+                                        <td><%= detail.totalRAM %> <%= t('resources.results.gb') %></td>
+                                        <td><%= detail.totalStorage %> <%= t('resources.results.gb') %></td>
                                     </tr>
                                 <% }); %>
                             </tbody>
@@ -80,7 +80,7 @@
                     </div>
                 <% } else { %>
                     <div class="alert alert-warning">
-                        No components were selected for calculation.
+                        <%= t('resources.results.no_components_selected') %>
                     </div>
                 <% } %>
             </div>
@@ -88,7 +88,7 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3>Recommendations for Selected Components</h3>
+                <h3><%= t('resources.results.recommendations') %></h3>
             </div>
             <div class="card-body">
                 <% if (results.recommendations.length > 0) { %>
@@ -98,17 +98,17 @@
                         <% }); %>
                     </ul>
                 <% } else { %>
-                    <p>No specific recommendations available for the selected components.</p>
+                    <p><%= t('resources.results.no_recommendations') %></p>
                 <% } %>
             </div>
         </div>
         
         <div class="mt-4">
             <a href="/resources" class="btn btn-primary">
-                <i class="bi bi-arrow-left"></i> New Calculation
+                <i class="bi bi-arrow-left"></i> <%= t('resources.results.new_calculation') %>
             </a>
             <button class="btn btn-secondary" onclick="window.print()">
-                <i class="bi bi-printer"></i> Print Results
+                <i class="bi bi-printer"></i> <%= t('resources.results.print_results') %>
             </button>
         </div>
     </div>

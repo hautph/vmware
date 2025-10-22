@@ -1,11 +1,11 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const resourceController = require('../controllers/resource');
+import { getIndex, calculateResources } from '../controllers/resource.js';
 
 // Resource sizing calculator page
-router.get('/', resourceController.getIndex);
+router.get('/', getIndex);
 
 // Calculate resources
-router.post('/calculate', resourceController.calculateResources);
+router.post('/calculate', calculateResources);
 
-module.exports = router;
+export default router;

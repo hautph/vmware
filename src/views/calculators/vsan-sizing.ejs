@@ -1,63 +1,63 @@
-<%- include('../partials/header.ejs', { title: 'vSAN Sizing Calculator' }) %>
+<%- include('../partials/header.ejs', { title: t('calculators.vsan_form.title') }) %>
 
 <div class="row">
     <div class="col-12">
-        <h1><i class="bi bi-database"></i> vSAN Sizing Calculator</h1>
-        <p class="lead">Calculate storage requirements for VMware vSAN clusters.</p>
+        <h1><i class="bi bi-database"></i> <%= t('calculators.vsan_form.title') %></h1>
+        <p class="lead"><%= t('calculators.vsan_form.lead') %></p>
         
         <div class="card">
             <div class="card-header">
-                <h3>vSAN Configuration</h3>
+                <h3><%= t('calculators.vsan_form.vsan_configuration') %></h3>
             </div>
             <div class="card-body">
                 <form id="vsanForm" action="/calculators/vsan-sizing" method="POST">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="numHosts" class="form-label">Number of Hosts</label>
+                                <label for="numHosts" class="form-label"><%= t('calculators.vsan_form.number_of_hosts') %></label>
                                 <input type="number" class="form-control" id="numHosts" name="numHosts" min="1" value="3" required>
-                                <div class="form-text">Minimum 3 hosts for vSAN cluster</div>
+                                <div class="form-text"><%= t('calculators.vsan_form.minimum_hosts') %></div>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <label for="numVMs" class="form-label"><%= t('calculators.vsan_form.number_of_vms') %></label>
                                 <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" value="50" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="avgVMSize" class="form-label">Average VM Size (GB)</label>
+                                <label for="avgVMSize" class="form-label"><%= t('calculators.vsan_form.average_vm_size') %></label>
                                 <input type="number" class="form-control" id="avgVMSize" name="avgVMSize" min="1" step="1" value="100" required>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="redundancy" class="form-label">Redundancy Policy</label>
+                                <label for="redundancy" class="form-label"><%= t('calculators.vsan_form.redundancy_policy') %></label>
                                 <select class="form-select" id="redundancy" name="redundancy" required>
-                                    <option value="raid1">RAID 1 (Mirroring) - 2x overhead</option>
-                                    <option value="raid5" selected>RAID 5 (Erasure Coding) - 1.33x overhead</option>
-                                    <option value="raid6">RAID 6 (Erasure Coding) - 1.5x overhead</option>
+                                    <option value="raid1"><%= t('calculators.vsan_form.raid1_option') %></option>
+                                    <option value="raid5" selected><%= t('calculators.vsan_form.raid5_option') %></option>
+                                    <option value="raid6"><%= t('calculators.vsan_form.raid6_option') %></option>
                                 </select>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="allFlash" class="form-label">Configuration Type</label>
+                                <label for="allFlash" class="form-label"><%= t('calculators.vsan_form.configuration_type') %></label>
                                 <select class="form-select" id="allFlash" name="allFlash" required>
-                                    <option value="no">Hybrid (SSD + HDD)</option>
-                                    <option value="yes" selected>All-Flash</option>
+                                    <option value="no"><%= t('calculators.vsan_form.hybrid_option') %></option>
+                                    <option value="yes" selected><%= t('calculators.vsan_form.all_flash_option') %></option>
                                 </select>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="cacheReserve" class="form-label">Cache Reserve (%)</label>
+                                <label for="cacheReserve" class="form-label"><%= t('calculators.vsan_form.cache_reserve') %></label>
                                 <input type="number" class="form-control" id="cacheReserve" name="cacheReserve" min="5" max="20" value="10" required>
-                                <div class="form-text">Percentage of capacity reserved for cache tier</div>
+                                <div class="form-text"><%= t('calculators.vsan_form.cache_reserve_info') %></div>
                             </div>
                         </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-calculator"></i> Calculate vSAN Sizing
+                        <i class="bi bi-calculator"></i> <%= t('calculators.vsan_form.calculate_vsan_sizing') %>
                     </button>
                 </form>
             </div>
@@ -65,23 +65,23 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3>vSAN Sizing Guidelines</h3>
+                <h3><%= t('calculators.vsan_form.vsan_sizing_guidelines') %></h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h5>Redundancy Options</h5>
+                        <h5><%= t('calculators.vsan_form.redundancy_options') %></h5>
                         <ul>
-                            <li><strong>RAID 1 (Mirroring):</strong> Best performance, 2x storage overhead</li>
-                            <li><strong>RAID 5 (Erasure Coding):</strong> Good balance of performance and capacity, 1.33x overhead</li>
-                            <li><strong>RAID 6 (Erasure Coding):</strong> Maximum capacity efficiency, 1.5x overhead</li>
+                            <li><strong>RAID 1 (Mirroring):</strong> <%= t('calculators.vsan_form.raid1_description') %></li>
+                            <li><strong>RAID 5 (Erasure Coding):</strong> <%= t('calculators.vsan_form.raid5_description') %></li>
+                            <li><strong>RAID 6 (Erasure Coding):</strong> <%= t('calculators.vsan_form.raid6_description') %></li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h5>Configuration Types</h5>
+                        <h5><%= t('calculators.vsan_form.configuration_types') %></h5>
                         <ul>
-                            <li><strong>Hybrid:</strong> Combination of SSD cache tier and HDD capacity tier</li>
-                            <li><strong>All-Flash:</strong> Pure SSD configuration for maximum performance</li>
+                            <li><strong>Hybrid:</strong> <%= t('calculators.vsan_form.hybrid_description') %></li>
+                            <li><strong>All-Flash:</strong> <%= t('calculators.vsan_form.all_flash_description') %></li>
                         </ul>
                     </div>
                 </div>

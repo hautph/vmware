@@ -1,7 +1,11 @@
-const express = require('express');
-const path = require('path');
-const dotenv = require('dotenv');
-const { i18next, i18nextHttpMiddleware } = require('./config/i18n');
+import express from 'express';
+import path from 'path';
+import dotenv from 'dotenv';
+import { i18next, i18nextHttpMiddleware } from './config/i18n.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -37,11 +41,11 @@ app.get('/', (req, res) => {
 });
 
 // Import routes
-const resourceRoutes = require('./routes/resource');
-const glossaryRoutes = require('./routes/glossary');
-const calculatorRoutes = require('./routes/calculator');
-const knowledgeRoutes = require('./routes/knowledge');
-const courseRoutes = require('./routes/course');
+import resourceRoutes from './routes/resource.js';
+import glossaryRoutes from './routes/glossary.js';
+import calculatorRoutes from './routes/calculator.js';
+import knowledgeRoutes from './routes/knowledge.js';
+import courseRoutes from './routes/course.js';
 
 // Use routes
 app.use('/resources', resourceRoutes);
@@ -87,4 +91,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app;
+export { app };

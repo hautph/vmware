@@ -1,70 +1,70 @@
-<%- include('../partials/header.ejs', { title: 'Disaster Recovery Calculator' }) %>
+<%- include('../partials/header.ejs', { title: t('calculators.disaster_recovery_form.title') }) %>
 
 <div class="row">
     <div class="col-12">
-        <h1><i class="bi bi-shield-lock"></i> Disaster Recovery Calculator</h1>
-        <p class="lead">Calculate storage and bandwidth requirements for disaster recovery solutions.</p>
+        <h1><i class="bi bi-shield-lock"></i> <%= t('calculators.disaster_recovery_form.title') %></h1>
+        <p class="lead"><%= t('calculators.disaster_recovery_form.lead') %></p>
         
         <div class="card">
             <div class="card-header">
-                <h3>DR Configuration</h3>
+                <h3><%= t('calculators.disaster_recovery_form.dr_configuration') %></h3>
             </div>
             <div class="card-body">
                 <form id="drForm" action="/calculators/disaster-recovery" method="POST">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="primaryVMs" class="form-label">Number of Primary VMs</label>
+                                <label for="primaryVMs" class="form-label"><%= t('calculators.disaster_recovery_form.number_of_primary_vms') %></label>
                                 <input type="number" class="form-control" id="primaryVMs" name="primaryVMs" min="1" value="100" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="avgVMSize" class="form-label">Average VM Size (GB)</label>
+                                <label for="avgVMSize" class="form-label"><%= t('calculators.disaster_recovery_form.average_vm_size') %></label>
                                 <input type="number" class="form-control" id="avgVMSize" name="avgVMSize" min="1" step="1" value="100" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="rto" class="form-label">Recovery Time Objective (RTO) - Hours</label>
+                                <label for="rto" class="form-label"><%= t('calculators.disaster_recovery_form.recovery_time_objective') %></label>
                                 <input type="number" class="form-control" id="rto" name="rto" min="1" value="4" required>
-                                <div class="form-text">Maximum acceptable downtime</div>
+                                <div class="form-text"><%= t('calculators.disaster_recovery_form.maximum_acceptable_downtime') %></div>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="rpo" class="form-label">Recovery Point Objective (RPO) - Minutes</label>
+                                <label for="rpo" class="form-label"><%= t('calculators.disaster_recovery_form.recovery_point_objective') %></label>
                                 <input type="number" class="form-control" id="rpo" name="rpo" min="1" value="15" required>
-                                <div class="form-text">Maximum acceptable data loss</div>
+                                <div class="form-text"><%= t('calculators.disaster_recovery_form.maximum_acceptable_data_loss') %></div>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="replicationType" class="form-label">Replication Type</label>
+                                <label for="replicationType" class="form-label"><%= t('calculators.disaster_recovery_form.replication_type') %></label>
                                 <select class="form-select" id="replicationType" name="replicationType" required>
-                                    <option value="synchronous">Synchronous Replication</option>
-                                    <option value="asynchronous" selected>Asynchronous Replication</option>
+                                    <option value="synchronous"><%= t('calculators.disaster_recovery_form.synchronous_replication') %></option>
+                                    <option value="asynchronous" selected><%= t('calculators.disaster_recovery_form.asynchronous_replication') %></option>
                                 </select>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="bandwidth" class="form-label">Available Bandwidth (MB/s)</label>
+                                <label for="bandwidth" class="form-label"><%= t('calculators.disaster_recovery_form.available_bandwidth') %></label>
                                 <input type="number" class="form-control" id="bandwidth" name="bandwidth" min="1" value="100" required>
-                                <div class="form-text">Network bandwidth available for replication</div>
+                                <div class="form-text"><%= t('calculators.disaster_recovery_form.network_bandwidth_for_replication') %></div>
                             </div>
                             
                             <div class="alert alert-info mt-4">
-                                <h5>DR Planning Tips</h5>
+                                <h5><%= t('calculators.disaster_recovery_form.dr_planning_tips') %></h5>
                                 <ul>
-                                    <li>RTO &lt; 4 hours: Excellent recovery capability</li>
-                                    <li>RPO &lt; 15 minutes: Near real-time protection</li>
-                                    <li>Synchronous replication requires low latency (&lt; 5ms)</li>
-                                    <li>Asynchronous replication can handle higher latency</li>
+                                    <li><%= t('calculators.disaster_recovery_form.excellent_recovery') %></li>
+                                    <li><%= t('calculators.disaster_recovery_form.near_real_time') %></li>
+                                    <li><%= t('calculators.disaster_recovery_form.synchronous_latency') %></li>
+                                    <li><%= t('calculators.disaster_recovery_form.asynchronous_latency') %></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-calculator"></i> Calculate DR Requirements
+                        <i class="bi bi-calculator"></i> <%= t('calculators.disaster_recovery_form.calculate_dr_requirements') %>
                     </button>
                 </form>
             </div>

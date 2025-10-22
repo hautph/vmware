@@ -1,49 +1,49 @@
-<%- include('../partials/header.ejs', { title: 'VM Density Calculator' }) %>
+<%- include('../partials/header.ejs', { title: t('calculators.vm_density_form.title') }) %>
 
 <div class="row">
     <div class="col-12">
-        <h1><i class="bi bi-server"></i> VM Density Calculator</h1>
-        <p class="lead">Calculate how many virtual machines can run on a physical host based on CPU and memory resources.</p>
+        <h1><i class="bi bi-server"></i> <%= t('calculators.vm_density_form.title') %></h1>
+        <p class="lead"><%= t('calculators.vm_density_form.lead') %></p>
         
         <div class="card">
             <div class="card-header">
-                <h3>Host Specifications</h3>
+                <h3><%= t('calculators.vm_density_form.host_specifications') %></h3>
             </div>
             <div class="card-body">
                 <form action="/calculators/vm-density" method="POST">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="physicalCores" class="form-label">Physical CPU Cores</label>
+                                <label for="physicalCores" class="form-label"><%= t('calculators.vm_density_form.physical_cpu_cores') %></label>
                                 <input type="number" class="form-control" id="physicalCores" name="physicalCores" min="1" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="coreSpeed" class="form-label">Core Speed (GHz)</label>
+                                <label for="coreSpeed" class="form-label"><%= t('calculators.vm_density_form.core_speed') %></label>
                                 <input type="number" class="form-control" id="coreSpeed" name="coreSpeed" step="0.1" min="0.1" required>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="memoryGB" class="form-label">Total Memory (GB)</label>
+                                <label for="memoryGB" class="form-label"><%= t('calculators.vm_density_form.total_memory') %></label>
                                 <input type="number" class="form-control" id="memoryGB" name="memoryGB" min="1" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="vmCores" class="form-label">CPU Cores per VM</label>
+                                <label for="vmCores" class="form-label"><%= t('calculators.vm_density_form.cpu_cores_per_vm') %></label>
                                 <input type="number" class="form-control" id="vmCores" name="vmCores" min="1" value="2" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="vmRamGB" class="form-label">RAM per VM (GB)</label>
+                                <label for="vmRamGB" class="form-label"><%= t('calculators.vm_density_form.ram_per_vm') %></label>
                                 <input type="number" class="form-control" id="vmRamGB" name="vmRamGB" min="1" value="4" required>
                             </div>
                         </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-calculator"></i> Calculate Density
+                        <i class="bi bi-calculator"></i> <%= t('calculators.vm_density_form.calculate_density') %>
                     </button>
                 </form>
             </div>
@@ -51,15 +51,15 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3>Best Practices</h3>
+                <h3><%= t('calculators.vm_density_form.best_practices') %></h3>
             </div>
             <div class="card-body">
                 <ul>
-                    <li>Reserve 20-30% of resources for overhead and peak usage</li>
-                    <li>Consider CPU and memory contention when determining final density</li>
-                    <li>Account for overhead from hypervisor and other services</li>
-                    <li>Reserve resources for maintenance operations</li>
-                    <li>Monitor performance after deployment to optimize</li>
+                    <li><%= t('calculators.vm_density_form.reserve_resources') %></li>
+                    <li><%= t('calculators.vm_density_form.consider_contention') %></li>
+                    <li><%= t('calculators.vm_density_form.account_overhead') %></li>
+                    <li><%= t('calculators.vm_density_form.reserve_maintenance') %></li>
+                    <li><%= t('calculators.vm_density_form.monitor_performance') %></li>
                 </ul>
             </div>
         </div>

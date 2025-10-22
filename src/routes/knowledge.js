@@ -1,14 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const knowledgeController = require('../controllers/knowledge');
+import { getIndex, searchArticles, getArticle } from '../controllers/knowledge.js';
 
 // Knowledge base index page
-router.get('/', knowledgeController.getIndex);
+router.get('/', getIndex);
 
 // Search articles
-router.get('/search', knowledgeController.searchArticles);
+router.get('/search', searchArticles);
 
 // Get specific article
-router.get('/article/:id', knowledgeController.getArticle);
+router.get('/article/:id', getArticle);
 
-module.exports = router;
+export default router;

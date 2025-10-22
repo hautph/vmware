@@ -1,20 +1,17 @@
-// Calculator controller
-
-// Get calculators index page
-exports.getIndex = (req, res) => {
+export const getIndex = (req, res) => {
   res.render('calculators/index', { 
     title: 'VMware Calculators'
   });
 };
 
 // VM Density calculator
-exports.getVMDensity = (req, res) => {
+export const getVMDensity = (req, res) => {
   res.render('calculators/vm-density', { 
     title: 'VM Density Calculator'
   });
 };
 
-exports.calculateVMDensity = (req, res) => {
+export const calculateVMDensity = (req, res) => {
   const { physicalCores, coreSpeed, memoryGB, vmCores, vmRamGB } = req.body;
   
   // Calculate density
@@ -50,13 +47,13 @@ exports.calculateVMDensity = (req, res) => {
 };
 
 // Storage Capacity calculator
-exports.getStorage = (req, res) => {
+export const getStorage = (req, res) => {
   res.render('calculators/storage', { 
     title: 'Storage Capacity Planner'
   });
 };
 
-exports.calculateStorage = (req, res) => {
+export const calculateStorage = (req, res) => {
   const { numVMs, avgVMSize, growthRate, retentionPeriod } = req.body;
   
   // Calculate storage requirements
@@ -90,13 +87,13 @@ exports.calculateStorage = (req, res) => {
 };
 
 // Network Bandwidth calculator
-exports.getNetwork = (req, res) => {
+export const getNetwork = (req, res) => {
   res.render('calculators/network', { 
     title: 'Network Bandwidth Estimator'
   });
 };
 
-exports.calculateNetwork = (req, res) => {
+export const calculateNetwork = (req, res) => {
   const { numVMs, avgBandwidth, peakMultiplier, redundancy } = req.body;
   
   // Calculate bandwidth requirements
@@ -127,13 +124,13 @@ exports.calculateNetwork = (req, res) => {
 };
 
 // vSAN Sizing calculator
-exports.getVSANSizing = (req, res) => {
+export const getVSANSizing = (req, res) => {
   res.render('calculators/vsan-sizing', { 
     title: 'vSAN Sizing Calculator'
   });
 };
 
-exports.calculateVSANSizing = (req, res) => {
+export const calculateVSANSizing = (req, res) => {
   const { numHosts, numVMs, avgVMSize, redundancy, allFlash, cacheReserve } = req.body;
   
   // Calculate storage requirements
@@ -197,13 +194,13 @@ exports.calculateVSANSizing = (req, res) => {
 };
 
 // Disaster Recovery calculator
-exports.getDisasterRecovery = (req, res) => {
+export const getDisasterRecovery = (req, res) => {
   res.render('calculators/disaster-recovery', { 
     title: 'Disaster Recovery Calculator'
   });
 };
 
-exports.calculateDisasterRecovery = (req, res) => {
+export const calculateDisasterRecovery = (req, res) => {
   const { primaryVMs, avgVMSize, rto, rpo, replicationType, bandwidth } = req.body;
   
   // Calculate storage requirements

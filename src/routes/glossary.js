@@ -1,14 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const glossaryController = require('../controllers/glossary');
+import { getIndex, searchTerms, getTerm } from '../controllers/glossary.js';
 
 // Glossary index page with pagination support
-router.get('/', glossaryController.getIndex);
+router.get('/', getIndex);
 
 // Search glossary terms
-router.get('/search', glossaryController.searchTerms);
+router.get('/search', searchTerms);
 
 // Get specific term
-router.get('/term/:term', glossaryController.getTerm);
+router.get('/term/:term', getTerm);
 
-module.exports = router;
+export default router;

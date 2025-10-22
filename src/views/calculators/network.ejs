@@ -1,47 +1,47 @@
-<%- include('../partials/header.ejs', { title: 'Network Bandwidth Estimator' }) %>
+<%- include('../partials/header.ejs', { title: t('calculators.network_form.title') }) %>
 
 <div class="row">
     <div class="col-12">
-        <h1><i class="bi bi-diagram-3"></i> Network Bandwidth Estimator</h1>
-        <p class="lead">Estimate network bandwidth requirements for your virtual environment.</p>
+        <h1><i class="bi bi-diagram-3"></i> <%= t('calculators.network_form.title') %></h1>
+        <p class="lead"><%= t('calculators.network_form.lead') %></p>
         
         <div class="card">
             <div class="card-header">
-                <h3>Network Requirements</h3>
+                <h3><%= t('calculators.network_form.network_requirements') %></h3>
             </div>
             <div class="card-body">
                 <form action="/calculators/network" method="POST">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <label for="numVMs" class="form-label"><%= t('calculators.network_form.number_of_vms') %></label>
                                 <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="avgBandwidth" class="form-label">Average Bandwidth per VM (Mbps)</label>
+                                <label for="avgBandwidth" class="form-label"><%= t('calculators.network_form.average_bandwidth_per_vm') %></label>
                                 <input type="number" class="form-control" id="avgBandwidth" name="avgBandwidth" min="1" value="10" required>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="peakMultiplier" class="form-label">Peak Usage Multiplier</label>
+                                <label for="peakMultiplier" class="form-label"><%= t('calculators.network_form.peak_usage_multiplier') %></label>
                                 <input type="number" class="form-control" id="peakMultiplier" name="peakMultiplier" step="0.1" min="1" value="1.5" required>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="redundancy" class="form-label">Redundancy Required</label>
+                                <label for="redundancy" class="form-label"><%= t('calculators.network_form.redundancy_required') %></label>
                                 <select class="form-select" id="redundancy" name="redundancy" required>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="yes"><%= t('navigation.calculators.yes') || 'Yes' %></option>
+                                    <option value="no"><%= t('navigation.calculators.no') || 'No' %></option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-calculator"></i> Calculate Bandwidth
+                        <i class="bi bi-calculator"></i> <%= t('calculators.network_form.calculate_bandwidth') %>
                     </button>
                 </form>
             </div>
@@ -49,15 +49,15 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3>Best Practices</h3>
+                <h3><%= t('calculators.network_form.best_practices') %></h3>
             </div>
             <div class="card-body">
                 <ul>
-                    <li>Consider jumbo frames for better network performance</li>
-                    <li>Separate management, vMotion, and VM traffic on different networks</li>
-                    <li>Monitor network utilization to optimize allocation</li>
-                    <li>Plan for network bursts during VM migrations</li>
-                    <li>Implement quality of service (QoS) policies</li>
+                    <li><%= t('calculators.network_form.consider_jumbo_frames') %></li>
+                    <li><%= t('calculators.network_form.separate_traffic') %></li>
+                    <li><%= t('calculators.network_form.monitor_utilization') %></li>
+                    <li><%= t('calculators.network_form.plan_bursts') %></li>
+                    <li><%= t('calculators.network_form.implement_qos') %></li>
                 </ul>
             </div>
         </div>

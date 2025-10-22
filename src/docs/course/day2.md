@@ -15,7 +15,7 @@ day: 2
 
 ## I. Tổng hợp Nội dung Ngày 2: Mạng, Bảo mật & AI
 
-### 1\. Phân tích Thiết kế Tách Lớp Mạng vSphere 8
+### 1. Phân tích Thiết kế Tách Lớp Mạng vSphere 8
 
 Tài liệu tham khảo: *Phân tích thiết kế sơ đồ tách các lớp mạng dịch vụ ảo vSphere 8 (Management, vMotion, iSCSI, NFC Replicate backup, Production VMs, vSAN Network) bằng VSS, VDS, NSX.*
 
@@ -30,7 +30,7 @@ Tài liệu tham khảo: *Phân tích thiết kế sơ đồ tách các lớp m�
 | **NFC / Replicate Backup** | Lưu lượng Sao lưu/Khôi phục (NFC) và Replication (vSphere Replication). | TCP/IP (NFC port 902/903) |
 | **Production VMs** | Lưu lượng truy cập dịch vụ của Máy ảo. | TCP/IP (đa dạng) |
 
-### 2\. Kiến thức Nâng cao: AI/ML/Deep Learning
+### 2. Kiến thức Nâng cao: AI/ML/Deep Learning
 
 Tài liệu tham khảo: *Các cấp độ và phương pháp máy học (ML), dạy Deep Learn AI và phát triển AI tiến bộ nhanh.*
 
@@ -40,7 +40,7 @@ Tài liệu tham khảo: *Các cấp độ và phương pháp máy học (ML), d
 | **Phần mềm/Quy trình** | Sử dụng **Fine-Tuning** (quá trình tinh chỉnh/dạy lại Model) với các công cụ Open-source (ví dụ: H2O translation) và thuật toán **BERN** để sửa chữa Dataset. |
 | **Chiến lược Model AI** | Ưu tiên chọn các **Multi-Modeling** (hợp nhất từ nhiều Model) vì chúng mạnh mẽ và linh hoạt hơn các Model đơn lẻ, đặc biệt trong môi trường **AI Private Local** (mạnh hơn AI Public). Ví dụ: `qwen3-8b-sonnet-4-gpt-5`. |
 
-### 3\. Công cụ Hỗ trợ và Bảo mật
+### 3. Công cụ Hỗ trợ và Bảo mật
 
 | Công cụ/Khái niệm | Mục đích |
 | :--- | :--- |

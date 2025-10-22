@@ -1,14 +1,11 @@
-// Resource sizing controller
-
-// Get resource sizing index page
-exports.getIndex = (req, res) => {
+export const getIndex = (req, res) => {
   res.render('resources/index', { 
     title: 'VMware Resource Sizing Tool'
   });
 };
 
 // Calculate resources based on inputs
-exports.calculateResources = (req, res) => {
+export const calculateResources = (req, res) => {
   const { components } = req.body;
   
   // VMware best practices multipliers

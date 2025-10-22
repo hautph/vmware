@@ -1,28 +1,40 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const calculatorController = require('../controllers/calculator');
+import { 
+  getIndex,
+  getVMDensity,
+  calculateVMDensity,
+  getStorage,
+  calculateStorage,
+  getNetwork,
+  calculateNetwork,
+  getVSANSizing,
+  calculateVSANSizing,
+  getDisasterRecovery,
+  calculateDisasterRecovery
+} from '../controllers/calculator.js';
 
 // Calculator index page
-router.get('/', calculatorController.getIndex);
+router.get('/', getIndex);
 
 // VM Density calculator
-router.get('/vm-density', calculatorController.getVMDensity);
-router.post('/vm-density', calculatorController.calculateVMDensity);
+router.get('/vm-density', getVMDensity);
+router.post('/vm-density', calculateVMDensity);
 
 // Storage Capacity calculator
-router.get('/storage', calculatorController.getStorage);
-router.post('/storage', calculatorController.calculateStorage);
+router.get('/storage', getStorage);
+router.post('/storage', calculateStorage);
 
 // Network Bandwidth calculator
-router.get('/network', calculatorController.getNetwork);
-router.post('/network', calculatorController.calculateNetwork);
+router.get('/network', getNetwork);
+router.post('/network', calculateNetwork);
 
 // vSAN Sizing calculator
-router.get('/vsan-sizing', calculatorController.getVSANSizing);
-router.post('/vsan-sizing', calculatorController.calculateVSANSizing);
+router.get('/vsan-sizing', getVSANSizing);
+router.post('/vsan-sizing', calculateVSANSizing);
 
 // Disaster Recovery calculator
-router.get('/disaster-recovery', calculatorController.getDisasterRecovery);
-router.post('/disaster-recovery', calculatorController.calculateDisasterRecovery);
+router.get('/disaster-recovery', getDisasterRecovery);
+router.post('/disaster-recovery', calculateDisasterRecovery);
 
-module.exports = router;
+export default router;

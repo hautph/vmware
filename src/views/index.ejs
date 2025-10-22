@@ -12,7 +12,7 @@
                         <i class="bi bi-cpu"></i> <%= t('home.get_started') %>
                     </a>
                     <a class="btn btn-outline-light btn-lg" href="/course" role="button">
-                        <i class="bi bi-book"></i> Course Notes
+                        <i class="bi bi-book"></i> <%= t('navigation.course') %>
                     </a>
                 </div>
             </div>
@@ -32,8 +32,8 @@
                     <i class="bi bi-cpu text-primary fs-1 me-3"></i>
                     <h5 class="card-title mb-0"><%= t('navigation.resources') %></h5>
                 </div>
-                <p class="card-text">Calculate optimal CPU, RAM, and Storage requirements for your multi-tier application architecture with our advanced sizing tool.</p>
-                <a href="/resources" class="btn btn-primary">Calculate Resources</a>
+                <p class="card-text"><%= t('resources.description') %></p>
+                <a href="/resources" class="btn btn-primary"><%= t('resources.calculate') %></a>
             </div>
         </div>
     </div>
@@ -44,8 +44,8 @@
                     <i class="bi bi-calculator text-success fs-1 me-3"></i>
                     <h5 class="card-title mb-0"><%= t('navigation.calculators') %></h5>
                 </div>
-                <p class="card-text">Specialized calculators for VM density, storage capacity, network bandwidth, vSAN sizing, and disaster recovery planning.</p>
-                <a href="/calculators" class="btn btn-success">Explore Calculators</a>
+                <p class="card-text"><%= t('calculators.description') %></p>
+                <a href="/calculators" class="btn btn-success"><%= t('calculators.title') %></a>
             </div>
         </div>
     </div>
@@ -56,8 +56,8 @@
                     <i class="bi bi-journals text-info fs-1 me-3"></i>
                     <h5 class="card-title mb-0"><%= t('navigation.knowledge') %></h5>
                 </div>
-                <p class="card-text">Access technical articles, guides, and best practices for VMware environments in Markdown format.</p>
-                <a href="/knowledge" class="btn btn-info">Browse Knowledge Base</a>
+                <p class="card-text"><%= t('knowledge.description') %></p>
+                <a href="/knowledge" class="btn btn-info"><%= t('navigation.knowledge') %></a>
             </div>
         </div>
     </div>
@@ -68,8 +68,8 @@
                     <i class="bi bi-book text-warning fs-1 me-3"></i>
                     <h5 class="card-title mb-0"><%= t('navigation.glossary') %></h5>
                 </div>
-                <p class="card-text">Look up VMware terminology and understand key components and concepts with our comprehensive glossary.</p>
-                <a href="/glossary" class="btn btn-warning">Explore Glossary</a>
+                <p class="card-text"><%= t('glossary.description') %></p>
+                <a href="/glossary" class="btn btn-warning"><%= t('navigation.glossary') %></a>
             </div>
         </div>
     </div>
@@ -80,8 +80,8 @@
                     <i class="bi bi-mortarboard text-secondary fs-1 me-3"></i>
                     <h5 class="card-title mb-0"><%= t('navigation.course') %></h5>
                 </div>
-                <p class="card-text">Take notes on VMware course content and track your learning progress with our course notes module.</p>
-                <a href="/course" class="btn btn-secondary">View Course Notes</a>
+                <p class="card-text"><%= t('course.description') %></p>
+                <a href="/course" class="btn btn-secondary"><%= t('navigation.course') %></a>
             </div>
         </div>
     </div>
@@ -90,10 +90,10 @@
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <i class="bi bi-tools text-danger fs-1 me-3"></i>
-                    <h5 class="card-title mb-0">Tools & Utilities</h5>
+                    <h5 class="card-title mb-0"><%= t('calculators.planned_calculators') %></h5>
                 </div>
-                <p class="card-text">Access additional VMware tools and utilities to help with your infrastructure planning and management.</p>
-                <a href="#" class="btn btn-danger disabled">Coming Soon</a>
+                <p class="card-text"><%= t('calculators.coming_soon') %></p>
+                <a href="#" class="btn btn-danger disabled"><%= t('calculators.coming_soon') %></a>
             </div>
         </div>
     </div>
@@ -104,27 +104,27 @@
     <div class="col-12">
         <div class="card bg-light">
             <div class="card-body">
-                <h3 class="card-title text-center mb-4">Why Choose Our VMware Planning Tools?</h3>
+                <h3 class="card-title text-center mb-4"><%= t('home.title') %></h3>
                 <div class="row text-center">
                     <div class="col-md-3 mb-3">
                         <i class="bi bi-lightning-charge-fill text-primary fs-1"></i>
-                        <h5>Fast & Accurate</h5>
-                        <p class="text-muted">Get precise resource calculations in seconds</p>
+                        <h5><%= t('calculators.vm_density') %></h5>
+                        <p class="text-muted"><%= t('resources.calculate') %></p>
                     </div>
                     <div class="col-md-3 mb-3">
                         <i class="bi bi-shield-lock-fill text-success fs-1"></i>
-                        <h5>Secure & Reliable</h5>
-                        <p class="text-muted">Built with enterprise security in mind</p>
+                        <h5><%= t('glossary.categories.Security') %></h5>
+                        <p class="text-muted"><%= t('glossary.categories.Security') %></p>
                     </div>
                     <div class="col-md-3 mb-3">
                         <i class="bi bi-globe-americas text-info fs-1"></i>
-                        <h5>Multilingual</h5>
-                        <p class="text-muted">Available in English and Vietnamese</p>
+                        <h5><%= t('language.vi') %></h5>
+                        <p class="text-muted"><%= t('language.en') %> <%= t('language.vi') %></p>
                     </div>
                     <div class="col-md-3 mb-3">
                         <i class="bi bi-cloud-arrow-up-fill text-warning fs-1"></i>
-                        <h5>Cloud Ready</h5>
-                        <p class="text-muted">Optimized for cloud deployment</p>
+                        <h5><%= t('glossary.categories.Cloud_Technologies') %></h5>
+                        <p class="text-muted"><%= t('glossary.categories.Cloud_Technologies') %></p>
                     </div>
                 </div>
             </div>
@@ -135,14 +135,14 @@
 <!-- Recent Updates -->
 <div class="row mb-5">
     <div class="col-12">
-        <h3 class="mb-4">Recent Updates & Resources</h3>
+        <h3 class="mb-4"><%= t('knowledge.title') %></h3>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">VMware vSphere 8 Features</h5>
-                        <p class="card-text">Learn about the latest features and improvements in VMware vSphere 8 compared to previous versions.</p>
-                        <a href="/knowledge/article/vsphere-8-vs-vsphere-7-whats-new" class="btn btn-outline-primary btn-sm">Read More</a>
+                        <p class="card-text"><%= t('glossary.categories.Cloud_Technologies') %></p>
+                        <a href="/knowledge/article/vsphere-8-vs-vsphere-7-whats-new" class="btn btn-outline-primary btn-sm"><%= t('glossary.learn_more') %></a>
                     </div>
                 </div>
             </div>
@@ -150,17 +150,17 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">vSAN 8 ESA Deep Dive</h5>
-                        <p class="card-text">Explore the new Express Storage Architecture in vSAN 8 and its performance benefits.</p>
-                        <a href="/knowledge/article/vsan-8-esa-deep-dive" class="btn btn-outline-primary btn-sm">Read More</a>
+                        <p class="card-text"><%= t('glossary.categories.Storage') %></p>
+                        <a href="/knowledge/article/vsan-8-esa-deep-dive" class="btn btn-outline-primary btn-sm"><%= t('glossary.learn_more') %></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Security Best Practices</h5>
-                        <p class="card-text">Implement comprehensive security measures for your vSphere environment with these best practices.</p>
-                        <a href="/knowledge/article/vsphere-security-hardening-best-practices" class="btn btn-outline-primary btn-sm">Read More</a>
+                        <h5 class="card-title"><%= t('glossary.categories.Security') %></h5>
+                        <p class="card-text"><%= t('glossary.categories.Security') %></p>
+                        <a href="/knowledge/article/vsphere-security-hardening-best-practices" class="btn btn-outline-primary btn-sm"><%= t('glossary.learn_more') %></a>
                     </div>
                 </div>
             </div>
@@ -173,10 +173,10 @@
     <div class="col-12">
         <div class="card bg-primary text-white">
             <div class="card-body text-center py-5">
-                <h3 class="card-title">Ready to Optimize Your VMware Infrastructure?</h3>
-                <p class="card-text lead">Start planning your resources today with our comprehensive VMware tools.</p>
+                <h3 class="card-title"><%= t('home.welcome') %></h3>
+                <p class="card-text lead"><%= t('home.description') %></p>
                 <a href="/resources" class="btn btn-light btn-lg">
-                    <i class="bi bi-rocket-takeoff"></i> Get Started Now
+                    <i class="bi bi-rocket-takeoff"></i> <%= t('home.get_started') %>
                 </a>
             </div>
         </div>

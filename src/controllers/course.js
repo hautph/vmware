@@ -1,17 +1,11 @@
-// Course notes controller
-const fs = require('fs');
-const path = require('path');
-const { marked } = require('marked');
-const hljs = require('highlight.js');
+import fs from 'fs';
+import path from 'path';
+import { marked } from 'marked';
+import hljs from 'highlight.js';
+import { fileURLToPath } from 'url';
 
-// Configure marked with highlight.js
-marked.setOptions({
-  highlight: function(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-    return hljs.highlight(code, { language }).value;
-  },
-  langPrefix: 'hljs language-'
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Function to parse frontmatter and content from Markdown files
 function parseMarkdownFile(filePath) {
@@ -35,9 +29,9 @@ function parseMarkdownFile(filePath) {
     
     return {
       id: path.basename(filePath, '.md'),
-      title: metadata.title,
-      day: metadata.day,
-      content: markdownContent
+      title: metadata.title || '',
+      day: metadata.day || '',
+      content: markdownContent || ''
     };
   }
   
@@ -45,8 +39,45 @@ function parseMarkdownFile(filePath) {
   return {
     id: path.basename(filePath, '.md'),
     title: path.basename(filePath, '.md'),
-    content: content
+    day: '',
+    content: content || ''
   };
+}
+
+// Function to generate table of contents from markdown content
+function generateTOCFromContent(content) {
+  const headers = [];
+  const lines = content.split('\n');
+  const headerIds = new Set(); // Keep track of IDs to ensure uniqueness
+  
+  lines.forEach(line => {
+    const headerMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    if (headerMatch) {
+      const level = headerMatch[1].length;
+      const text = headerMatch[2].trim();
+      // Ensure text is a string before processing
+      const headerText = typeof text === 'string' ? text : String(text);
+      
+      // Create a simple slug from the text
+      let id = headerText.toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      
+      // Ensure unique IDs
+      let uniqueId = id;
+      let counter = 1;
+      while (headerIds.has(uniqueId)) {
+        uniqueId = `${id}-${counter}`;
+        counter++;
+      }
+      headerIds.add(uniqueId);
+      
+      headers.push({ level, text: headerText, id: uniqueId });
+    }
+  });
+  
+  return headers;
 }
 
 // Function to load all course days from Markdown files
@@ -80,7 +111,7 @@ function loadCourseDays() {
 }
 
 // Get course index page
-exports.getIndex = (req, res) => {
+export const getIndex = (req, res) => {
   const courseDays = loadCourseDays();
   
   res.render('course/index', { 
@@ -90,7 +121,7 @@ exports.getIndex = (req, res) => {
 };
 
 // Get specific course day
-exports.getDay = (req, res) => {
+export const getDay = (req, res) => {
   const dayId = req.params.id;
   const courseDays = loadCourseDays();
   const day = courseDays.find(d => d.id === dayId);
@@ -103,20 +134,78 @@ exports.getDay = (req, res) => {
     });
   }
   
+  // Configure marked with highlight.js and custom renderer
+  const renderer = new marked.Renderer();
+  
+  // Keep track of header IDs to ensure uniqueness
+  const headerIds = new Set();
+  
+  // Custom header renderer to add IDs
+  renderer.heading = function(text, level, raw, slugger) {
+    // Ensure text is a string - this is the key fix
+    let headerText;
+    if (typeof text === 'string') {
+      headerText = text;
+    } else if (text && typeof text === 'object') {
+      // If it's an object, try to convert it properly
+      headerText = text.text || text.content || JSON.stringify(text);
+    } else {
+      headerText = String(text);
+    }
+    
+    // Create a simple slug from the text
+    let id = headerText.toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    // Ensure unique IDs
+    let uniqueId = id;
+    let counter = 1;
+    while (headerIds.has(uniqueId)) {
+      uniqueId = `${id}-${counter}`;
+      counter++;
+    }
+    headerIds.add(uniqueId);
+    
+    return `<h${level} id="${uniqueId}">${headerText}</h${level}>`;
+  };
+  
+  marked.setOptions({
+    highlight: function(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language }).value;
+    },
+    langPrefix: 'hljs language-',
+    renderer: renderer
+  });
+  
   // Convert markdown to HTML
-  const contentHtml = marked.parse(day.content || '');
+  const content = day.content || '';
+  const contentHtml = marked.parse(content);
+  
+  // Generate TOC from content AFTER processing with marked
+  // This ensures the IDs match between the content and TOC
+  const headers = generateTOCFromContent(content);
+  
+  // Create a clean day object with only the properties we need
+  // Ensure all values are strings to prevent [object Object] issues
+  const cleanDay = {
+    id: String(day.id || ''),
+    title: String(day.title || ''),
+    day: String(day.day || ''),
+    contentHtml: String(contentHtml || ''),
+    headers: headers || []
+  };
   
   res.render('course/day', { 
-    title: `Day ${day.day}: ${day.title}`,
-    day: {
-      ...day,
-      contentHtml: contentHtml
-    }
+    title: `Day ${cleanDay.day}: ${cleanDay.title}`,
+    day: cleanDay
   });
 };
 
 // Save course notes
-exports.saveNotes = (req, res) => {
+export const saveNotes = (req, res) => {
   const { day, notes } = req.body;
   
   // In a real application, you would save this to a database
