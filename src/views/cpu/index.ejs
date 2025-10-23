@@ -1,0 +1,91 @@
+<%- include('../partials/header.ejs', { title: t('calculators.cpu_form.title') }) %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0"><i class="bi bi-cpu"></i> <%= t('calculators.cpu_form.title') %></h2>
+        </div>
+        <div class="card-body">
+          <p class="lead"><%= t('calculators.cpu_form.lead') %></p>
+          
+          <form action="/cpu" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="numVMs" class="form-label"><%= t('calculators.cpu_form.number_of_vms') %></label>
+                <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" required>
+                <div class="form-text"><%= t('calculators.cpu_form.number_of_vms') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="avgVCPUsPerVM" class="form-label"><%= t('calculators.cpu_form.average_vcpus_per_vm') %></label>
+                <input type="number" class="form-control" id="avgVCPUsPerVM" name="avgVCPUsPerVM" min="1" step="0.5" value="2" required>
+                <div class="form-text"><%= t('calculators.cpu_form.average_vcpus_per_vm') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="cpuOverheadPerVM" class="form-label"><%= t('calculators.cpu_form.cpu_overhead_per_vm') %></label>
+                <input type="number" class="form-control" id="cpuOverheadPerVM" name="cpuOverheadPerVM" min="0" step="10" value="50">
+                <div class="form-text"><%= t('calculators.cpu_form.cpu_overhead_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="consolidationRatio" class="form-label"><%= t('calculators.cpu_form.consolidation_ratio') %></label>
+                <input type="number" class="form-control" id="consolidationRatio" name="consolidationRatio" min="1" step="0.5" value="4" required>
+                <div class="form-text"><%= t('calculators.cpu_form.consolidation_ratio_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="hostCPUType" class="form-label"><%= t('calculators.cpu_form.host_cpu_type') %></label>
+                <select class="form-select" id="hostCPUType" name="hostCPUType">
+                  <option value="xeon">Intel Xeon</option>
+                  <option value="epyc">AMD EPYC</option>
+                  <option value="core">Intel Core</option>
+                  <option value="other"><%= t('calculators.cpu_form.other') %></option>
+                </select>
+                <div class="form-text"><%= t('calculators.cpu_form.host_cpu_type') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="cpuReservationMHz" class="form-label"><%= t('calculators.cpu_form.cpu_reservation') %></label>
+                <input type="number" class="form-control" id="cpuReservationMHz" name="cpuReservationMHz" min="0" step="100" value="0">
+                <div class="form-text"><%= t('calculators.cpu_form.reservation_limit_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="cpuLimitMHz" class="form-label"><%= t('calculators.cpu_form.cpu_limit') %></label>
+                <input type="number" class="form-control" id="cpuLimitMHz" name="cpuLimitMHz" min="0" step="100" value="0">
+                <div class="form-text"><%= t('calculators.cpu_form.reservation_limit_info') %></div>
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-calculator"></i> <%= t('calculators.cpu_form.calculate_cpu_requirements') %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-info-circle"></i> <%= t('calculators.cpu_form.cpu_sizing_guidelines') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('calculators.cpu_form.cpu_sizing_guidelines') %></p>
+          <ul>
+            <li><%= t('calculators.cpu_form.contention_consideration') %></li>
+            <li><%= t('calculators.cpu_form.capacity_reservation') %></li>
+            <li><%= t('calculators.cpu_form.reservation_limit_info') %></li>
+            <li><%= t('calculators.cpu_form.consolidation_ratio_info') %></li>
+          </ul>
+          <p class="mb-0"><%= t('calculators.cpu_form.lead') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

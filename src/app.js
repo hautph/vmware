@@ -46,6 +46,10 @@ import glossaryRoutes from './routes/glossary.js';
 import calculatorRoutes from './routes/calculator.js';
 import knowledgeRoutes from './routes/knowledge.js';
 import courseRoutes from './routes/course.js';
+import cpuRoutes from './routes/cpu.js';
+import memoryRoutes from './routes/memory.js';
+import raidRoutes from './routes/raid.js';
+import backupRoutes from './routes/backup.js';
 
 // Use routes
 app.use('/resources', resourceRoutes);
@@ -53,6 +57,10 @@ app.use('/glossary', glossaryRoutes);
 app.use('/calculators', calculatorRoutes);
 app.use('/knowledge', knowledgeRoutes);
 app.use('/course', courseRoutes);
+app.use('/cpu', cpuRoutes);
+app.use('/memory', memoryRoutes);
+app.use('/raid', raidRoutes);
+app.use('/backup', backupRoutes);
 
 // Language switcher route
 app.get('/lang/:lang', (req, res) => {

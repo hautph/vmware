@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "ask": [
+      "Read(!/Users/hautp/Documents/github/vmware/**)",
+      "Edit(!/Users/hautp/Documents/github/vmware/**)"
+    ],
+    "allow": [
+      "Read(/Users/hautp/Documents/github/vmware/**)",
+      "Edit(/Users/hautp/Documents/github/vmware/**)"
+    ]
+  },
+  "memoryImport": {},
+  "monitoring": {}
+}

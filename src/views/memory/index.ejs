@@ -1,0 +1,90 @@
+<%- include('../partials/header.ejs', { title: t('calculators.memory_form.title') }) %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0"><i class="bi bi-memory"></i> <%= t('calculators.memory_form.title') %></h2>
+        </div>
+        <div class="card-body">
+          <p class="lead"><%= t('calculators.memory_form.lead') %></p>
+          
+          <form action="/memory" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="numVMs" class="form-label"><%= t('calculators.memory_form.number_of_vms') %></label>
+                <input type="number" class="form-control" id="numVMs" name="numVMs" min="1" required>
+                <div class="form-text"><%= t('calculators.memory_form.number_of_vms') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="avgRAMPerVM" class="form-label"><%= t('calculators.memory_form.average_ram_per_vm') %></label>
+                <input type="number" class="form-control" id="avgRAMPerVM" name="avgRAMPerVM" min="1" step="0.5" value="4" required>
+                <div class="form-text"><%= t('calculators.memory_form.average_ram_per_vm') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="memoryOverheadPerVM" class="form-label"><%= t('calculators.memory_form.memory_overhead_per_vm') %></label>
+                <input type="number" class="form-control" id="memoryOverheadPerVM" name="memoryOverheadPerVM" min="0" step="0.1" value="0.1">
+                <div class="form-text"><%= t('calculators.memory_form.overhead_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="memoryReservationGB" class="form-label"><%= t('calculators.memory_form.memory_reservation') %></label>
+                <input type="number" class="form-control" id="memoryReservationGB" name="memoryReservationGB" min="0" step="0.5" value="0">
+                <div class="form-text"><%= t('calculators.memory_form.reservation_limit_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="memoryLimitGB" class="form-label"><%= t('calculators.memory_form.memory_limit') %></label>
+                <input type="number" class="form-control" id="memoryLimitGB" name="memoryLimitGB" min="0" step="0.5" value="0">
+                <div class="form-text"><%= t('calculators.memory_form.reservation_limit_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="memoryBalloonPercent" class="form-label"><%= t('calculators.memory_form.memory_ballooning') %></label>
+                <input type="number" class="form-control" id="memoryBalloonPercent" name="memoryBalloonPercent" min="0" max="100" step="1" value="0">
+                <div class="form-text"><%= t('calculators.memory_form.ballooning_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="swapRecommendation" class="form-label"><%= t('calculators.memory_form.swap_recommendation') %></label>
+                <select class="form-select" id="swapRecommendation" name="swapRecommendation">
+                  <option value="enabled"><%= t('calculators.memory_form.enabled') %></option>
+                  <option value="disabled"><%= t('calculators.memory_form.disabled') %></option>
+                  <option value="compression"><%= t('calculators.memory_form.compression_only') %></option>
+                </select>
+                <div class="form-text"><%= t('calculators.memory_form.swap_recommendation') %></div>
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-calculator"></i> <%= t('calculators.memory_form.calculate_memory_requirements') %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-info-circle"></i> <%= t('calculators.memory_form.memory_sizing_guidelines') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('calculators.memory_form.memory_sizing_guidelines') %></p>
+          <ul>
+            <li><%= t('calculators.memory_form.capacity_reservation') %></li>
+            <li><%= t('calculators.memory_form.monitor_ballooning') %></li>
+            <li><%= t('calculators.memory_form.reservation_limit_info') %></li>
+            <li><%= t('calculators.memory_form.ballooning_info') %></li>
+          </ul>
+          <p class="mb-0"><%= t('calculators.memory_form.lead') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

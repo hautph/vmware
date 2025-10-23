@@ -1,0 +1,99 @@
+<%- include('../partials/header.ejs', { title: t('calculators.backup_form.title') }) %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0"><i class="bi bi-cloud-arrow-up"></i> <%= t('calculators.backup_form.title') %></h2>
+        </div>
+        <div class="card-body">
+          <p class="lead"><%= t('calculators.backup_form.lead') %></p>
+          
+          <form action="/backup" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="dataSizeGB" class="form-label"><%= t('calculators.backup_form.data_size') %></label>
+                <input type="number" class="form-control" id="dataSizeGB" name="dataSizeGB" min="1" step="100" value="1000" required>
+                <div class="form-text"><%= t('calculators.backup_form.data_size_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="networkSpeedMbps" class="form-label"><%= t('calculators.backup_form.network_speed') %></label>
+                <input type="number" class="form-control" id="networkSpeedMbps" name="networkSpeedMbps" min="10" step="10" value="1000" required>
+                <div class="form-text"><%= t('calculators.backup_form.network_speed_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="storageType" class="form-label"><%= t('calculators.backup_form.storage_type') %></label>
+                <select class="form-select" id="storageType" name="storageType">
+                  <option value="ssd"><%= t('calculators.backup_form.ssd') %></option>
+                  <option value="sas"><%= t('calculators.backup_form.sas') %></option>
+                  <option value="sata" selected><%= t('calculators.backup_form.sata') %></option>
+                  <option value="tape"><%= t('calculators.backup_form.tape') %></option>
+                  <option value="cloud"><%= t('calculators.backup_form.cloud') %></option>
+                </select>
+                <div class="form-text"><%= t('calculators.backup_form.storage_type_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="compressionRatio" class="form-label"><%= t('calculators.backup_form.compression_ratio') %></label>
+                <input type="number" class="form-control" id="compressionRatio" name="compressionRatio" min="1.0" max="5.0" step="0.1" value="1.5">
+                <div class="form-text"><%= t('calculators.backup_form.compression_ratio_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="deduplicationRatio" class="form-label"><%= t('calculators.backup_form.deduplication_ratio') %></label>
+                <input type="number" class="form-control" id="deduplicationRatio" name="deduplicationRatio" min="1.0" max="20.0" step="0.5" value="2.0">
+                <div class="form-text"><%= t('calculators.backup_form.deduplication_ratio_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="backupWindowHours" class="form-label"><%= t('calculators.backup_form.backup_window') %></label>
+                <input type="number" class="form-control" id="backupWindowHours" name="backupWindowHours" min="1" max="24" value="8">
+                <div class="form-text"><%= t('calculators.backup_form.backup_window_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="concurrentJobs" class="form-label"><%= t('calculators.backup_form.concurrent_jobs') %></label>
+                <input type="number" class="form-control" id="concurrentJobs" name="concurrentJobs" min="1" max="10" value="2">
+                <div class="form-text"><%= t('calculators.backup_form.concurrent_jobs_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="targetUtilization" class="form-label"><%= t('calculators.backup_form.target_utilization') %></label>
+                <input type="number" class="form-control" id="targetUtilization" name="targetUtilization" min="10" max="100" value="80">
+                <div class="form-text"><%= t('calculators.backup_form.target_utilization_info') %></div>
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-calculator"></i> <%= t('calculators.backup_form.calculate_backup') %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-info-circle"></i> <%= t('calculators.backup_form.backup_guidelines') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('calculators.backup_form.backup_guidelines') %></p>
+          <ul>
+            <li><%= t('calculators.backup_form.compression_benefits') %></li>
+            <li><%= t('calculators.backup_form.deduplication_benefits') %></li>
+            <li><%= t('calculators.backup_form.network_considerations') %></li>
+            <li><%= t('calculators.backup_form.storage_performance') %></li>
+            <li><%= t('calculators.backup_form.incremental_backups') %></li>
+          </ul>
+          <p class="mb-0"><%= t('calculators.backup_form.backup_considerations') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

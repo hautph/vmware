@@ -1,0 +1,120 @@
+<%- include('../partials/header.ejs', { title: t('calculators.raid_results.title') }) %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <h2 class="mb-0"><i class="bi bi-calculator"></i> <%= t('calculators.raid_results.title') %></h2>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h4><%= t('calculators.raid_results.configuration') %></h4>
+              <table class="table table-striped">
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.number_of_disks') %>:</strong></td>
+                  <td><%= results.numDisks %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.disk_size') %>:</strong></td>
+                  <td><%= results.diskSize %> GB</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.disk_type') %>:</strong></td>
+                  <td><%= results.diskType %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.raid_level') %>:</strong></td>
+                  <td><%= results.raidLevel.toUpperCase() %> (<%= results.raidType %>)</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.block_size') %>:</strong></td>
+                  <td><%= results.blockSizeKB %> KB</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.read_percentage') %>:</strong></td>
+                  <td><%= results.readPercentage %>%</td>
+                </tr>
+              </table>
+            </div>
+            
+            <div class="col-md-6">
+              <h4><%= t('calculators.raid_results.capacity_analysis') %></h4>
+              <table class="table table-striped">
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.raw_capacity') %>:</strong></td>
+                  <td><%= results.rawCapacity %> GB</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.usable_capacity') %>:</strong></td>
+                  <td><%= results.usableCapacity.toFixed(2) %> GB</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.overhead_factor') %>:</strong></td>
+                  <td><%= results.overheadFactor.toFixed(2) %>x</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.effective_iops') %>:</strong></td>
+                  <td><%= results.effectiveIOPS %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.throughput') %>:</strong></td>
+                  <td><%= results.throughputMBps %> MB/s</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.rebuild_time') %>:</strong></td>
+                  <td><%= results.rebuildTimeHours %> <%= t('calculators.raid_results.hours') %></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-12">
+              <h4><%= t('calculators.raid_results.performance_details') %></h4>
+              <table class="table table-striped">
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.total_raw_iops') %>:</strong></td>
+                  <td><%= results.totalRawIOPS %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.read_iops') %>:</strong></td>
+                  <td><%= results.readIOPS %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.raid_results.write_iops') %>:</strong></td>
+                  <td><%= results.writeIOPS %> (<%= t('calculators.raid_results.with_penalty') %> <%= results.writePenalty %>x)</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-12">
+              <h4><%= t('calculators.raid_results.recommendations') %></h4>
+              <ul class="list-group">
+                <% results.recommendations.forEach(rec => { %>
+                  <li class="list-group-item"><%= rec %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-12">
+              <a href="/raid" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> <%= t('calculators.raid_results.new_calculation') %>
+              </a>
+              <a href="/calculators" class="btn btn-secondary">
+                <i class="bi bi-calculator"></i> <%= t('calculators.title') %>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

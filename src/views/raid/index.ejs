@@ -1,0 +1,91 @@
+<%- include('../partials/header.ejs', { title: t('calculators.raid_form.title') }) %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0"><i class="bi bi-hdd-network"></i> <%= t('calculators.raid_form.title') %></h2>
+        </div>
+        <div class="card-body">
+          <p class="lead"><%= t('calculators.raid_form.lead') %></p>
+          
+          <form action="/raid" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="numDisks" class="form-label"><%= t('calculators.raid_form.number_of_disks') %></label>
+                <input type="number" class="form-control" id="numDisks" name="numDisks" min="2" max="24" value="4" required>
+                <div class="form-text"><%= t('calculators.raid_form.number_of_disks_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="diskSize" class="form-label"><%= t('calculators.raid_form.disk_size') %></label>
+                <input type="number" class="form-control" id="diskSize" name="diskSize" min="100" step="100" value="1000" required>
+                <div class="form-text"><%= t('calculators.raid_form.disk_size_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="diskType" class="form-label"><%= t('calculators.raid_form.disk_type') %></label>
+                <select class="form-select" id="diskType" name="diskType">
+                  <option value="ssd"><%= t('calculators.raid_form.ssd') %></option>
+                  <option value="sas"><%= t('calculators.raid_form.sas') %></option>
+                  <option value="sata" selected><%= t('calculators.raid_form.sata') %></option>
+                </select>
+                <div class="form-text"><%= t('calculators.raid_form.disk_type_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="raidLevel" class="form-label"><%= t('calculators.raid_form.raid_level') %></label>
+                <select class="form-select" id="raidLevel" name="raidLevel">
+                  <option value="raid0"><%= t('calculators.raid_form.raid0') %></option>
+                  <option value="raid1"><%= t('calculators.raid_form.raid1') %></option>
+                  <option value="raid5" selected><%= t('calculators.raid_form.raid5') %></option>
+                  <option value="raid6"><%= t('calculators.raid_form.raid6') %></option>
+                  <option value="raid10"><%= t('calculators.raid_form.raid10') %></option>
+                </select>
+                <div class="form-text"><%= t('calculators.raid_form.raid_level_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="blockSizeKB" class="form-label"><%= t('calculators.raid_form.block_size') %></label>
+                <input type="number" class="form-control" id="blockSizeKB" name="blockSizeKB" min="4" max="1024" step="4" value="64">
+                <div class="form-text"><%= t('calculators.raid_form.block_size_info') %></div>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="readPercentage" class="form-label"><%= t('calculators.raid_form.read_percentage') %></label>
+                <input type="number" class="form-control" id="readPercentage" name="readPercentage" min="0" max="100" value="70">
+                <div class="form-text"><%= t('calculators.raid_form.read_percentage_info') %></div>
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-calculator"></i> <%= t('calculators.raid_form.calculate_raid') %>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-info-circle"></i> <%= t('calculators.raid_form.raid_guidelines') %></h5>
+        </div>
+        <div class="card-body">
+          <p><%= t('calculators.raid_form.raid_guidelines') %></p>
+          <ul>
+            <li><%= t('calculators.raid_form.raid0_description') %></li>
+            <li><%= t('calculators.raid_form.raid1_description') %></li>
+            <li><%= t('calculators.raid_form.raid5_description') %></li>
+            <li><%= t('calculators.raid_form.raid6_description') %></li>
+            <li><%= t('calculators.raid_form.raid10_description') %></li>
+          </ul>
+          <p class="mb-0"><%= t('calculators.raid_form.raid_considerations') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

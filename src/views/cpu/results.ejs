@@ -1,0 +1,108 @@
+<%- include('../partials/header.ejs', { title: t('calculators.cpu_results.title') }) %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-success text-white">
+          <h2 class="mb-0"><i class="bi bi-calculator"></i> <%= t('calculators.cpu_results.title') %></h2>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h4><%= t('calculators.cpu_results.vm_specifications') %></h4>
+              <table class="table table-striped">
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.number_of_vms') %>:</strong></td>
+                  <td><%= results.numVMs %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.average_vcpus_per_vm') %>:</strong></td>
+                  <td><%= results.avgVCPUsPerVM %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.cpu_overhead_per_vm') %>:</strong></td>
+                  <td><%= results.cpuOverheadPerVM %> MHz</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.consolidation_ratio') %>:</strong></td>
+                  <td><%= results.consolidationRatio %>:1</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.host_cpu_type') %>:</strong></td>
+                  <td><%= results.hostCPUType.toUpperCase() %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.cpu_reservation') %>:</strong></td>
+                  <td><%= results.cpuReservationMHz %> MHz</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.cpu_limit') %>:</strong></td>
+                  <td><%= results.cpuLimitMHz %> MHz</td>
+                </tr>
+              </table>
+            </div>
+            
+            <div class="col-md-6">
+              <h4><%= t('calculators.cpu_results.resource_requirements') %></h4>
+              <table class="table table-striped">
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.total_vcpus_needed') %>:</strong></td>
+                  <td><%= results.totalVCPUs %> vCPUs</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.total_cpu_overhead') %>:</strong></td>
+                  <td><%= results.totalOverheadMHz %> MHz</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.physical_cores_needed') %>:</strong></td>
+                  <td><%= results.physicalCoresNeeded %> cores</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.total_cpu_reservation') %>:</strong></td>
+                  <td><%= results.totalCPUReservation %> MHz</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.total_cpu_limit') %>:</strong></td>
+                  <td><%= results.totalCPULimit %> MHz</td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.recommended_cpu_model') %>:</strong></td>
+                  <td><%= results.recommendedCPUModel %></td>
+                </tr>
+                <tr>
+                  <td><strong><%= t('calculators.cpu_results.recommended_cpu_specs') %>:</strong></td>
+                  <td><%= results.recommendedCPUSpecs %></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-12">
+              <h4><%= t('calculators.cpu_results.recommendations') %></h4>
+              <ul class="list-group">
+                <% results.recommendations.forEach(rec => { %>
+                  <li class="list-group-item"><%= rec %></li>
+                <% }); %>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-12">
+              <a href="/cpu" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> <%= t('calculators.cpu_results.new_calculation') %>
+              </a>
+              <a href="/calculators" class="btn btn-secondary">
+                <i class="bi bi-calculator"></i> <%= t('calculators.title') %>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

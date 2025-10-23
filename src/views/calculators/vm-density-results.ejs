@@ -1,28 +1,28 @@
-<%- include('../partials/header.ejs', { title: t('calculators.vm_density_results.title') }) %>
+<%- include('../partials/header.ejs', { title: t('calculators.vm_consolidation_results.title') }) %>
 
 <div class="row">
     <div class="col-12">
-        <h1><i class="bi bi-calculator"></i> <%= t('calculators.vm_density_results.title') %></h1>
+        <h1><i class="bi bi-calculator"></i> <%= t('calculators.vm_consolidation_results.title') %></h1>
         
         <div class="card">
             <div class="card-header">
-                <h3><%= t('calculators.vm_density_results.summary') %></h3>
+                <h3><%= t('calculators.vm_consolidation_results.summary') %></h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4><%= t('calculators.vm_density_results.host_specifications') %></h4>
+                        <h4><%= t('calculators.vm_consolidation_results.host_specifications') %></h4>
                         <ul class="list-group">
-                            <li class="list-group-item"><%= t('calculators.vm_density_results.physical_cpu_cores') %>: <%= results.physicalCores %></li>
-                            <li class="list-group-item"><%= t('calculators.vm_density_results.core_speed') %>: <%= results.coreSpeed %> GHz</li>
-                            <li class="list-group-item"><%= t('calculators.vm_density_results.total_memory') %>: <%= results.memoryGB %> <%= t('resources.results.gb') %></li>
+                            <li class="list-group-item"><%= t('calculators.vm_consolidation_results.physical_cpu_cores') %>: <%= results.physicalCores %></li>
+                            <li class="list-group-item"><%= t('calculators.vm_consolidation_results.core_speed') %>: <%= results.coreSpeed %> GHz</li>
+                            <li class="list-group-item"><%= t('calculators.vm_consolidation_results.total_memory') %>: <%= results.memoryGB %> <%= t('resources.results.gb') %></li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h4><%= t('calculators.vm_density_results.vm_specifications') %></h4>
+                        <h4><%= t('calculators.vm_consolidation_results.vm_specifications') %></h4>
                         <ul class="list-group">
-                            <li class="list-group-item"><%= t('calculators.vm_density_results.cpu_cores_per_vm') %>: <%= results.vmCores %></li>
-                            <li class="list-group-item"><%= t('calculators.vm_density_results.ram_per_vm') %>: <%= results.vmRamGB %> <%= t('resources.results.gb') %></li>
+                            <li class="list-group-item"><%= t('calculators.vm_consolidation_results.cpu_cores_per_vm') %>: <%= results.vmCores %></li>
+                            <li class="list-group-item"><%= t('calculators.vm_consolidation_results.ram_per_vm') %>: <%= results.vmRamGB %> <%= t('resources.results.gb') %></li>
                         </ul>
                     </div>
                 </div>
@@ -31,31 +31,31 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3><%= t('calculators.vm_density_results.density_calculation') %></h3>
+                <h3><%= t('calculators.vm_consolidation_results.consolidation_calculation') %></h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="border rounded p-3 text-center">
-                            <h5><%= t('calculators.vm_density_results.cpu_based') %></h5>
+                            <h5><%= t('calculators.vm_consolidation_results.cpu_based') %></h5>
                             <h3><%= results.cpuBasedDensity %> <%= t('resources.results.vms') %></h3>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="border rounded p-3 text-center">
-                            <h5><%= t('calculators.vm_density_results.memory_based') %></h5>
+                            <h5><%= t('calculators.vm_consolidation_results.memory_based') %></h5>
                             <h3><%= results.memoryBasedDensity %> <%= t('resources.results.vms') %></h3>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="border rounded p-3 text-center">
-                            <h5><%= t('calculators.vm_density_results.recommended') %></h5>
+                            <h5><%= t('calculators.vm_consolidation_results.recommended') %></h5>
                             <h3><%= results.recommendedDensity %> <%= t('resources.results.vms') %></h3>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="border rounded p-3 text-center">
-                            <h5><%= t('calculators.vm_density_results.conservative') %></h5>
+                            <h5><%= t('calculators.vm_consolidation_results.conservative') %></h5>
                             <h3><%= results.conservativeDensity %> <%= t('resources.results.vms') %></h3>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
         
         <div class="card mt-4">
             <div class="card-header">
-                <h3><%= t('calculators.vm_density_results.recommendations') %></h3>
+                <h3><%= t('calculators.vm_consolidation_results.recommendations') %></h3>
             </div>
             <div class="card-body">
                 <ul>
@@ -78,10 +78,10 @@
         
         <div class="mt-4">
             <a href="/calculators/vm-density" class="btn btn-primary">
-                <i class="bi bi-arrow-left"></i> <%= t('calculators.vm_density_results.new_calculation') %>
+                <i class="bi bi-arrow-left"></i> <%= t('calculators.vm_consolidation_results.new_calculation') %>
             </a>
             <button class="btn btn-secondary" onclick="window.print()">
-                <i class="bi bi-printer"></i> <%= t('calculators.vm_density_results.print_results') %>
+                <i class="bi bi-printer"></i> <%= t('calculators.vm_consolidation_results.print_results') %>
             </button>
         </div>
     </div>

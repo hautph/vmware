@@ -9,9 +9,9 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h5 class="card-title"><i class="bi bi-server"></i> <%= t('calculators.vm_density') %></h5>
+                        <h5 class="card-title"><i class="bi bi-server"></i> <%= t('calculators.vm_consolidation') %></h5>
                         <p class="card-text"><%= t('calculators.description') %></p>
-                        <a href="/calculators/vm-density" class="btn btn-primary"><%= t('calculators.vm_density') %></a>
+                        <a href="/calculators/vm-density" class="btn btn-primary"><%= t('calculators.vm_consolidation') %></a>
                     </div>
                 </div>
             </div>
@@ -52,6 +52,46 @@
                         <h5 class="card-title"><i class="bi bi-shield-lock"></i> <%= t('calculators.disaster_recovery') %></h5>
                         <p class="card-text"><%= t('calculators.description') %></p>
                         <a href="/calculators/disaster-recovery" class="btn btn-danger"><%= t('calculators.disaster_recovery') %></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-cpu"></i> <%= t('calculators.cpu') %></h5>
+                        <p class="card-text"><%= t('calculators.description') %></p>
+                        <a href="/cpu" class="btn btn-dark"><%= t('calculators.cpu') %></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-memory"></i> <%= t('calculators.memory') %></h5>
+                        <p class="card-text"><%= t('calculators.description') %></p>
+                        <a href="/memory" class="btn btn-warning"><%= t('calculators.memory') %></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-hdd-network"></i> <%= t('calculators.raid') %></h5>
+                        <p class="card-text"><%= t('calculators.description') %></p>
+                        <a href="/raid" class="btn btn-info"><%= t('calculators.raid') %></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-cloud-arrow-up"></i> <%= t('calculators.backup') %></h5>
+                        <p class="card-text"><%= t('calculators.description') %></p>
+                        <a href="/backup" class="btn btn-success"><%= t('calculators.backup') %></a>
                     </div>
                 </div>
             </div>
