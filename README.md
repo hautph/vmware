@@ -20,8 +20,8 @@ A comprehensive VMware planning and resource calculation tool built with Node.js
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/vmware-tool.git
-   cd vmware-tool
+   git clone https://github.com/hautph/vmware.git
+   cd vmware
    ```
 
 2. Install dependencies:
@@ -36,31 +36,57 @@ A comprehensive VMware planning and resource calculation tool built with Node.js
 
 4. Open your browser to `http://localhost:3000`
 
-## Deployment
+## Deployment Options
 
 ### Local Development
 ```bash
 npm run dev
 ```
 
-### Production
+### Production (Local)
 ```bash
 npm start
 ```
 
-### Cloudflare Pages Deployment
+### Cloudflare Pages (Static Deployment)
+This application is currently deployed to Cloudflare Pages as a static site with limited functionality. The full Express.js application cannot run on Cloudflare Pages due to runtime limitations.
 
-1. Push your code to a GitHub repository
-2. Connect Cloudflare Pages to your repository
-3. Configure the following build settings:
-   - **Build command**: `npm install && npm run build`
-   - **Build output directory**: `.`
-   - **Root directory**: `/`
+**Note**: The Cloudflare Pages deployment only shows a landing page with instructions. For full functionality, you must run the application locally.
+
+### Alternative Hosting Platforms (Recommended for Full Functionality)
+For production deployment with full functionality, consider these platforms:
+
+1. **Heroku**
+   ```bash
+   # Install Heroku CLI
+   npm install -g heroku
+   heroku login
+   heroku create your-app-name
+   git push heroku main
+   ```
+
+2. **Render**
+   - Connect your GitHub repository to Render
+   - Set environment variables
+   - Deploy as a web service
+
+3. **DigitalOcean App Platform**
+   - Create a new app
+   - Link your GitHub repository
+   - Configure as a web service
+
+4. **AWS Elastic Beanstalk**
+   - Use the EB CLI
+   - Deploy with `eb deploy`
+
+5. **Google Cloud Run**
+   - Containerize the application
+   - Deploy with `gcloud run deploy`
 
 ## Project Structure
 
 ```
-vmware-tool/
+vmware/
 ├── src/
 │   ├── controllers/    # Business logic
 │   ├── routes/         # Route definitions
@@ -68,8 +94,9 @@ vmware-tool/
 │   ├── docs/           # Markdown documentation
 │   ├── locales/        # Internationalization files
 │   └── app.js          # Main application entry point
+├── functions/          # Cloudflare Pages functions
 ├── package.json        # Dependencies and scripts
-└── wrangler.toml       # Cloudflare Pages configuration
+└── _routes.json        # Cloudflare Pages routing
 ```
 
 ## Technologies Used
@@ -80,6 +107,16 @@ vmware-tool/
 - **Marked** for Markdown parsing
 - **Highlight.js** for code syntax highlighting
 - **i18next** for internationalization
+
+## Limitations of Cloudflare Pages Deployment
+
+Cloudflare Pages is designed for static sites and serverless functions. The full VMware Resource Sizing Tool cannot run on Cloudflare Pages because:
+
+1. It uses Node.js built-in modules (`fs`, `path`) that are not available in the Cloudflare Workers runtime
+2. It requires a persistent server to handle dynamic requests
+3. It uses server-side rendering with EJS templates
+
+The current Cloudflare Pages deployment only shows a static landing page with instructions for local installation.
 
 ## License
 
