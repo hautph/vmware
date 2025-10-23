@@ -1,5 +1,10 @@
-// Static build script for Cloudflare Pages
-console.log('Building static files for Cloudflare Pages...');
+// Simple build script for Cloudflare Pages
+console.log('Building for Cloudflare Pages...');
+
+// This is a placeholder for static build
+// Cloudflare Pages will use the functions directory for dynamic handling
+
+console.log('Build completed. Cloudflare Pages will use functions for dynamic content.');
 
 // Create necessary directories and files for static deployment
 import fs from 'fs';
