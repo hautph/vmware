@@ -1,7 +1,7 @@
 {
   "name": "vmware-tool",
   "version": "1.0.0",
-  "description": "VMware Resource Sizing Tool",
+  "description": "VMware Resource Sizing Tool with vSAN Cost Calculator for comprehensive CapEx/OpEx analysis, TCO calculations, and power consumption modeling",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -10,7 +10,7 @@
     "export": "node export.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["vmware", "resource", "sizing", "calculator"],
+  "keywords": ["vmware", "resource", "sizing", "calculator", "vsan", "cost", "analysis", "capex", "opex", "tco"],
   "author": "VMware Tool Team",
   "license": "ISC",
   "type": "module",

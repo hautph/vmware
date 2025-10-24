@@ -7,9 +7,12 @@ A comprehensive VMware planning and resource calculation tool built with Node.js
 - **VMware Resource Sizing Tool**: Calculate optimal CPU, RAM, and Storage requirements for multi-tier application architectures
 - **VMware Glossary & Documentation**: Comprehensive reference for VMware terms and concepts
 - **Knowledge Base**: Technical articles and best practices in Markdown format
-- **Interactive Calculators**: Specialized tools for VM density, storage capacity, network bandwidth, vSAN sizing, and disaster recovery
+- **Interactive Calculators**: Specialized tools for VM density, storage capacity, network bandwidth, vSAN sizing, vSAN cost analysis, and disaster recovery
 - **Course Notes**: Module for tracking VMware course content and personal notes
 - **Bilingual Support**: Available in English and Vietnamese
+- **Comprehensive Cost Analysis**: Detailed CapEx/OpEx breakdown with power consumption and cooling costs
+- **Multi-Year TCO Calculations**: 3-year and 5-year Total Cost of Ownership analysis
+- **Export Capabilities**: Print and export results for reporting purposes
 
 ## Prerequisites
 
@@ -35,6 +38,44 @@ A comprehensive VMware planning and resource calculation tool built with Node.js
    ```
 
 4. Open your browser to `http://localhost:3000`
+
+## Available Calculators
+
+### 1. VM Density Calculator
+Calculate how many virtual machines can run on a physical host based on CPU and memory resources.
+
+### 2. Storage Capacity Planner
+Plan storage requirements considering growth, backups, and VMware overhead.
+
+### 3. Network Bandwidth Estimator
+Estimate network bandwidth requirements for your virtual environment.
+
+### 4. vSAN Sizing Calculator
+Calculate storage requirements for VMware vSAN clusters with FTT and RAID configurations.
+
+### 5. vSAN Cost Calculator
+Analyze and compare CapEx and OpEx costs for VMware vSAN implementation with detailed breakdown:
+- **Hardware Costs**: Servers, CPUs, RAM, cache devices, capacity devices, network adapters
+- **Licensing Costs**: vSAN and vSphere license costs
+- **Operational Costs**: Maintenance, power consumption, cooling
+- **Power Analysis**: Detailed power consumption per component with heat generation
+- **TCO Analysis**: 3-year and 5-year Total Cost of Ownership
+- **ROI Calculations**: Return on Investment analysis
+
+### 6. Disaster Recovery Calculator
+Calculate storage and bandwidth requirements for disaster recovery solutions.
+
+### 7. CPU Sizing Calculator
+Calculate optimal CPU resources for your VMware environment based on virtual machine requirements.
+
+### 8. Memory Sizing Calculator
+Calculate optimal memory resources for your VMware environment based on virtual machine requirements.
+
+### 9. RAID Calculator
+Calculate RAID configuration performance and capacity based on your storage requirements.
+
+### 10. Backup & Restore Speed Calculator
+Calculate backup and restore times based on your data size, network, and storage configuration.
 
 ## Deployment Options
 

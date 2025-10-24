@@ -31,7 +31,7 @@ Since this is a full Express.js application with server-side rendering, the Clou
 - Basic API endpoints through Cloudflare Functions
 - Static asset serving
 
-For the complete application experience with all features, run the application locally or deploy to a Node.js hosting platform.
+For the complete application experience with all features including the vSAN Cost Calculator, run the application locally or deploy to a Node.js hosting platform.
 
 ## Local Development
 
@@ -52,7 +52,7 @@ The application will be available at `http://localhost:3000`
 
 ## Node.js Hosting Deployment
 
-For production deployment with full functionality, use a Node.js hosting platform:
+For production deployment with full functionality including the comprehensive vSAN Cost Calculator, use a Node.js hosting platform:
 
 ### Heroku
 ```bash
@@ -78,3 +78,16 @@ services:
 - DigitalOcean App Platform
 - AWS Elastic Beanstalk
 - Google Cloud Run
+
+## vSAN Cost Calculator Features
+
+The vSAN Cost Calculator provides comprehensive cost analysis including:
+- Detailed hardware cost breakdown (servers, CPUs, RAM, storage devices)
+- Licensing cost calculations (vSAN and vSphere)
+- Operational expenses (maintenance, power, cooling)
+- Power consumption modeling per component
+- 3-year and 5-year TCO analysis
+- ROI calculations
+- Export capabilities for reporting
+
+For full access to these features, the application must be deployed to a Node.js hosting platform that supports server-side rendering.
