@@ -216,4 +216,60 @@ function highlightActiveSection() {
 }
 </style>
 
+<!-- Add clipboard.js for copy functionality -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const backToTopBtn = document.getElementById('back-to-top');
+    
+    // Initialize clipboard.js for any code blocks
+    const clipboard = new ClipboardJS('.copy-btn');
+    
+    // Add success and error handlers
+    clipboard.on('success', function(e) {
+        const originalText = e.trigger.innerHTML;
+        e.trigger.innerHTML = '<i class="bi bi-check"></i> Copied!';
+        e.trigger.classList.remove('btn-outline-primary');
+        e.trigger.classList.add('btn-success');
+        
+        setTimeout(function() {
+            e.trigger.innerHTML = originalText;
+            e.trigger.classList.remove('btn-success');
+            e.trigger.classList.add('btn-outline-primary');
+        }, 2000);
+        
+        e.clearSelection();
+    });
+    
+    clipboard.on('error', function(e) {
+        const originalText = e.trigger.innerHTML;
+        e.trigger.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Failed!';
+        e.trigger.classList.remove('btn-outline-primary');
+        e.trigger.classList.add('btn-danger');
+        
+        setTimeout(function() {
+            e.trigger.innerHTML = originalText;
+            e.trigger.classList.remove('btn-danger');
+            e.trigger.classList.add('btn-outline-primary');
+        }, 2000);
+    });
+    
+    // Show/hide back to top button with animation
+    window.addEventListener('scroll', function() {
+        if (backToTopBtn) {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        }
+        
+        highlightActiveSection();
+    });
+    
+    // Initialize highlighting
+    highlightActiveSection();
+});
+</script>
+
 <%- include('../partials/footer.ejs') %>

@@ -11,7 +11,9 @@ import {
   getVSANSizing,
   calculateVSANSizing,
   getDisasterRecovery,
-  calculateDisasterRecovery
+  calculateDisasterRecovery,
+  getVSANCost,
+  calculateVSANCost
 } from '../controllers/calculator.js';
 
 // Calculator index page
@@ -36,5 +38,9 @@ router.post('/vsan-sizing', calculateVSANSizing);
 // Disaster Recovery calculator
 router.get('/disaster-recovery', getDisasterRecovery);
 router.post('/disaster-recovery', calculateDisasterRecovery);
+
+// vSAN Cost calculator
+router.get('/vsan-cost', getVSANCost);
+router.post('/vsan-cost', calculateVSANCost);
 
 export default router;

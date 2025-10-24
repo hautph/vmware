@@ -168,7 +168,9 @@ export const getDay = (req, res) => {
     }
     headerIds.add(uniqueId);
     
-    return `<h${level} id="${uniqueId}">${headerText}</h${level}>`;
+    // Ensure level is a valid number (default to 2 if invalid)
+    const validLevel = (typeof level === 'number' && level >= 1 && level <= 6) ? level : 2;
+    return `<h${validLevel} id="${uniqueId}">${headerText}</h${validLevel}>`;
   };
   
   marked.setOptions({
@@ -181,12 +183,51 @@ export const getDay = (req, res) => {
   });
   
   // Convert markdown to HTML
-  const content = day.content || '';
-  const contentHtml = marked.parse(content);
+  let contentHtml = marked.parse(day.content || '');
+  
+  // Add copy buttons to code blocks
+  contentHtml = contentHtml.replace(/<pre><code class="([^"]*?)">([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, langClass, codeContent) {
+      // Remove HTML entities and clean up the code content for clipboard
+      const cleanCode = codeContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      return '<div class="code-block-wrapper">' +
+        '<pre><code class="' + langClass + '">' + codeContent + '</code></pre>' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
+        '<i class="bi bi-clipboard"></i> Copy' +
+        '</button>' +
+        '</div>';
+    }
+  );
+  
+  // Also handle code blocks without language class
+  contentHtml = contentHtml.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, codeContent) {
+      // Remove HTML entities and clean up the code content for clipboard
+      const cleanCode = codeContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      return '<div class="code-block-wrapper">' +
+        '<pre><code>' + codeContent + '</code></pre>' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
+        '<i class="bi bi-clipboard"></i> Copy' +
+        '</button>' +
+        '</div>';
+    }
+  );
   
   // Generate TOC from content AFTER processing with marked
   // This ensures the IDs match between the content and TOC
-  const headers = generateTOCFromContent(content);
+  const headers = generateTOCFromContent(day.content || '');
   
   // Create a clean day object with only the properties we need
   // Ensure all values are strings to prevent [object Object] issues

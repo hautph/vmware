@@ -271,6 +271,29 @@ function highlightActiveSection() {
 .back-to-top-btn .btn:hover .bi {
     transform: translateY(-2px);
 }
+
+/* Code block copy button styles */
+.code-block-wrapper {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.code-block-wrapper .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.code-block-wrapper:hover .copy-btn {
+    opacity: 1;
+}
+
+.code-block-wrapper pre {
+    margin: 0;
+}
 </style>
 
 <%- include('../partials/footer.ejs') %>

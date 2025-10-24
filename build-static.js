@@ -154,5 +154,14 @@ const indexContent = `
 
 fs.writeFileSync(indexPath, indexContent);
 
+// Copy additional static files if they exist
+const additionalFiles = ['calculators.html', 'glossary.html', '404.html', 'robots.txt', 'sitemap.xml'];
+additionalFiles.forEach(file => {
+  const sourcePath = path.join(distDir, file);
+  if (fs.existsSync(sourcePath)) {
+    console.log(`Found existing ${file}`);
+  }
+});
+
 console.log('Cloudflare Pages build completed.');
 console.log('Note: This is a static informational page. For the full application, run it locally with Node.js.');

@@ -174,6 +174,9 @@ export const getArticle = (req, res) => {
       headerText = String(text);
     }
     
+    // Ensure level is a valid number (default to 2 if invalid)
+    const validLevel = (typeof level === 'number' && level >= 1 && level <= 6) ? level : 2;
+    
     // Create a simple slug from the text
     let id = headerText.toLowerCase()
       .replace(/[^\w\s-]/g, '')
@@ -189,7 +192,7 @@ export const getArticle = (req, res) => {
     }
     headerIds.add(uniqueId);
     
-    return `<h${level} id="${uniqueId}">${headerText}</h${level}>`;
+    return `<h${validLevel} id="${uniqueId}">${headerText}</h${validLevel}>`;
   };
   
   marked.setOptions({
@@ -202,7 +205,47 @@ export const getArticle = (req, res) => {
   });
   
   // Convert markdown to HTML
-  const articleHtml = marked.parse(article.content || '');
+  let articleHtml = marked.parse(article.content || '');
+  
+  // Add copy buttons to code blocks
+  articleHtml = articleHtml.replace(/<pre><code class="([^"]*?)">([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, langClass, codeContent) {
+      // Remove HTML entities and clean up the code content for clipboard
+      const cleanCode = codeContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      return '<div class="code-block-wrapper">' +
+        '<pre><code class="' + langClass + '">' + codeContent + '</code></pre>' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
+        '<i class="bi bi-clipboard"></i> Copy' +
+        '</button>' +
+        '</div>';
+    }
+  );
+  
+  // Also handle code blocks without language class
+  articleHtml = articleHtml.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, codeContent) {
+      // Remove HTML entities and clean up the code content for clipboard
+      const cleanCode = codeContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      return '<div class="code-block-wrapper">' +
+        '<pre><code>' + codeContent + '</code></pre>' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
+        '<i class="bi bi-clipboard"></i> Copy' +
+        '</button>' +
+        '</div>';
+    }
+  );
   
   // Generate TOC from content AFTER processing with marked
   // This ensures the IDs match between the content and TOC

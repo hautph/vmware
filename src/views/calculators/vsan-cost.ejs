@@ -1,0 +1,328 @@
+<%- include('../partials/header.ejs', { title: t('calculators.vsan_cost_form.title') }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-currency-dollar"></i> <%= t('calculators.vsan_cost_form.title') %></h1>
+        <p class="lead"><%= t('calculators.vsan_cost_form.lead') %></p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3><%= t('calculators.vsan_cost_form.general_info') %></h3>
+            </div>
+            <div class="card-body">
+                <form id="vsanCostForm" action="/calculators/vsan-cost" method="POST">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="projectName" class="form-label"><%= t('calculators.vsan_cost_form.project_name') %></label>
+                                <input type="text" class="form-control" id="projectName" name="projectName" value="vSAN Sizing Project">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="sizerVersion" class="form-label"><%= t('calculators.vsan_cost_form.sizer_version') %></label>
+                                <input type="text" class="form-control" id="sizerVersion" name="sizerVersion" value="1.0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="date" class="form-label"><%= t('calculators.vsan_cost_form.date') %></label>
+                                <input type="date" class="form-control" id="date" name="date" value="<%= new Date().toISOString().split('T')[0] %>">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4><%= t('calculators.vsan_cost_form.vsan_requirements') %></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="vsanVersion" class="form-label"><%= t('calculators.vsan_cost_form.vsan_version') %></label>
+                                        <select class="form-select" id="vsanVersion" name="vsanVersion">
+                                            <option value="vSAN 8.0" selected>vSAN 8.0</option>
+                                            <option value="vSAN 7.0">vSAN 7.0</option>
+                                            <option value="vSAN 6.7">vSAN 6.7</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="numHosts" class="form-label"><%= t('calculators.vsan_cost_form.num_hosts') %></label>
+                                        <input type="number" class="form-control" id="numHosts" name="numHosts" min="3" value="4" required>
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.min_hosts_info') %></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="growthRate" class="form-label"><%= t('calculators.vsan_cost_form.growth_rate') %></label>
+                                        <input type="number" class="form-control" id="growthRate" name="growthRate" min="0" max="100" step="0.1" value="20">
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.growth_rate_info') %></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4><%= t('calculators.vsan_cost_form.capacity_hardware_config') %></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="cpuModel" class="form-label"><%= t('calculators.vsan_cost_form.cpu_model') %></label>
+                                        <select class="form-select" id="cpuModel" name="cpuModel">
+                                            <option value="Intel Xeon Gold 6330" selected>Intel Xeon Gold 6330</option>
+                                            <option value="AMD EPYC 75F3">AMD EPYC 75F3</option>
+                                            <option value="Intel Xeon Gold 5318Y">Intel Xeon Gold 5318Y</option>
+                                            <option value="AMD EPYC 74F3">AMD EPYC 74F3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="numCpusPerHost" class="form-label"><%= t('calculators.vsan_cost_form.num_cpus_per_host') %></label>
+                                        <input type="number" class="form-control" id="numCpusPerHost" name="numCpusPerHost" min="1" max="4" value="2">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="ramPerHost" class="form-label"><%= t('calculators.vsan_cost_form.ram_per_host') %></label>
+                                        <input type="number" class="form-control" id="ramPerHost" name="ramPerHost" min="32" step="32" value="256">
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.ram_per_host_info') %></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="ramModuleSize" class="form-label"><%= t('calculators.vsan_cost_form.ram_module_size') %></label>
+                                        <select class="form-select" id="ramModuleSize" name="ramModuleSize">
+                                            <option value="16">16 GB</option>
+                                            <option value="32" selected>32 GB</option>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="usableCapacity" class="form-label"><%= t('calculators.vsan_cost_form.usable_capacity') %></label>
+                                        <input type="number" class="form-control" id="usableCapacity" name="usableCapacity" min="0" step="0.1" value="100" required>
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.usable_capacity_info') %></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="enableDedupeComp" class="form-label"><%= t('calculators.vsan_cost_form.enable_dedupe_comp') %></label>
+                                        <select class="form-select" id="enableDedupeComp" name="enableDedupeComp">
+                                            <option value="yes" selected><%= t('calculators.vsan_cost_form.yes') %></option>
+                                            <option value="no"><%= t('calculators.vsan_cost_form.no') %></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="dedupeCompRatio" class="form-label"><%= t('calculators.vsan_cost_form.dedupe_comp_ratio') %></label>
+                                        <input type="number" class="form-control" id="dedupeCompRatio" name="dedupeCompRatio" min="0" max="1" step="0.01" value="0.5">
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.dedupe_comp_ratio_info') %></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4><%= t('calculators.vsan_cost_form.ftt_raid_requirements') %></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="ftt" class="form-label"><%= t('calculators.vsan_cost_form.ftt') %></label>
+                                        <select class="form-select" id="ftt" name="ftt">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                        </select>
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.ftt_info') %></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="raidLevel" class="form-label"><%= t('calculators.vsan_cost_form.raid_level') %></label>
+                                        <select class="form-select" id="raidLevel" name="raidLevel">
+                                            <option value="RAID1" selected>RAID 1</option>
+                                            <option value="RAID5">RAID 5</option>
+                                            <option value="RAID6">RAID 6</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="capacityDeviceType" class="form-label"><%= t('calculators.vsan_cost_form.capacity_device_type') %></label>
+                                        <select class="form-select" id="capacityDeviceType" name="capacityDeviceType">
+                                            <option value="SATA SSD">SATA SSD</option>
+                                            <option value="SAS SSD" selected>SAS SSD</option>
+                                            <option value="HDD">HDD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="cacheDeviceType" class="form-label"><%= t('calculators.vsan_cost_form.cache_device_type') %></label>
+                                        <select class="form-select" id="cacheDeviceType" name="cacheDeviceType">
+                                            <option value="NVMe SSD" selected>NVMe SSD</option>
+                                            <option value="SAS SSD">SAS SSD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4><%= t('calculators.vsan_cost_form.performance_requirements') %></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="totalIOPS" class="form-label"><%= t('calculators.vsan_cost_form.total_iops') %></label>
+                                        <input type="number" class="form-control" id="totalIOPS" name="totalIOPS" min="0" value="10000">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="totalThroughput" class="form-label"><%= t('calculators.vsan_cost_form.total_throughput') %></label>
+                                        <input type="number" class="form-control" id="totalThroughput" name="totalThroughput" min="0" value="500">
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.throughput_info') %></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="targetLatency" class="form-label"><%= t('calculators.vsan_cost_form.target_latency') %></label>
+                                        <input type="number" class="form-control" id="targetLatency" name="targetLatency" min="0" step="0.1" value="5">
+                                        <div class="form-text"><%= t('calculators.vsan_cost_form.latency_info') %></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="qosRequirements" class="form-label"><%= t('calculators.vsan_cost_form.qos_requirements') %></label>
+                                        <select class="form-select" id="qosRequirements" name="qosRequirements">
+                                            <option value="yes" selected><%= t('calculators.vsan_cost_form.yes') %></option>
+                                            <option value="no"><%= t('calculators.vsan_cost_form.no') %></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4><%= t('calculators.vsan_cost_form.network_config') %></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="networkSpeed" class="form-label"><%= t('calculators.vsan_cost_form.network_speed') %></label>
+                                        <select class="form-select" id="networkSpeed" name="networkSpeed">
+                                            <option value="10" selected>10 GbE</option>
+                                            <option value="25">25 GbE</option>
+                                            <option value="40">40 GbE</option>
+                                            <option value="100">100 GbE</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="numNetworkAdapters" class="form-label"><%= t('calculators.vsan_cost_form.num_network_adapters') %></label>
+                                        <input type="number" class="form-control" id="numNetworkAdapters" name="numNetworkAdapters" min="1" max="8" value="2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4><%= t('calculators.vsan_cost_form.licensing') %></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="vsanLicense" class="form-label"><%= t('calculators.vsan_cost_form.vsan_license') %></label>
+                                        <select class="form-select" id="vsanLicense" name="vsanLicense">
+                                            <option value="Standard"><%= t('calculators.vsan_cost_form.license_standard') %></option>
+                                            <option value="Advanced" selected><%= t('calculators.vsan_cost_form.license_advanced') %></option>
+                                            <option value="Enterprise"><%= t('calculators.vsan_cost_form.license_enterprise') %></option>
+                                            <option value="Enterprise Plus"><%= t('calculators.vsan_cost_form.license_enterprise_plus') %></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="vsphereLicense" class="form-label"><%= t('calculators.vsan_cost_form.vsphere_license') %></label>
+                                        <select class="form-select" id="vsphereLicense" name="vsphereLicense">
+                                            <option value="Standard"><%= t('calculators.vsan_cost_form.license_standard') %></option>
+                                            <option value="Enterprise Plus" selected><%= t('calculators.vsan_cost_form.license_enterprise_plus') %></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary mt-4">
+                        <i class="bi bi-calculator"></i> <%= t('calculators.vsan_cost_form.calculate_cost') %>
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3><%= t('calculators.vsan_cost_form.guidelines') %></h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><%= t('calculators.vsan_cost_form.hardware_considerations') %></h5>
+                        <ul>
+                            <li><%= t('calculators.vsan_cost_form.hardware_consideration_1') %></li>
+                            <li><%= t('calculators.vsan_cost_form.hardware_consideration_2') %></li>
+                            <li><%= t('calculators.vsan_cost_form.hardware_consideration_3') %></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><%= t('calculators.vsan_cost_form.licensing_considerations') %></h5>
+                        <ul>
+                            <li><%= t('calculators.vsan_cost_form.licensing_consideration_1') %></li>
+                            <li><%= t('calculators.vsan_cost_form.licensing_consideration_2') %></li>
+                            <li><%= t('calculators.vsan_cost_form.licensing_consideration_3') %></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial focus
+    document.getElementById('projectName').focus();
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

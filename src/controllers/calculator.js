@@ -193,6 +193,343 @@ export const calculateVSANSizing = (req, res) => {
   });
 };
 
+// vSAN Cost calculator
+export const getVSANCost = (req, res) => {
+  res.render('calculators/vsan-cost', { 
+    title: 'vSAN Cost Calculator'
+  });
+};
+
+export const calculateVSANCost = (req, res) => {
+  // Extract all form data
+  const {
+    // General Information
+    projectName,
+    sizerVersion,
+    
+    // vSAN Requirements
+    vsanVersion,
+    numHosts,
+    growthRate,
+    
+    // Capacity & Hardware Configuration
+    cpuModel,
+    numCpusPerHost,
+    ramPerHost,
+    ramModuleSize,
+    usableCapacity,
+    enableDedupeComp,
+    dedupeCompRatio,
+    
+    // FTT & RAID Requirements
+    ftt,
+    raidLevel,
+    capacityDeviceType,
+    cacheDeviceType,
+    
+    // Performance Requirements
+    totalIOPS,
+    totalThroughput,
+    targetLatency,
+    qosRequirements,
+    
+    // Network Configuration
+    networkSpeed,
+    numNetworkAdapters,
+    
+    // Licensing
+    vsanLicense,
+    vsphereLicense
+  } = req.body;
+  
+  // Convert form data to appropriate types
+  const parsedData = {
+    projectName: projectName || 'vSAN Sizing Project',
+    sizerVersion: sizerVersion || '1.0',
+    vsanVersion: vsanVersion || 'vSAN 8.0',
+    numHosts: parseInt(numHosts) || 0,
+    growthRate: parseFloat(growthRate) || 0,
+    
+    cpuModel: cpuModel || 'Intel Xeon Gold 6330',
+    numCpusPerHost: parseInt(numCpusPerHost) || 2,
+    ramPerHost: parseInt(ramPerHost) || 256,
+    ramModuleSize: parseInt(ramModuleSize) || 32,
+    usableCapacity: parseFloat(usableCapacity) || 0,
+    enableDedupeComp: enableDedupeComp === 'yes',
+    dedupeCompRatio: parseFloat(dedupeCompRatio) || 0.5,
+    
+    ftt: parseInt(ftt) || 1,
+    raidLevel: raidLevel || 'RAID1',
+    capacityDeviceType: capacityDeviceType || 'SAS SSD',
+    cacheDeviceType: cacheDeviceType || 'NVMe SSD',
+    
+    totalIOPS: parseInt(totalIOPS) || 0,
+    totalThroughput: parseInt(totalThroughput) || 0,
+    targetLatency: parseFloat(targetLatency) || 5,
+    qosRequirements: qosRequirements === 'yes',
+    
+    networkSpeed: parseInt(networkSpeed) || 10,
+    numNetworkAdapters: parseInt(numNetworkAdapters) || 2,
+    
+    vsanLicense: vsanLicense || 'Advanced',
+    vsphereLicense: vsphereLicense || 'Enterprise Plus'
+  };
+  
+  // Perform cost calculations
+  const results = calculateVSANCosts(parsedData);
+  
+  res.render('calculators/vsan-cost-results', { 
+    title: 'vSAN Cost Calculation Results',
+    results: {
+      ...parsedData,
+      ...results
+    }
+  });
+};
+
+// Helper function to calculate vSAN costs
+function calculateVSANCosts(data) {
+  // Storage multiplier based on FTT and RAID level
+  const getStorageMultiplier = (ftt, raidLevel) => {
+    if (raidLevel === 'RAID1') return 1 + ftt;
+    if (raidLevel === 'RAID5') return 1 + (ftt * 1.33);
+    if (raidLevel === 'RAID6') return 1 + (ftt * 1.5);
+    return 1 + ftt; // Default
+  };
+  
+  // Hardware costs (example pricing - would be more detailed in a real implementation)
+  const HOST_BASE_COST = 5000; // Base cost per host (chassis, PSU, etc.)
+  const CPU_COSTS = {
+    'AMD EPYC 75F3': 4500,
+    'Intel Xeon Gold 5318Y': 3800,
+    'Intel Xeon Gold 6330': 4200,
+    'AMD EPYC 74F3': 4000
+  };
+  const RAM_COST_PER_GB = 15; // Cost per GB of RAM
+  const CACHE_DEVICE_COSTS = {
+    'NVMe SSD': 800, // Cost per GB
+    'SAS SSD': 500
+  };
+  const CAPACITY_DEVICE_COSTS = {
+    'SATA SSD': 200, // Cost per TB
+    'SAS SSD': 400,
+    'HDD': 100
+  };
+  const NETWORK_ADAPTER_COSTS = {
+    10: 300,
+    25: 600,
+    40: 900,
+    100: 1500
+  };
+  
+  // Software licensing costs (per socket)
+  const LICENSE_COSTS = {
+    vsan: {
+      'Standard': 2500,
+      'Advanced': 4500,
+      'Enterprise': 6500,
+      'Enterprise Plus': 8500
+    },
+    vsphere: {
+      'Standard': 1500,
+      'Enterprise Plus': 3500
+    }
+  };
+  
+  // Operational costs
+  const ANNUAL_MAINTENANCE_RATE = 0.18; // 18% of hardware cost
+  const POWER_COST_PER_WATT_PER_YEAR = 0.15; // $0.15 per watt per year
+  const COOLING_COST_RATE = 0.3; // 30% of power cost
+  const POWER_CONSUMPTION = {
+    'AMD EPYC 75F3': 280,
+    'Intel Xeon Gold 5318Y': 225,
+    'Intel Xeon Gold 6330': 200,
+    'AMD EPYC 74F3': 240
+  };
+  
+  // Storage overhead factors
+  const METADATA_OVERHEAD_RATE = 0.1; // 10%
+  const SLACK_SPACE_RATE = 0.15; // 15%
+  
+  // Calculate storage requirements
+  const storageMultiplier = getStorageMultiplier(data.ftt, data.raidLevel);
+  const rawCapacityBeforeFTT = data.usableCapacity / (1 - (data.enableDedupeComp ? (1 - data.dedupeCompRatio) : 0));
+  const rawCapacityAfterFTT = rawCapacityBeforeFTT * storageMultiplier;
+  const metadataOverhead = rawCapacityAfterFTT * METADATA_OVERHEAD_RATE;
+  const slackSpace = rawCapacityAfterFTT * SLACK_SPACE_RATE;
+  const totalRawCapacity = rawCapacityAfterFTT + metadataOverhead + slackSpace;
+  const capacityPerHost = totalRawCapacity / data.numHosts;
+  
+  // Calculate power consumption with detailed breakdown
+  const detailedPowerConsumption = {
+    cpu: POWER_CONSUMPTION[data.cpuModel] || 200,
+    ram: data.ramPerHost * 0.5, // 0.5W per GB of RAM
+    // Storage and network power estimates
+    storage: 15, // Estimated power for storage controllers per host
+    network: 5, // Estimated power for network adapters per host
+    chassis: 50 // Base chassis power
+  };
+  
+  const detailedPowerPerHost = detailedPowerConsumption.cpu + detailedPowerConsumption.ram + detailedPowerConsumption.storage + 
+                       detailedPowerConsumption.network + detailedPowerConsumption.chassis;
+  const detailedTotalPower = data.numHosts * detailedPowerPerHost;
+  
+  // Calculate hardware costs
+  const hardwareCosts = {
+    hosts: data.numHosts * HOST_BASE_COST,
+    cpus: data.numHosts * data.numCpusPerHost * (CPU_COSTS[data.cpuModel] || 4000),
+    ram: data.numHosts * data.ramPerHost * RAM_COST_PER_GB,
+    cacheDevices: data.numHosts * 200 * (CACHE_DEVICE_COSTS[data.cacheDeviceType] || 800), // Assuming 200GB cache per host
+    capacityDevices: totalRawCapacity * (CAPACITY_DEVICE_COSTS[data.capacityDeviceType] || 400),
+    networkAdapters: data.numHosts * data.numNetworkAdapters * (NETWORK_ADAPTER_COSTS[data.networkSpeed] || 300),
+    total: 0,
+    // Detailed power information
+    powerConsumption: {
+      perHost: detailedPowerPerHost,
+      total: detailedTotalPower,
+      details: detailedPowerConsumption
+    }
+  };
+  
+  hardwareCosts.total = hardwareCosts.hosts + hardwareCosts.cpus + hardwareCosts.ram + 
+                        hardwareCosts.cacheDevices + hardwareCosts.capacityDevices + hardwareCosts.networkAdapters;
+  
+  // Calculate licensing costs
+  const licenseCosts = {
+    vsan: data.numHosts * data.numCpusPerHost * (LICENSE_COSTS.vsan[data.vsanLicense] || 4500),
+    vsphere: data.numHosts * data.numCpusPerHost * (LICENSE_COSTS.vsphere[data.vsphereLicense] || 3500),
+    total: 0
+  };
+  
+  licenseCosts.total = licenseCosts.vsan + licenseCosts.vsphere;
+  
+  // Calculate operational costs for 3 and 5 years
+  const operationalCosts = {
+    // Annual costs
+    maintenance: hardwareCosts.total * ANNUAL_MAINTENANCE_RATE,
+    power: detailedTotalPower * POWER_COST_PER_WATT_PER_YEAR,
+    cooling: detailedTotalPower * POWER_COST_PER_WATT_PER_YEAR * COOLING_COST_RATE,
+    // 3-year costs
+    maintenance3Year: hardwareCosts.total * ANNUAL_MAINTENANCE_RATE * 3,
+    power3Year: detailedTotalPower * POWER_COST_PER_WATT_PER_YEAR * 3,
+    cooling3Year: detailedTotalPower * POWER_COST_PER_WATT_PER_YEAR * COOLING_COST_RATE * 3,
+    total3Year: 0,
+    // 5-year costs
+    maintenance5Year: hardwareCosts.total * ANNUAL_MAINTENANCE_RATE * 5,
+    power5Year: detailedTotalPower * POWER_COST_PER_WATT_PER_YEAR * 5,
+    cooling5Year: detailedTotalPower * POWER_COST_PER_WATT_PER_YEAR * COOLING_COST_RATE * 5,
+    total5Year: 0
+  };
+  
+  operationalCosts.total3Year = operationalCosts.maintenance3Year + operationalCosts.power3Year + operationalCosts.cooling3Year;
+  operationalCosts.total5Year = operationalCosts.maintenance5Year + operationalCosts.power5Year + operationalCosts.cooling5Year;
+  
+  // Calculate CapEx and OpEx
+  const capex = {
+    hardware: hardwareCosts.total,
+    licensing: licenseCosts.total,
+    deployment: hardwareCosts.total * 0.1, // 10% for deployment
+    total: 0
+  };
+  
+  capex.total = capex.hardware + capex.licensing + capex.deployment;
+  
+  const opex = {
+    maintenance: operationalCosts.total3Year,
+    energy: operationalCosts.power3Year + operationalCosts.cooling3Year,
+    total3Year: operationalCosts.total3Year,
+    total5Year: operationalCosts.total5Year
+  };
+  
+  // Calculate TCO
+  const tco = {
+    year3: capex.total + opex.total3Year,
+    year5: capex.total + opex.total5Year
+  };
+  
+  // Calculate ROI (simplified - would be more complex in a real implementation)
+  const savings = {
+    year3: tco.year3 * 0.2, // Assuming 20% savings from vSAN
+    year5: tco.year5 * 0.25 // Assuming 25% savings from vSAN
+  };
+  
+  const roi = {
+    year3: (savings.year3 / tco.year3) * 100,
+    year5: (savings.year5 / tco.year5) * 100,
+    breakEven3Year: 2.5, // Simplified break-even point
+    breakEven5Year: 3.2 // Simplified break-even point
+  };
+  
+  // Performance metrics
+  const performance = {
+    totalIOPS: data.totalIOPS,
+    totalThroughput: data.totalThroughput,
+    targetLatency: data.targetLatency,
+    achievedIOPS: data.totalIOPS * 1.2, // Assuming we can achieve 120% of requirement
+    achievedThroughput: data.totalThroughput * 1.1, // Assuming we can achieve 110% of requirement
+    estimatedLatency: data.targetLatency * 0.8, // Assuming we can achieve 80% of target
+    iopsAssessment: data.totalIOPS > 10000 ? 'Excellent' : data.totalIOPS > 5000 ? 'Good' : 'Fair',
+    throughputAssessment: data.totalThroughput > 500 ? 'Excellent' : data.totalThroughput > 250 ? 'Good' : 'Fair'
+  };
+  
+  // Resource utilization
+  const utilization = {
+    cpu: 70, // Percentage
+    memory: 75, // Percentage
+    storage: 80, // Percentage
+    network: 60 // Percentage
+  };
+  
+  // Sizing details
+  const sizing = {
+    storage: {
+      usableCapacity: data.usableCapacity,
+      rawCapacityBeforeFTT: rawCapacityBeforeFTT,
+      storageMultiplier: storageMultiplier,
+      rawCapacityAfterFTT: rawCapacityAfterFTT,
+      metadataOverhead: metadataOverhead,
+      slackSpace: slackSpace,
+      totalRawCapacity: totalRawCapacity,
+      capacityPerHost: capacityPerHost
+    },
+    cache: {
+      cacheTierSize: capacityPerHost * 0.1, // 10% rule of thumb
+      cacheDeviceSize: 200, // GB per host
+      numCacheDevices: data.numHosts * 2
+    },
+    compute: {
+      totalSockets: data.numHosts * data.numCpusPerHost,
+      totalCores: data.numHosts * data.numCpusPerHost * 16, // Assuming 16 cores per CPU
+      totalRAM: data.numHosts * data.ramPerHost
+    },
+    network: {
+      requiredBandwidth: data.totalThroughput * 1.5, // 50% overhead
+      achievedBandwidth: data.networkSpeed * data.numNetworkAdapters
+    }
+  };
+  
+  return {
+    hardwareCosts,
+    licenseCosts,
+    operationalCosts,
+    capex,
+    opex,
+    tco,
+    roi,
+    savings,
+    performance,
+    utilization,
+    sizing,
+    recommendations: [
+      'Consider all-flash configuration for better performance',
+      'Ensure adequate network bandwidth for vSAN traffic',
+      'Plan for N+1 redundancy in your cluster design',
+      'Monitor cache hit ratios to optimize performance',
+      'Regularly review licensing requirements as your environment grows'
+    ]
+  };
+}
+
 // Disaster Recovery calculator
 export const getDisasterRecovery = (req, res) => {
   res.render('calculators/disaster-recovery', { 

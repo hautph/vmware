@@ -1,9 +1,79 @@
 ---
-title: Virtual Machine Operations
+title: Advanced VMware Operations
 day: 2
 ---
 
-# Day 2: Virtual Machine Operations
+## I. PowerShell/PowerCLI Commands
+
+### 1. VM Management
+```powershell
+# Get all VMs
+Get-VM
+
+# Start a VM
+Start-VM -VM "MyVM"
+
+# Stop a VM
+Stop-VM -VM "MyVM" -Confirm:$false
+
+# Restart a VM
+Restart-VM -VM "MyVM" -Confirm:$false
+```
+
+### 2. Host Management
+```powershell
+# Get all ESXi hosts
+Get-VMHost
+
+# Connect to a host
+Connect-VIServer -Server "esxi-host.domain.com"
+
+# Disconnect from a host
+Disconnect-VIServer -Server "esxi-host.domain.com" -Confirm:$false
+```
+
+## II. ESXi CLI Commands
+
+### 1. Basic Commands
+```bash
+# Check host information
+esxcli system hostname get
+
+# View network interfaces
+esxcli network ip interface list
+
+# Check storage devices
+esxcli storage core device list
+```
+
+### 2. VM Management
+```bash
+# List running VMs
+esxcli vm process list
+
+# Kill a VM process
+esxcli vm process kill -t soft -w 12345
+```
+
+## III. Configuration Examples
+
+### 1. Network Configuration
+```bash
+# Configure vSwitch
+esxcli network vswitch standard add -v "vSwitch1"
+
+# Add port group
+esxcli network vswitch standard portgroup add -p "VM Network" -v "vSwitch1"
+```
+
+### 2. Storage Configuration
+```bash
+# Rescan storage adapters
+esxcli storage core adapter rescan
+
+# View datastore information
+esxcli storage filesystem list
+```
 
 ## Topics Covered
 - Recognize the role of a VMware Tools Repository
@@ -108,7 +178,7 @@ Với $6$ dịch vụ và $6$ pNIC, bạn phải gán mỗi loại dịch vụ c
 
 **Yêu cầu Vẽ Sơ đồ (Mermaid Code):**
 
-```mermaid
+```
 graph TD
     subgraph Cluster VMWare (vSS)
         A[ESXi Host]

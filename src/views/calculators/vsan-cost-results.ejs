@@ -1,0 +1,448 @@
+<%- include('../partials/header.ejs', { title: t('calculators.vsan_cost_results.title') }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-currency-dollar"></i> <%= t('calculators.vsan_cost_results.title') %></h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3><%= t('calculators.vsan_cost_results.project_summary') %></h3>
+            </div>
+            <div class="card-body">
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <h4><%= results.projectName %> - v<%= results.sizerVersion %></h4>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><i class="bi bi-info-circle"></i> <%= t('calculators.vsan_cost_results.project_summary') %></h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_results.vsan_version') %>:</strong> <%= results.vsanVersion %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_results.hosts') %>:</strong> <%= results.numHosts %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_results.usable_capacity') %>:</strong> <%= results.usableCapacity %> TB</li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.enable_dedupe_comp') %>:</strong> <%= results.enableDedupeComp ? t('calculators.vsan_cost_form.yes') : t('calculators.vsan_cost_form.no') %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.qos_requirements') %>:</strong> <%= results.qosRequirements ? t('calculators.vsan_cost_form.yes') : t('calculators.vsan_cost_form.no') %></li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h5><i class="bi bi-currency-dollar"></i> <%= t('calculators.vsan_cost_results.cost_breakdown') %></h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_results.capex') %>:</strong> $<%= results.capex.total.toLocaleString() %></li>
+                                        <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.hardware_total') %>: $<%= results.hardwareCosts.total.toLocaleString() %></li>
+                                        <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.licensing') %>: $<%= results.licenseCosts.total.toLocaleString() %></li>
+                                        <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.deployment') %>: $<%= results.capex.deployment.toLocaleString() %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_results.opex_3yr') %>:</strong> $<%= results.opex.total3Year.toLocaleString() %></li>
+                                        <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.maintenance') %>: $<%= results.operationalCosts.maintenance3Year.toLocaleString() %></li>
+                                        <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.power') %>: $<%= results.operationalCosts.power3Year.toLocaleString() %></li>
+                                        <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.cooling') %>: $<%= results.operationalCosts.cooling3Year.toLocaleString() %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_results.tco_3yr') %>:</strong> $<%= results.tco.year3.toLocaleString() %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_results.power_consumption') %>:</strong> <%= results.hardwareCosts.powerConsumption.total.toFixed(1) %> Watts</li>
+                                        <li><strong><%= t('calculators.vsan_cost_results.annual_power_cost') %>:</strong> $<%= results.operationalCosts.power.toLocaleString() %></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><i class="bi bi-cpu"></i> <%= t('calculators.vsan_cost_form.capacity_hardware_config') %></h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_form.cpu_model') %>:</strong> <%= results.cpuModel %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.num_cpus_per_host') %>:</strong> <%= results.numCpusPerHost %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.ram_per_host') %>:</strong> <%= results.ramPerHost %> GB</li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.ram_module_size') %>:</strong> <%= results.ramModuleSize %> GB</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h5><i class="bi bi-hdd"></i> <%= t('calculators.vsan_cost_form.ftt_raid_requirements') %></h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_form.ftt') %>:</strong> <%= results.ftt %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.raid_level') %>:</strong> <%= results.raidLevel %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.capacity_device_type') %>:</strong> <%= results.capacityDeviceType %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.cache_device_type') %>:</strong> <%= results.cacheDeviceType %></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><i class="bi bi-journal-text"></i> <%= t('calculators.vsan_cost_form.licensing') %></h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_form.vsan_license') %>:</strong> <%= results.vsanLicense %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.vsphere_license') %>:</strong> <%= results.vsphereLicense %></li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h5><i class="bi bi-diagram-3"></i> <%= t('calculators.vsan_cost_form.network_config') %></h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_form.network_speed') %>:</strong> <%= results.networkSpeed %> GbE</li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.num_network_adapters') %>:</strong> <%= results.numNetworkAdapters %></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-cash"></i> <%= t('calculators.vsan_cost_results.capex') %></h5>
+                            <h3>$<%= results.capex.total.toLocaleString() %></h3>
+                            <p class="text-muted"><%= t('calculators.vsan_cost_results.initial_investment') %></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-currency-exchange"></i> <%= t('calculators.vsan_cost_results.opex_3yr') %></h5>
+                            <h3>$<%= results.opex.total3Year.toLocaleString() %></h3>
+                            <p class="text-muted"><%= t('calculators.vsan_cost_results.annual_operational') %></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-graph-up"></i> <%= t('calculators.vsan_cost_results.tco_3yr') %></h5>
+                            <h3>$<%= results.tco.year3.toLocaleString() %></h3>
+                            <p class="text-muted"><%= t('calculators.vsan_cost_results.three_year_cost') %></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-percent"></i> <%= t('calculators.vsan_cost_results.roi_3yr') %></h5>
+                            <h3><%= results.roi.year3.toFixed(1) %>%</h3>
+                            <p class="text-muted"><%= t('calculators.vsan_cost_results.return_on_investment') %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><%= t('calculators.vsan_cost_results.sizing_details') %></h3>
+                    </div>
+                    <div class="card-body">
+                        <h5><%= t('calculators.vsan_cost_results.capacity_sizing') %></h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.usable_capacity') %></td>
+                                        <td><%= results.sizing.storage.usableCapacity.toFixed(1) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.raw_capacity_ftt') %></td>
+                                        <td><%= results.sizing.storage.rawCapacityAfterFTT.toFixed(1) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.metadata_overhead') %></td>
+                                        <td><%= results.sizing.storage.metadataOverhead.toFixed(1) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.slack_space') %></td>
+                                        <td><%= results.sizing.storage.slackSpace.toFixed(1) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.total_raw_capacity') %></td>
+                                        <td><%= results.sizing.storage.totalRawCapacity.toFixed(1) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.capacity_per_host') %></td>
+                                        <td><%= results.sizing.storage.capacityPerHost.toFixed(1) %> TB</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h5><%= t('calculators.vsan_cost_results.cache_sizing') %></h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.cache_tier_size') %></td>
+                                        <td><%= results.sizing.cache.cacheTierSize.toFixed(1) %> GB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.cache_device_size') %></td>
+                                        <td><%= results.sizing.cache.cacheDeviceSize %> GB</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.num_cache_devices') %></td>
+                                        <td><%= results.sizing.cache.numCacheDevices %></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><%= t('calculators.vsan_cost_results.performance_metrics') %></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.required_iops') %></td>
+                                        <td><%= results.performance.totalIOPS.toLocaleString() %> IOPS</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.achieved_iops') %></td>
+                                        <td><%= results.performance.achievedIOPS.toLocaleString() %> IOPS</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.iops_assessment') %></td>
+                                        <td><%= results.performance.iopsAssessment %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.required_throughput') %></td>
+                                        <td><%= results.performance.totalThroughput %> MB/s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.achieved_throughput') %></td>
+                                        <td><%= results.performance.achievedThroughput %> MB/s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.throughput_assessment') %></td>
+                                        <td><%= results.performance.throughputAssessment %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.target_latency') %></td>
+                                        <td><%= results.performance.targetLatency %> ms</td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.estimated_latency') %></td>
+                                        <td><%= results.performance.estimatedLatency.toFixed(1) %> ms</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><%= t('calculators.vsan_cost_results.capex_breakdown') %></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><%= t('calculators.vsan_cost_results.component') %></th>
+                                        <th><%= t('calculators.vsan_cost_results.cost') %></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.hosts') %></td>
+                                        <td>$<%= results.hardwareCosts.hosts.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.cpus') %></td>
+                                        <td>$<%= results.hardwareCosts.cpus.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.ram') %></td>
+                                        <td>$<%= results.hardwareCosts.ram.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.cache_devices') %></td>
+                                        <td>$<%= results.hardwareCosts.cacheDevices.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.capacity_devices') %></td>
+                                        <td>$<%= results.hardwareCosts.capacityDevices.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.network_adapters') %></td>
+                                        <td>$<%= results.hardwareCosts.networkAdapters.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.hardware_total') %></td>
+                                        <td><strong>$<%= results.hardwareCosts.total.toLocaleString() %></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.licensing') %></td>
+                                        <td>$<%= results.licenseCosts.total.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.deployment') %></td>
+                                        <td>$<%= results.capex.deployment.toLocaleString() %></td>
+                                    </tr>
+                                    <tr class="table-primary">
+                                        <td><strong><%= t('calculators.vsan_cost_results.total_capex') %></strong></td>
+                                        <td><strong>$<%= results.capex.total.toLocaleString() %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><%= t('calculators.vsan_cost_results.opex_breakdown') %></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><%= t('calculators.vsan_cost_results.component') %></th>
+                                        <th><%= t('calculators.vsan_cost_results.annual_cost') %></th>
+                                        <th><%= t('calculators.vsan_cost_results.three_year_cost') %></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.maintenance') %></td>
+                                        <td>$<%= results.operationalCosts.maintenance.toLocaleString() %></td>
+                                        <td>$<%= results.operationalCosts.maintenance3Year.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.power') %></td>
+                                        <td>$<%= results.operationalCosts.power.toLocaleString() %></td>
+                                        <td>$<%= results.operationalCosts.power3Year.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.cooling') %></td>
+                                        <td>$<%= results.operationalCosts.cooling.toLocaleString() %></td>
+                                        <td>$<%= results.operationalCosts.cooling3Year.toLocaleString() %></td>
+                                    </tr>
+                                    <tr class="table-primary">
+                                        <td><strong><%= t('calculators.vsan_cost_results.total_opex') %></strong></td>
+                                        <td><strong>$<%= (results.operationalCosts.maintenance + results.operationalCosts.power + results.operationalCosts.cooling).toLocaleString() %></strong></td>
+                                        <td><strong>$<%= results.opex.total3Year.toLocaleString() %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h5><%= t('calculators.vsan_cost_results.tco_analysis') %></h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><%= t('calculators.vsan_cost_results.period') %></th>
+                                        <th><%= t('calculators.vsan_cost_results.cost') %></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.year_3') %></td>
+                                        <td>$<%= results.tco.year3.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><%= t('calculators.vsan_cost_results.year_5') %></td>
+                                        <td>$<%= results.tco.year5.toLocaleString() %></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3><%= t('calculators.vsan_cost_results.resource_utilization') %></h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-cpu"></i> <%= t('calculators.vsan_cost_results.cpu') %></h5>
+                            <h3><%= results.utilization.cpu %>%</h3>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-info" role="progressbar" aria-valuenow="<%= results.utilization.cpu %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-memory"></i> <%= t('calculators.vsan_cost_results.memory') %></h5>
+                            <h3><%= results.utilization.memory %>%</h3>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-success" role="progressbar" aria-valuenow="<%= results.utilization.memory %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd"></i> <%= t('calculators.vsan_cost_results.storage') %></h5>
+                            <h3><%= results.utilization.storage %>%</h3>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="<%= results.utilization.storage %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-diagram-3"></i> <%= t('calculators.vsan_cost_results.network') %></h5>
+                            <h3><%= results.utilization.network %>%</h3>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="<%= results.utilization.network %>" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3><%= t('calculators.vsan_cost_results.recommendations') %></h3>
+            </div>
+            <div class="card-body">
+                <% if (results.recommendations.length > 0) { %>
+                    <ul>
+                        <% results.recommendations.forEach(rec => { %>
+                            <li><%= rec %></li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p><%= t('calculators.vsan_cost_results.no_recommendations') %></p>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/calculators/vsan-cost" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> <%= t('calculators.vsan_cost_results.new_calculation') %>
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> <%= t('calculators.vsan_cost_results.print_results') %>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Set the width of progress bars after the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(function(bar) {
+        const value = bar.getAttribute('aria-valuenow');
+        bar.style.width = value + '%';
+    });
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

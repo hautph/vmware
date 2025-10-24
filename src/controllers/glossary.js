@@ -314,7 +314,9 @@ export const getTerm = (req, res) => {
     }
     headerIds.add(uniqueId);
     
-    return `<h${level} id="${uniqueId}">${headerText}</h${level}>`;
+    // Ensure level is a valid number (default to 2 if invalid)
+    const validLevel = (typeof level === 'number' && level >= 1 && level <= 6) ? level : 2;
+    return `<h${validLevel} id="${uniqueId}">${headerText}</h${validLevel}>`;
   };
   
   marked.setOptions({
@@ -328,6 +330,46 @@ export const getTerm = (req, res) => {
   
   // Convert markdown content to HTML
   let fullContentHtml = marked.parse(term.fullContent || '');
+  
+  // Add copy buttons to code blocks
+  fullContentHtml = fullContentHtml.replace(/<pre><code class="([^"]*?)">([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, langClass, codeContent) {
+      // Remove HTML entities and clean up the code content for clipboard
+      const cleanCode = codeContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      return '<div class="code-block-wrapper">' +
+        '<pre><code class="' + langClass + '">' + codeContent + '</code></pre>' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
+        '<i class="bi bi-clipboard"></i> Copy' +
+        '</button>' +
+        '</div>';
+    }
+  );
+  
+  // Also handle code blocks without language class
+  fullContentHtml = fullContentHtml.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, 
+    function(match, codeContent) {
+      // Remove HTML entities and clean up the code content for clipboard
+      const cleanCode = codeContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+      
+      return '<div class="code-block-wrapper">' +
+        '<pre><code>' + codeContent + '</code></pre>' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
+        '<i class="bi bi-clipboard"></i> Copy' +
+        '</button>' +
+        '</div>';
+    }
+  );
   
   // Fix glossary links to use the correct URL format
   fullContentHtml = fullContentHtml.replace(/href="\/glossary\/(?!term\/)([^"]+)"/g, 'href="/glossary/term/$1"');
