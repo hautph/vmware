@@ -1,6 +1,6 @@
 ---
-title: Standalone
-category: Core Architecture
+term: Standalone
+category: Core_Architecture
 ---
 
 In VMware vSphere, "Standalone" refers to hosts or components that operate independently without being part of a larger clustered or managed environment. This term is commonly used to describe standalone ESXi hosts that are not managed by vCenter Server or standalone virtual machines that operate without high availability or clustering features.

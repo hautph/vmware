@@ -1,6 +1,6 @@
 ---
 term: SR-IOV Passthrough
-category: Advanced Technologies
+category: Advanced_Technologies
 ---
 
 SR-IOV Passthrough refers to the use of Single Root I/O Virtualization (SR-IOV) technology to provide virtual machines with direct access to a virtual function (VF) of a physical PCI Express (PCIe) device. While similar to DirectPath I/O in providing direct hardware access, SR-IOV allows a single physical device to be shared among multiple virtual machines, each accessing its own dedicated VF.

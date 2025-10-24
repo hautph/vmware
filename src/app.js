@@ -35,6 +35,16 @@ app.use((req, res, next) => {
   next();
 });
 
+// Test route
+app.get('/test-direct', (req, res) => {
+  res.send('Direct test route working');
+});
+
+// Simple glossary test route
+app.get('/glossary/test-direct', (req, res) => {
+  res.send('Glossary direct test route working');
+});
+
 // Routes
 app.get('/', (req, res) => {
   res.render('index', { title: req.t('home.title') });
@@ -77,6 +87,7 @@ app.get('/health', (req, res) => {
 
 // 404 handler
 app.use((req, res) => {
+  console.log('404 handler triggered for:', req.url);
   res.status(404).render('error', { 
     title: req.t('navigation.error_404') || 'Page Not Found',
     message: req.t('navigation.page_not_found') || 'Sorry, the page you are looking for does not exist.',

@@ -1,6 +1,6 @@
 ---
 term: Live Patch
-category: Lifecycle Management
+category: Lifecycle_Management
 ---
 
 Live Patch is a feature introduced in vSphere 8 that enables the resolution of critical bugs in the virtual machine execution environment (vmx) without requiring a host reboot or virtual machine evacuation. This is achieved using non-disruptive fast-suspend-resume (FSR) operations for VMs.

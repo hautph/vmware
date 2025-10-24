@@ -1,6 +1,6 @@
 ---
 title: Distributed Resource Scheduler (DRS)
-category: Resource Management
+category: Resource_Management
 ---
 
 Distributed Resource Scheduler (DRS) is VMware's intelligent workload automation technology that continuously monitors and optimizes resource utilization across ESXi hosts in a cluster. DRS ensures optimal performance and resource efficiency by automatically distributing virtual machine workloads based on predefined policies and real-time resource demands.
@@ -103,6 +103,18 @@ In vSphere 8, DRS has been enhanced to be "vMotion-aware":
 - Proactively balances resources before bottlenecks occur
 - Integrates with VMware Aria Operations for enhanced analytics
 
+### Enhanced Performance Analytics
+- **Real-time Metrics**: Improved real-time performance monitoring
+- **Advanced Algorithms**: More sophisticated resource analysis algorithms
+- **Workload Profiling**: Better workload characterization and prediction
+- **Capacity Planning**: Enhanced capacity planning capabilities
+
+### Modern Management Integration
+- **Lifecycle Management**: Better integration with vSphere Lifecycle Manager
+- **Policy Management**: Enhanced policy-driven automation
+- **Simplified Operations**: Streamlined management operations
+- **Improved Troubleshooting**: Better diagnostic capabilities
+
 ## Best Practices
 
 1. **Cluster Sizing**: Design clusters with sufficient headroom for migration operations
@@ -135,3 +147,4 @@ esxcli system stats get -s cpu.util
 - [Shares](/glossary/term/shares)
 - [Reservations](/glossary/term/reservations)
 - [Limits](/glossary/term/limits)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)

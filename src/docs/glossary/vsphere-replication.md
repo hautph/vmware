@@ -1,6 +1,6 @@
 ---
 title: vSphere Replication
-category: Backup & Disaster Recovery
+category: Backup_Disaster_Recovery
 ---
 
 vSphere Replication is a VMware vSphere feature that provides hypervisor-based replication of virtual machines between different sites. It enables organizations to protect their virtualized workloads by creating and maintaining copies of VMs at remote locations for disaster recovery purposes.
@@ -80,6 +80,32 @@ esxtop -s /path/to/vr/stats.csv
 - Restoration of operations at alternate location
 - Failback procedures to return to primary site
 
+## vSphere 8 Enhancements
+
+### Enhanced Performance
+- **Improved Replication Engine**: Faster replication performance
+- **Optimized Data Transfer**: More efficient data transfer algorithms
+- **Reduced Overhead**: Lower CPU and memory overhead
+- **Better Compression**: Enhanced data compression
+
+### Modern Management Integration
+- **Lifecycle Management**: Better integration with vSphere Lifecycle Manager
+- **Policy Management**: Enhanced policy-driven management
+- **Simplified Operations**: Streamlined management operations
+- **Improved Monitoring**: Better monitoring capabilities
+
+### Security Enhancements
+- **Enhanced Encryption**: Better encryption for replication traffic
+- **Secure Communication**: More secure communication channels
+- **Compliance Features**: Better compliance reporting
+- **Audit Capabilities**: Enhanced audit trails
+
+### Advanced Features
+- **Application Consistency**: Better application consistency
+- **Quiescing Improvements**: Enhanced quiescing capabilities
+- **Snapshot Management**: Better snapshot handling
+- **Error Handling**: Improved error handling and recovery
+
 ## Best Practices
 
 1. **RPO Planning**: Set appropriate RPO values based on business requirements
@@ -147,3 +173,4 @@ nc -zv dr-site.domain.com 8043
 - [Changed Block Tracking (CBT)](/glossary/term/changed-block-tracking)
 - [Snapshot](/glossary/term/snapshot)
 - [vSphere Data Protection](/glossary/term/vsphere-data-protection)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)

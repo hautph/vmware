@@ -1,6 +1,8 @@
 ---
 title: vMotion Technologies
 category: Availability & Migration
+term: vMotion
+category: Availability_Migration
 ---
 
 vMotion is VMware's flagship live migration technology that enables the movement of powered-on virtual machines between different ESXi hosts, datastores, or vCenter Server instances without any downtime. This comprehensive technology suite includes several specialized variants to address different migration scenarios.

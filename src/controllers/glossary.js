@@ -61,7 +61,8 @@ function parseMarkdownFile(filePath) {
       category: metadata.category,
       codeSample: codeSample,
       configuration: configuration,
-      fullContent: fullContent
+      fullContent: fullContent,
+      language: metadata.language || 'en' // Add language information
     };
   }
   
@@ -109,6 +110,7 @@ function loadGlossaryTerms() {
   const glossaryDir = path.join(__dirname, '..', 'docs', 'glossary');
   const terms = {};
   
+  // Load terms from main directory
   if (fs.existsSync(glossaryDir)) {
     const files = fs.readdirSync(glossaryDir);
     
@@ -122,7 +124,31 @@ function loadGlossaryTerms() {
           const termKey = path.basename(file, '.md').toLowerCase();
           terms[termKey] = {
             ...termData,
-            fileKey: termKey // Store the file key for URL mapping
+            fileKey: termKey, // Store the file key for URL mapping
+            language: termData.language || 'en' // Default to English if not specified
+          };
+        }
+      }
+    });
+  }
+  
+  // Load terms from Vietnamese directory
+  const viGlossaryDir = path.join(glossaryDir, 'vi');
+  if (fs.existsSync(viGlossaryDir)) {
+    const viFiles = fs.readdirSync(viGlossaryDir);
+    
+    viFiles.forEach(file => {
+      if (file.endsWith('.md')) {
+        const filePath = path.join(viGlossaryDir, file);
+        const termData = parseMarkdownFile(filePath);
+        
+        if (termData) {
+          // Use filename without extension as the key, with 'vi/' prefix for Vietnamese terms
+          const termKey = 'vi/' + path.basename(file, '.md').toLowerCase();
+          terms[termKey] = {
+            ...termData,
+            fileKey: termKey, // Store the file key for URL mapping
+            language: termData.language || 'vi' // Default to Vietnamese for vi directory
           };
         }
       }
@@ -139,21 +165,31 @@ function createUrlKey(termName) {
 
 // Function to find term by URL parameter
 function findTermByUrlParam(terms, urlParam) {
+  console.log('Searching for term with urlParam:', urlParam);
+  
   // First try direct match with file keys
   if (terms[urlParam]) {
+    console.log('Found direct match for term:', urlParam);
     return terms[urlParam];
   }
   
+  console.log('No direct match found, trying term name match');
+  
   // Try to match by term name (for cases where URL param is the actual term name)
   const decodedParam = decodeURIComponent(urlParam).toLowerCase();
+  console.log('Decoded param:', decodedParam);
+  
   for (const key in terms) {
     const term = terms[key];
     const termNameKey = createUrlKey(term.term);
+    console.log(`Checking key: ${key}, termNameKey: ${termNameKey}, term: ${term.term}`);
     if (termNameKey === urlParam || term.term.toLowerCase() === decodedParam) {
+      console.log('Found term by name match:', term.title);
       return term;
     }
   }
   
+  console.log('No term found for urlParam:', urlParam);
   return null;
 }
 
@@ -178,6 +214,20 @@ function groupTermsByCategory(terms) {
   return sortedCategories;
 }
 
+// Function to normalize category names for URL parameters
+function normalizeCategoryForUrl(category) {
+  if (!category) return '';
+  // Convert spaces to underscores for URL parameters
+  return category.replace(/\s+/g, '_');
+}
+
+// Function to normalize category names for display/lookup
+function normalizeCategoryForDisplay(category) {
+  if (!category) return '';
+  // Convert underscores to spaces for display and lookup
+  return category.replace(/_/g, ' ');
+}
+
 // Get glossary index page with pagination and categorization
 export const getIndex = (req, res) => {
   const terms = Object.values(loadGlossaryTerms());
@@ -191,9 +241,14 @@ export const getIndex = (req, res) => {
   // Filter terms by category if specified
   let filteredTerms = terms;
   if (categoryFilter !== 'all') {
-    filteredTerms = terms.filter(term => 
-      term.category && term.category.toLowerCase() === categoryFilter.toLowerCase()
-    );
+    // Normalize the filter to handle both underscore and space formats
+    const normalizedFilter = normalizeCategoryForDisplay(categoryFilter);
+    filteredTerms = terms.filter(term => {
+      if (!term.category) return false;
+      // Compare with both the original category and the normalized version
+      return term.category.toLowerCase() === normalizedFilter.toLowerCase() || 
+             term.category.toLowerCase() === categoryFilter.toLowerCase();
+    });
   }
   
   // For category-based display, we'll show all categories but paginate within each
@@ -231,10 +286,15 @@ export const getIndex = (req, res) => {
     displayCategories[item.category].push(item.term);
   });
   
+  // Normalize category names for URL parameters in the categories list
+  const urlSafeCategories = Object.keys(groupTermsByCategory(terms))
+    .map(cat => normalizeCategoryForUrl(cat))
+    .sort();
+  
   res.render('glossary/index', { 
     title: 'VMware Glossary',
     terms: pageTerms.map(item => item.term).filter(term => term !== undefined),
-    categories: Object.keys(groupTermsByCategory(terms)).sort(),
+    categories: urlSafeCategories,
     displayCategories,
     currentPage: page,
     totalPages,
@@ -268,11 +328,38 @@ export const searchTerms = (req, res) => {
 
 // Get specific term
 export const getTerm = (req, res) => {
-  const termKey = req.params.term.toLowerCase();
+  // Handle both route patterns:
+  // 1. /glossary/term/:singleSegment (for English terms like "esxi")
+  // 2. /glossary/term/:firstSegment/:secondSegment (for Vietnamese terms like "vi/guest-operating-system")
+  
+  let termPath;
+  
+  if (req.params.secondSegment) {
+    // Two-segment path like "vi/guest-operating-system"
+    termPath = req.params.firstSegment + '/' + req.params.secondSegment;
+  } else {
+    // Single-segment path like "esxi"
+    termPath = req.params.singleSegment;
+  }
+  
+  console.log('Term path extracted:', termPath);
+  
+  const termKey = termPath.toLowerCase();
+  console.log('Term key to search:', termKey);
+  
   const allTerms = loadGlossaryTerms();
+  console.log('Available terms count:', Object.keys(allTerms).length);
+  
+  // Log some of the available terms to see what keys we have
+  const termKeys = Object.keys(allTerms);
+  console.log('First 10 term keys:', termKeys.slice(0, 10));
+  
   const term = findTermByUrlParam(allTerms, termKey);
   
+  console.log('Found term:', term ? term.title : 'Not found');
+  
   if (!term) {
+    console.log('Term not found, returning 404');
     return res.status(404).render('error', {
       title: 'Term Not Found',
       message: 'The requested VMware term was not found.',
@@ -393,8 +480,12 @@ export const getTerm = (req, res) => {
     configuration: String(term.configuration || ''),
     fullContentHtml: String(fullContentHtml || ''),
     headers: headers || [],
-    fileKey: String(term.fileKey || '')
+    fileKey: String(term.fileKey || ''),
+    language: String(term.language || 'en')
   };
+  
+  console.log('Rendering term with title:', cleanTerm.title);
+  console.log('Term language:', cleanTerm.language);
   
   res.render('glossary/term', { 
     title: term.title,

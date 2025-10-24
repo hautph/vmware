@@ -1,6 +1,6 @@
 ---
 term: Retreat Mode
-category: High Availability
+category: High_Availability
 ---
 
 Retreat Mode is a protective state in VMware vSphere High Availability (HA) that prevents a host from participating in HA activities when it detects potential issues that could affect cluster stability. This mode helps maintain cluster integrity by isolating problematic hosts.

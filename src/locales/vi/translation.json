@@ -120,7 +120,11 @@
       "Monitoring": "Giám sát",
       "Monitoring_Management": "Giám sát & Quản lý",
       "Monitoring_Performance": "Giám sát & Hiệu suất",
-      "Resource_Management": "Quản lý Tài nguyên"
+      "Resource_Management": "Quản lý Tài nguyên",
+      "Desktop_Virtualization": "Ảo hóa Máy tính để bàn",
+      "Hardware_Integration": "Tích hợp Phần cứng",
+      "Memory_Management": "Quản lý Bộ nhớ",
+      "Virtual_Machine": "Máy ảo"
     }
   },
   "calculators": {

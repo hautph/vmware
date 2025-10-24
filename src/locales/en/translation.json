@@ -120,7 +120,11 @@
       "Monitoring": "Monitoring",
       "Monitoring_Management": "Monitoring & Management",
       "Monitoring_Performance": "Monitoring & Performance",
-      "Resource_Management": "Resource Management"
+      "Resource_Management": "Resource Management",
+      "Desktop_Virtualization": "Desktop Virtualization",
+      "Hardware_Integration": "Hardware Integration",
+      "Memory_Management": "Memory Management",
+      "Virtual_Machine": "Virtual Machine"
     }
   },
   "calculators": {

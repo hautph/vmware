@@ -1,6 +1,6 @@
 ---
-term: Changed Block Tracking (CBT)
-category: Backup & Disaster Recovery
+term: Changed Block Tracking
+category: Backup_Disaster_Recovery
 ---
 
 Changed Block Tracking (CBT) is a VMware feature that tracks and records changes to virtual machine disk blocks, enabling incremental backups and replication by only transferring the blocks that have changed since the last backup or replication cycle.

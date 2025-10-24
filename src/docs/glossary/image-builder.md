@@ -1,6 +1,6 @@
 ---
 term: Image Builder
-category: Management Tools
+category: Management_Tools
 ---
 
 Image Builder is a component of vSphere Lifecycle Manager (vLCM) that allows administrators to create custom ESXi images. These custom images can include specific drivers, patches, and software components, enabling organizations to tailor their ESXi deployments to meet their unique hardware and software requirements.

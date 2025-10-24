@@ -1,6 +1,6 @@
 ---
 term: esxtop
-category: Monitoring & Management
+category: Monitoring_Management
 ---
 
 esxtop is a command-line performance monitoring tool for VMware ESXi that provides real-time statistics on CPU, memory, disk, and network usage, helping administrators troubleshoot performance issues.

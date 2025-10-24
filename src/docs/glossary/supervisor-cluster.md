@@ -1,6 +1,6 @@
 ---
 term: Supervisor Cluster
-category: Cloud Technologies
+category: Cloud_Technologies
 ---
 
 A Supervisor Cluster is a key component of vSphere with Tanzu. It is a special type of Kubernetes cluster that runs directly on ESXi hosts and serves as the control plane for managing the lifecycle of other Kubernetes clusters (Tanzu Kubernetes Grid clusters) and vSphere Pods. The Supervisor Cluster enables developers to provision and deploy containerized applications directly on vSphere infrastructure using Kubernetes APIs.

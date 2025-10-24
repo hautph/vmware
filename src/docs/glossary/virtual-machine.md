@@ -1,173 +1,149 @@
 ---
-title: Virtual Machine
-category: Core Architecture
+term: Virtual Machine
+category: Core_Concepts
 ---
 
-A Virtual Machine (VM) is a software-based emulation of a physical computer that runs an operating system and applications just like a physical computer. In VMware vSphere environments, virtual machines are the fundamental building blocks that enable server consolidation, resource optimization, and flexible infrastructure management.
+A Virtual Machine (VM) is a software-based emulation of a physical computer system that runs operating systems and applications just like a physical machine. VMs are created and managed by a hypervisor, which allocates physical resources such as CPU, memory, storage, and network to each virtual machine.
 
 ## Overview
 
-Virtual Machine characteristics:
-- Complete software emulation of physical hardware
-- Runs guest operating systems and applications
-- Isolated from other virtual machines on the same host
-- Shares physical resources through the hypervisor
-- Provides flexibility in resource allocation and management
+Virtual Machines provide:
+- Hardware abstraction from physical components
+- Isolation between multiple VMs on the same host
+- Portability across different physical hardware
+- Snapshot and cloning capabilities
+- Dynamic resource allocation
 
-## Virtual Machine Components
+## Key Features
 
-### Virtual Hardware
-- **Virtual CPU (vCPU)**: Emulated processor cores allocated to the VM
-- **Virtual Memory (vRAM)**: Memory allocated from host physical RAM
-- **Virtual Disk (VMDK)**: Virtual hard disk files stored on datastore
-- **Virtual Network Adapter**: Emulated network interface for connectivity
-- **Virtual SCSI Controller**: Interface for virtual disk connectivity
-- **Virtual CD/DVD Drive**: Optical drive for installation media
+### Hardware Virtualization
+- **CPU Virtualization**: Virtual CPUs (vCPUs) that map to physical processors
+- **Memory Virtualization**: Virtual memory that maps to physical RAM
+- **Storage Virtualization**: Virtual disks that map to physical storage
+- **Network Virtualization**: Virtual network adapters that connect to virtual switches
 
-### Configuration Files
-- **.vmx file**: Primary configuration file containing VM settings
-- **.vmdk files**: Virtual disk descriptor and data files
-- **.nvram file**: BIOS/UEFI settings and boot information
-- **.vmxf file**: Additional configuration for teaming
-- **.vmsd file**: Snapshot descriptor file
+### Isolation and Security
+- **Process Isolation**: Each VM runs in its own isolated environment
+- **Resource Quotas**: Defined limits on resource consumption
+- **Snapshot Capabilities**: Point-in-time capture of VM state
+- **Encryption Support**: Data encryption for security
 
-## Virtual Machine Lifecycle
+### Management Features
+- **Live Migration**: Moving running VMs between hosts without downtime
+- **Template Deployment**: Rapid provisioning from standardized images
+- **Cloning**: Creating copies of existing VMs
+- **Resource Scaling**: Dynamic adjustment of allocated resources
+
+## Architecture
+
+### VM Components
+- **Virtual Hardware**: Virtualized CPU, memory, storage, and network devices
+- **Guest Operating System**: The OS installed inside the VM
+- **VM Configuration File**: Contains VM settings and hardware configuration
+- **Virtual Disk Files**: Storage files that contain the VM's disk data
+- **Snapshot Files**: Files that store VM state at specific points in time
+
+### Hypervisor Integration
+- **Resource Allocation**: Distribution of physical resources to VMs
+- **Scheduling**: CPU time-slicing and prioritization
+- **Memory Management**: Techniques like ballooning, compression, and swapping
+- **I/O Processing**: Handling of input/output operations
+
+## VM Lifecycle Management
 
 ### Creation
-1. Define VM hardware specifications
-2. Select guest operating system type
-3. Allocate CPU, memory, and storage resources
-4. Configure network and other virtual devices
-5. Install guest operating system
+- **From Template**: Deploying standardized VM images
+- **From Scratch**: Manual installation of OS and applications
+- **Import/Export**: Converting VMs from other virtualization platforms
+- **Cloning**: Creating copies of existing VMs
 
-### Operation
-1. Power on VM through vSphere Client
-2. Guest OS boots and runs applications
-3. Resources dynamically allocated by hypervisor
-4. Monitoring and management through vCenter
-5. Performance optimization and tuning
+### Configuration
+- **Hardware Customization**: Adding/removing virtual hardware components
+- **Resource Allocation**: Setting CPU, memory, and storage limits
+- **Network Configuration**: Setting up virtual network adapters
+- **Storage Configuration**: Configuring virtual disks and datastores
 
-### Management
-1. Snapshots for backup and testing
-2. Cloning for rapid deployment
-3. Migration between hosts (vMotion)
-4. Resource adjustments based on demand
-5. Updates and patching
+### Operations
+- **Power Management**: Starting, stopping, pausing, and resetting VMs
+- **Snapshot Management**: Creating, reverting, and deleting snapshots
+- **Migration**: Moving VMs between hosts or storage systems
+- **Backup and Recovery**: Protecting VM data and configurations
 
-## Configuration Example
+## VM Types
 
-Creating and managing virtual machines:
+### Full Virtualization
+- Complete emulation of hardware
+- Guest OS unaware of virtualization
+- Maximum compatibility
+- Some performance overhead
 
-```powershell
-# Create new virtual machine
-New-VM -Name "WebServer01" -VMHost "esxi01.domain.com" -Datastore "Datastore1" -DiskGB 50 -MemoryGB 4 -NumCpu 2 -GuestId "windows9Server64Guest"
+### Paravirtualization
+- Guest OS modified for virtualization
+- Better performance than full virtualization
+- Requires special drivers (VMware Tools)
+- Less compatibility with unmodified OS
 
-# Configure VM hardware
-Get-VM "WebServer01" | New-HardDisk -CapacityGB 100 -StorageFormat Thin
-Get-VM "WebServer01" | New-NetworkAdapter -NetworkName "VM Network" -StartConnected
+### Hardware-Assisted Virtualization
+- Uses CPU extensions (Intel VT-x, AMD-V)
+- Near-native performance
+- Minimal hypervisor overhead
+- Supported by modern processors
 
-# Manage VM power state
-Start-VM -VM "WebServer01"
-Stop-VM -VM "WebServer01" -Confirm:$false
-Restart-VM -VM "WebServer01"
+## vSphere 8 Enhancements
 
-# Modify VM resources
-Get-VM "WebServer01" | Set-VM -MemoryGB 8 -NumCpu 4
-```
+### Performance Improvements
+- **Enhanced CPU Scheduling**: Improved algorithms for better performance
+- **Memory Optimization**: Advanced memory management techniques
+- **Storage Stack Improvements**: Better storage I/O performance
+- **Network Processing**: Enhanced virtual network performance
 
-ESXi CLI management:
+### Security Features
+- **VM Encryption**: Hardware-accelerated encryption for VM data
+- **Secure Boot**: Ensuring VM integrity from boot process
+- **Trusted Execution**: Hardware-based security for sensitive workloads
+- **Isolation Enhancements**: Improved VM isolation techniques
 
-```bash
-# List all virtual machines
-vim-cmd vmsvc/getallvms
-
-# Get VM information
-vim-cmd vmsvc/get.config 123
-
-# Power operations
-vim-cmd vmsvc/power.on 123
-vim-cmd vmsvc/power.off 123
-vim-cmd vmsvc/power.shutdown 123
-
-# View VM resource usage
-esxtop
-```
-
-## Virtual Machine States
-
-### Powered On
-- VM is running and consuming resources
-- Guest OS is active and processing workloads
-- Network and storage connectivity available
-
-### Powered Off
-- VM is not consuming CPU or memory resources
-- Virtual disks remain stored on datastore
-- Configuration preserved for next power-on
-
-### Suspended
-- VM state is saved to disk
-- Quick resume capability
-- Memory contents preserved in snapshot
-
-### Snapshot
-- Point-in-time copy of VM state
-- Used for backup, testing, and rollback
-- Multiple snapshots can be created
+### Management Capabilities
+- **Template Improvements**: Enhanced template management and deployment
+- **Snapshot Optimization**: Better snapshot performance and management
+- **Resource Controls**: More granular resource allocation controls
+- **Monitoring Integration**: Better integration with monitoring tools
 
 ## Best Practices
 
-1. **Resource Allocation**: Right-size VM resources based on workload requirements
-2. **Performance Monitoring**: Regularly monitor VM performance and resource usage
-3. **Security**: Keep guest OS and applications updated with latest patches
-4. **Backup**: Implement regular backup and snapshot strategies
-5. **Documentation**: Maintain detailed documentation of VM configurations
-6. **Lifecycle Management**: Implement proper VM provisioning and decommissioning procedures
-
-## Performance Optimization
-
-### CPU Optimization
-- Assign appropriate number of vCPUs
-- Use CPU reservations and limits when needed
-- Monitor CPU ready time and contention
-- Consider CPU affinity settings
-
-### Memory Optimization
-- Allocate sufficient memory for guest OS
-- Enable memory ballooning and compression
-- Monitor memory usage and swapping
-- Use memory reservations for critical VMs
-
-### Storage Optimization
-- Use appropriate disk formats (thin, thick, eager zeroed)
-- Enable storage I/O control for performance
-- Implement storage policies for tiered storage
-- Monitor storage latency and throughput
+1. **Resource Sizing**: Properly size CPU, memory, and storage based on workload requirements
+2. **VM Hardware Version**: Use appropriate VM hardware versions for feature compatibility
+3. **VMware Tools**: Always install and keep VMware Tools updated in guest OS
+4. **Snapshot Management**: Limit snapshot chains and delete unnecessary snapshots
+5. **Security Configuration**: Implement proper access controls and encryption
+6. **Backup Strategy**: Regular backups of critical VM data and configurations
 
 ## Troubleshooting Commands
 
 ```bash
-# Check VM status
-vim-cmd vmsvc/getallvms | grep "WebServer01"
+# Check VM status on ESXi host
+esxcli vm process list
 
 # View VM configuration
-vim-cmd vmsvc/get.config 123
+vim-cmd vmsvc/get.config <vmid>
 
 # Check VM resource usage
-esxtop -s /path/to/vm/stats.csv
+esxtop (press 'v' for VM view)
 
 # View VM logs
-tail -f /vmfs/volumes/datastore1/WebServer01/WebServer01.log
+tail -f /vmfs/volumes/datastore/VMname/VMname.log
 
-# Monitor network connectivity
-vmkping -I vmk0 8.8.8.8
+# Power operations
+vim-cmd vmsvc/power.on <vmid>
+vim-cmd vmsvc/power.off <vmid>
+vim-cmd vmsvc/power.shutdown <vmid>
 ```
 
 ## Related Technologies
 
-- [vSphere](/glossary/vsphere)
-- [ESXi](/glossary/esxi)
-- [vCenter Server](/glossary/vcenter-server)
-- [Snapshot](/glossary/snapshot)
-- [vMotion](/glossary/vmotion)
-- [Resource Pool](/glossary/resource-pool)
+- [ESXi](/glossary/term/esxi)
+- [vSphere](/glossary/term/vsphere)
+- [vCenter Server](/glossary/term/vcenter-server)
+- [VMware Tools](/glossary/term/vmware-tools)
+- [vMotion](/glossary/term/vmotion)
+- [Snapshots](/glossary/term/snapshot)

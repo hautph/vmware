@@ -41,7 +41,7 @@
                         <% categories.forEach(category => { %>
                             <a href="/glossary?page=1&category=<%= encodeURIComponent(category) %>" 
                                class="btn category-btn <%= categoryFilter === category ? 'btn-primary active' : 'btn-outline-primary' %>">
-                                <%= t('glossary.categories.' + category.replace(/[^a-zA-Z0-9]+/g, '_')) || category %>
+                                <%= t('glossary.categories.' + category.replace(/[^a-zA-Z0-9]+/g, '_')) || category.replace(/_/g, ' ') %>
                             </a>
                         <% }); %>
                     </div>
@@ -55,7 +55,7 @@
                     <%= t('glossary.results_info', { 
                         count: terms.length, 
                         total: totalTerms, 
-                        categoryText: categoryFilter !== 'all' ? t('glossary.results_info_category', { category: t('glossary.categories.' + categoryFilter.replace(/[^a-zA-Z0-9]+/g, '_')) || categoryFilter }) : t('glossary.results_info_all') 
+                        categoryText: categoryFilter !== 'all' ? t('glossary.results_info_category', { category: t('glossary.categories.' + categoryFilter.replace(/[^a-zA-Z0-9]+/g, '_')) || categoryFilter.replace(/_/g, ' ') }) : t('glossary.results_info_all') 
                     }) %>
                 </h5>
             </div>
@@ -66,7 +66,7 @@
                     <div class="category-section">
                         <div class="category-section-header">
                             <h3 class="category-section-title mb-0">
-                                <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category.replace(/[^a-zA-Z0-9]+/g, '_')) || category %>
+                                <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category.replace(/[^a-zA-Z0-9]+/g, '_')) || category.replace(/_/g, ' ') %>
                                 <span class="badge bg-primary ms-2"><%= displayCategories[category].length %> terms</span>
                             </h3>
                         </div>
@@ -75,7 +75,18 @@
                                 <div class="col-lg-6 col-xl-4 mb-4">
                                     <div class="card term-card h-100">
                                         <div class="card-body d-flex flex-column">
-                                            <h4 class="term-card-title"><%= term.title || term.term %></h4>
+                                            <h4 class="term-card-title">
+                                                <% if (term.language === 'vi') { %>
+                                                    <% const termTitle = term.title || term.term; %>
+                                                    <% if (termTitle.startsWith('[VI]')) { %>
+                                                        <%= termTitle %>
+                                                    <% } else { %>
+                                                        [VI] <%= termTitle %>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <%= term.title || term.term %>
+                                                <% } %>
+                                            </h4>
                                             <span class="term-card-category"><%= term.category %></span>
                                             <p class="term-card-definition flex-grow-1"><%= term.definition.substring(0, 150) %>...</p>
                                             <a href="/glossary/term/<%= term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-') %>" 

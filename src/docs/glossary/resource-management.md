@@ -1,6 +1,6 @@
 ---
 term: Resource Management
-category: Resource Management
+category: Resource_Management
 ---
 
 Resource Management in vSphere refers to the set of features and capabilities that allow administrators to allocate, monitor, and control the consumption of compute (CPU), memory, storage, and network resources within a virtualized environment. The goal of resource management is to ensure that all virtual machines and applications receive the necessary resources to perform optimally, while also maximizing the utilization of underlying physical hardware.

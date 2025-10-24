@@ -1,6 +1,6 @@
 ---
 title: Fault Tolerance (FT)
-category: Availability & Migration
+category: Availability_Migration
 ---
 
 Fault Tolerance (FT) is VMware's advanced availability solution that provides continuous protection for mission-critical virtual machines by creating and maintaining a secondary copy that executes in perfect lockstep with the primary VM. This technology ensures zero downtime and zero data loss by eliminating single points of failure at the virtual machine level.
@@ -88,6 +88,32 @@ esxtop -n VM -s /path/to/ft/metrics.csv
 - Supports microservices and containerized workloads
 - Enhanced monitoring and recovery capabilities
 
+## vSphere 8 Enhancements
+
+### Enhanced Performance
+- **Reduced Overhead**: Lower CPU and memory overhead
+- **Improved Efficiency**: Better resource utilization
+- **Faster Synchronization**: Accelerated state synchronization
+- **Optimized Logging**: More efficient logging channel
+
+### Modern Hardware Support
+- **Latest CPU Support**: Support for newest CPU architectures
+- **Enhanced Compatibility**: Better hardware compatibility
+- **Improved Performance**: Better performance on modern hardware
+- **Advanced Features**: Support for advanced CPU features
+
+### Security Enhancements
+- **Enhanced Encryption**: Better encryption for FT communication
+- **Secure Communication**: More secure logging channel
+- **Attestation Support**: Hardware attestation support
+- **Compliance Features**: Better compliance reporting
+
+### Management Improvements
+- **Simplified Configuration**: Easier FT configuration
+- **Enhanced Monitoring**: Better monitoring capabilities
+- **Improved Troubleshooting**: Better diagnostic tools
+- **Streamlined Operations**: Simplified day-to-day operations
+
 ## Requirements
 
 ### Licensing
@@ -163,3 +189,4 @@ tail -f /var/log/vmware/ft-*.log
 - [vMotion](/glossary/term/vmotion)
 - [VM Migration](/glossary/term/vm-migration)
 - [DRS](/glossary/term/drs)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)

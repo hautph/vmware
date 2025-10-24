@@ -1,6 +1,6 @@
 ---
 term: DirectPath I/O
-category: Advanced Features
+category: Advanced_Features
 ---
 
 DirectPath I/O is a feature that allows virtual machines to directly access physical PCIe devices, bypassing the hypervisor for improved performance in latency-sensitive applications like network and storage adapters.

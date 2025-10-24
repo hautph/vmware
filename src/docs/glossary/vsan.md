@@ -78,18 +78,35 @@ vSAN uses policy-based management to define storage requirements:
 
 ### Express Storage Architecture (ESA)
 vSAN ESA is a new architecture introduced in vSphere 8:
-- Single-tier architecture using high-performance NVMe devices
-- No disk groups required, simplifying management
-- New log-structured file system optimized for write performance
-- RAID-6 at RAID-1 performance with improved compression
-- Up to 4x better data compression compared to OSA
+- **Single-tier architecture**: Using high-performance NVMe devices
+- **No disk groups required**: Simplifying management
+- **New log-structured file system**: Optimized for write performance
+- **RAID-6 at RAID-1 performance**: With improved compression
+- **Up to 4x better data compression**: Compared to OSA
+- **Enhanced performance**: Significantly better I/O performance
+- **Simplified operations**: Easier management and monitoring
 
 ### Original Storage Architecture (OSA)
 The traditional vSAN architecture remains available:
-- Two-tier design with cache and capacity tiers
-- Disk groups for organizing storage devices
-- Mature feature set with proven reliability
-- Compatible with existing hardware configurations
+- **Two-tier design**: With cache and capacity tiers
+- **Disk groups**: For organizing storage devices
+- **Mature feature set**: With proven reliability
+- **Compatible with existing hardware**: Configurations
+- **Continued support**: For existing deployments
+
+### Performance Improvements
+- **Enhanced I/O processing**: Better I/O handling and processing
+- **Optimized data placement**: Improved data distribution algorithms
+- **Advanced caching**: Better cache utilization and management
+- **Reduced latency**: Lower storage access latency
+- **Higher throughput**: Better I/O throughput performance
+
+### Management Enhancements
+- **Simplified configuration**: Easier setup and configuration
+- **Enhanced monitoring**: Better performance and health monitoring
+- **Improved troubleshooting**: Better diagnostic capabilities
+- **Streamlined operations**: Simplified day-to-day operations
+- **Better integration**: With vSphere lifecycle management
 
 ## Deployment Models
 
@@ -146,3 +163,4 @@ esxcli vsan perf query -i vsan-perf-service-instance
 - [vSAN Stretched Cluster](/glossary/term/vsan-stretched-cluster)
 - [Storage DRS](/glossary/term/storage-drs)
 - [Storage I/O Control](/glossary/term/storage-io-control)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
