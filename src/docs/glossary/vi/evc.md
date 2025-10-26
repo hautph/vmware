@@ -104,7 +104,7 @@ Set-Cluster -Cluster "Cluster01" -EVCMode $null
 
 ## Các công nghệ liên quan
 
-- [vMotion](/glossary/term/vmotion)
-- [DRS](/glossary/term/drs)
-- [vSphere](/glossary/term/vsphere)
+- [vMotion](/glossary/term/vmotion.md)
+- [DRS](/glossary/term/drs.md)
+- [vSphere](/glossary/term/vsphere.md)
 - [CPU Compatibility](/glossary/term/cpu-compatibility)

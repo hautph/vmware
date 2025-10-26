@@ -1,6 +1,6 @@
 ---
 title: VM Migration
-category: Availability & Migration
+category: Availability_Migration
 ---
 
 VM Migration refers to the process of moving virtual machines from one host, datastore, or environment to another. VMware provides several migration techniques to accommodate different requirements, including cold migration (offline), hot migration (live), and various specialized migration types.
@@ -93,7 +93,7 @@ Move-VM -VM "MyVM" -Datastore (Get-Datastore "Datastore2") -RunAsync
 
 ## Related Technologies
 
-- [vMotion](/glossary/term/vmotion)
-- [Storage vMotion](/glossary/term/storage-vmotion)
+- [vMotion](/glossary/term/vmotion.md)
+- [Storage vMotion](/glossary/term/storage-vmotion.md)
 - [Cross vCenter vMotion](/glossary/term/cross-vcenter-vmotion)
 - [Long Distance vMotion](/glossary/term/long-distance-vmotion)

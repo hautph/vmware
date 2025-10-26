@@ -1,6 +1,6 @@
 ---
 term: vSphere API
-category: Integration & APIs
+category: Integration_APIs
 ---
 
 The vSphere API (Application Programming Interface) is a comprehensive set of interfaces that allows external applications and tools to interact with and manage the vSphere environment. It provides programmatic access to nearly all aspects of vSphere, enabling automation, integration with third-party solutions, and custom development.

@@ -114,9 +114,9 @@ tail -f /var/log/vmware/drsmgr/*.log
 
 ## Công nghệ liên quan
 
-- [Affinity Rules](/glossary/term/affinity-rules)
-- [VM-Host Affinity Rule](/glossary/term/vm-host-affinity-rule)
-- [VM-VM Affinity Rule](/glossary/term/vm-vm-affinity-rule)
-- [DRS (Distributed Resource Scheduler)](/glossary/term/drs)
-- [vMotion](/glossary/term/vmotion)
-- [High Availability](/glossary/term/high-availability)
+- [Affinity Rules](/glossary/term/affinity-rules.md)
+- [VM-Host Affinity Rule](/glossary/term/vm-host-affinity-rule.md)
+- [VM-VM Affinity Rule](/glossary/term/vm-vm-affinity-rule.md)
+- [DRS (Distributed Resource Scheduler)](/glossary/term/drs.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [High Availability](/glossary/term/vsphere-high-availability.md)

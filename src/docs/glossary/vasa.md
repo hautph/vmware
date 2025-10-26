@@ -157,7 +157,7 @@ vim-cmd vimsvc/task_list | grep -i vasa
 
 ## Related Technologies
 
-- [Virtual Volumes (vVols)](/glossary/term/vvols)
-- [vSAN](/glossary/term/vsan)
-- [Storage DRS](/glossary/term/storage-drs)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
+- [Virtual Volumes (vVols)](/glossary/term/vvols.md)
+- [vSAN](/glossary/term/vsan.md)
+- [Storage DRS](/glossary/term/storage-drs.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)

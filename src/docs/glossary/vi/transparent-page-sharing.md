@@ -105,8 +105,8 @@ esxcli system memory get
 
 ## Công nghệ liên quan
 
-- [Memory Overcommit](/glossary/term/memory-overcommit)
+- [Memory Overcommit](/glossary/term/memory-overcommit.md)
 - [Ballooning](/glossary/term/ballooning)
-- [Memory Compression](/glossary/term/memory-compression)
+- [Memory Compression](/glossary/term/memory-compression.md)
 - [Swapping](/glossary/term/swapping)
 - [Large Pages](/glossary/term/large-pages)

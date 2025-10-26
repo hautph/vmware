@@ -113,7 +113,7 @@ Get-VDSwitch -Name "DistributedSwitch" | Select Name, NumPorts, UplinkPorts
 
 ## Các công nghệ liên quan
 
-- [Virtual Switch](/glossary/term/virtual-switch)
-- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch)
-- [Network I/O Control](/glossary/term/network-i-o-control-nioc)
-- [Private VLAN](/glossary/term/pvlan)
+- [Virtual Switch](/glossary/term/virtual-switch.md)
+- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch.md)
+- [Network I/O Control](/glossary/term/network-i-o-control-nioc.md)
+- [Private VLAN](/glossary/term/pvlan.md)

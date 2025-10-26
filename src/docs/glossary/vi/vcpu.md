@@ -100,8 +100,8 @@ esxcli hardware cpu global get
 
 ## Công nghệ liên quan
 
-- [pCPU](/glossary/term/pcpu)
-- [Virtual SMP](/glossary/term/virtual-smp)
+- [pCPU](/glossary/term/pcpu.md)
+- [Virtual SMP](/glossary/term/virtual-smp.md)
 - [CPU Reservation](/glossary/term/cpu-reservation)
 - [CPU Limit](/glossary/term/cpu-limit)
 - [CPU Shares](/glossary/term/cpu-shares)

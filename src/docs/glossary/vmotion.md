@@ -1,6 +1,6 @@
 ---
 title: vMotion Technologies
-category: Availability & Migration
+category: Availability_Migration
 term: vMotion
 category: Availability_Migration
 ---
@@ -122,7 +122,7 @@ In vSphere 8, Distributed Resource Scheduler (DRS) has become "vMotion-aware":
 
 ## Related Technologies
 
-- [VM Migration](/glossary/term/vm-migration)
-- [DRS](/glossary/term/drs)
-- [High Availability](/glossary/term/vsphere-high-availability)
-- [Fault Tolerance](/glossary/term/fault-tolerance)
+- [VM Migration](/glossary/term/vm-migration.md)
+- [DRS](/glossary/term/drs.md)
+- [High Availability](/glossary/term/vsphere-high-availability.md)
+- [Fault Tolerance](/glossary/term/fault-tolerance.md)

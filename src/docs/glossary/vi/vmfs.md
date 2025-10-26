@@ -118,8 +118,8 @@ esxcli system settings advanced list -o /VMFS3/UseATSForHBOnVMFS5
 
 ## Công nghệ liên quan
 
-- [Datastore](/glossary/term/datastore)
-- [NFS](/glossary/term/nfs)
-- [Storage vMotion](/glossary/term/storage-vmotion)
+- [Datastore](/glossary/term/datastore.md)
+- [NFS](/glossary/term/nfs.md)
+- [Storage vMotion](/glossary/term/storage-vmotion.md)
 - [VMFS Extent](/glossary/term/vmfs-extent)
 - [Cluster File System](/glossary/term/cluster-file-system)

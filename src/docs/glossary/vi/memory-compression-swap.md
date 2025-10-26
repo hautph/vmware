@@ -109,8 +109,8 @@ tail -f /var/log/vmware/mem.log
 
 ## Công nghệ liên quan
 
-- [Memory Overcommit](/glossary/term/memory-overcommit)
-- [Transparent Page Sharing](/glossary/term/transparent-page-sharing)
+- [Memory Overcommit](/glossary/term/memory-overcommit.md)
+- [Transparent Page Sharing](/glossary/term/transparent-page-sharing.md)
 - [Ballooning](/glossary/term/ballooning)
 - [Swap File](/glossary/term/swap-file)
 - [Compression Cache](/glossary/term/compression-cache)

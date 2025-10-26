@@ -1,6 +1,6 @@
 ---
 term: Virtual CPU (vCPU)
-category: Compute
+category: Resource_Management
 ---
 
 A Virtual CPU (vCPU) is a virtualized processor core that is allocated to a virtual machine by the hypervisor. vCPUs provide computational resources to VMs, allowing guest operating systems and applications to execute instructions just as they would on physical CPU cores. The hypervisor manages the mapping of vCPUs to physical CPU cores and schedules their execution.
@@ -103,8 +103,8 @@ esxcli hardware numa node list
 
 ## Related Technologies
 
-- [Physical CPU (pCPU)](/glossary/term/pcpu)
-- [Virtual SMP](/glossary/term/virtual-smp)
-- [ESXi](/glossary/term/esxi)
-- [Resource Pools](/glossary/term/resource-pool)
-- [DRS](/glossary/term/drs)
+- [Physical CPU (pCPU)](/glossary/term/pcpu.md)
+- [Virtual SMP](/glossary/term/virtual-smp.md)
+- [ESXi](/glossary/term/esxi.md)
+- [Resource Pools](/glossary/term/resource-pool.md)
+- [DRS](/glossary/term/drs.md)

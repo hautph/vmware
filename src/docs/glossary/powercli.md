@@ -1,6 +1,6 @@
 ---
 term: PowerCLI
-category: Cloud & Integration
+category: Cloud_Integration
 ---
 
 PowerCLI is VMware's command-line interface tool built on PowerShell that provides cmdlets for managing and automating VMware vSphere, vCloud, and other VMware products through scripts and command-line operations.

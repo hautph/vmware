@@ -140,7 +140,7 @@ Update-Tools -VM "VM01" -NoReboot
 
 ## Các công nghệ liên quan
 
-- [Guest Operating System](/glossary/term/guest-operating-system)
-- [Virtual Machine](/glossary/term/virtual-machine)
+- [Guest Operating System](/glossary/term/guest-operating-system.md)
+- [Virtual Machine](/glossary/term/virtual-machine.md)
 - [Paravirtualization](/glossary/term/paravirtualization)
 - [VMware Tools API](/glossary/term/vmware-tools-api)

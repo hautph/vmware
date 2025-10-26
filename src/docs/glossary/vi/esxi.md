@@ -1,5 +1,5 @@
 ---
-term: [VI] ESXi
+term: ESXi
 category: Core_Architecture
 language: vi
 ---
@@ -90,7 +90,7 @@ esxtop
 
 ## Các công nghệ liên quan
 
-- [vSphere](/glossary/term/vsphere)
-- [vCenter Server](/glossary/term/vcenter-server)
-- [Virtual Machine](/glossary/term/virtual-machine)
-- [VMkernel](/glossary/term/vmkernel)
+- [vSphere](/glossary/term/vsphere.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [Virtual Machine](/glossary/term/virtual-machine.md)
+- [VMkernel](/glossary/term/vmkernel.md)

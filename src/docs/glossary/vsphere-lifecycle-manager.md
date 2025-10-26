@@ -141,8 +141,8 @@ Get-LcmUpdateStatus
 
 ## Related Technologies
 
-- [vSphere](/glossary/term/vsphere)
-- [ESXi](/glossary/term/esxi)
-- [vCenter Server](/glossary/term/vcenter-server)
-- [Update Manager](/glossary/term/update-manager)
+- [vSphere](/glossary/term/vsphere.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [Update Manager](/glossary/term/update-manager.md)
 - [Host Profiles](/glossary/term/host-profiles)

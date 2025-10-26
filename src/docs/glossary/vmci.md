@@ -1,6 +1,6 @@
 ---
 term: VMCI (Virtual Machine Communication Interface)
-category: Compliance & Hardening
+category: Compliance_Hardening
 ---
 
 VMCI (Virtual Machine Communication Interface) is a high-speed, low-latency communication channel between a virtual machine and its host, or between two virtual machines on the same host. It provides a mechanism for applications running inside virtual machines to communicate directly with the hypervisor or with other virtual machines without relying on traditional network protocols.

@@ -185,8 +185,8 @@ tail -f /var/log/vmware/ft-*.log
 
 ## Related Technologies
 
-- [High Availability (HA)](/glossary/term/vsphere-high-availability)
-- [vMotion](/glossary/term/vmotion)
-- [VM Migration](/glossary/term/vm-migration)
-- [DRS](/glossary/term/drs)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
+- [High Availability (HA)](/glossary/term/vsphere-high-availability.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [VM Migration](/glossary/term/vm-migration.md)
+- [DRS](/glossary/term/drs.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)

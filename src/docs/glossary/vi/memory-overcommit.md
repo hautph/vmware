@@ -110,8 +110,8 @@ esxcli vm process list
 
 ## Công nghệ liên quan
 
-- [Transparent Page Sharing](/glossary/term/transparent-page-sharing)
+- [Transparent Page Sharing](/glossary/term/transparent-page-sharing.md)
 - [Ballooning](/glossary/term/ballooning)
-- [Memory Compression](/glossary/term/memory-compression)
+- [Memory Compression](/glossary/term/memory-compression.md)
 - [Swapping](/glossary/term/swapping)
 - [Memory Reservation](/glossary/term/memory-reservation)

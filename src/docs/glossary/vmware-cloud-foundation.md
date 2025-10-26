@@ -132,8 +132,8 @@ ping sddc-manager.example.com
 
 ## Related Technologies
 
-- [vSphere](/glossary/term/vsphere)
-- [vSAN](/glossary/term/vsan)
-- [NSX](/glossary/term/nsx)
-- [vRealize Suite](/glossary/term/vrealize-suite)
+- [vSphere](/glossary/term/vsphere.md)
+- [vSAN](/glossary/term/vsan.md)
+- [NSX](/glossary/term/nsx.md)
+- [vRealize Suite](/glossary/term/vrealize-suite.md)
 - [SDDC Manager](/glossary/term/sddc-manager)

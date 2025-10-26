@@ -174,8 +174,8 @@ GET https://nsx-manager/api/v1/firewall/sections
 
 ## Related Technologies
 
-- [NSX-T](/glossary/term/nsx-t)
-- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch)
+- [NSX-T](/glossary/term/nsx-t.md)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
 - [Micro-segmentation](/glossary/term/micro-segmentation)
 - [Distributed Firewall](/glossary/term/distributed-firewall)
 - [VXLAN](/glossary/term/vxlan)

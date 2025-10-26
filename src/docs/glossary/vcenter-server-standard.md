@@ -1,6 +1,6 @@
 ---
 term: vCenter Server Standard
-category: Licensing & Editions
+category: Licensing_Editions
 ---
 
 vCenter Server Standard is the full-featured licensing edition of VMware vCenter Server, designed for large-scale vSphere deployments and enterprise environments. It provides comprehensive centralized management, automation, and orchestration capabilities for the entire vSphere infrastructure, supporting a large number of ESXi hosts and virtual machines.

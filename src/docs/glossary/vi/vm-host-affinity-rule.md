@@ -115,9 +115,9 @@ tail -f /var/log/vmware/drsmgr/*.log
 
 ## Công nghệ liên quan
 
-- [Affinity Rules](/glossary/term/affinity-rules)
-- [VM-VM Affinity Rule](/glossary/term/vm-vm-affinity-rule)
-- [VM-VM Anti-Affinity Rule](/glossary/term/vm-vm-anti-affinity-rule)
-- [DRS (Distributed Resource Scheduler)](/glossary/term/drs)
+- [Affinity Rules](/glossary/term/affinity-rules.md)
+- [VM-VM Affinity Rule](/glossary/term/vm-vm-affinity-rule.md)
+- [VM-VM Anti-Affinity Rule](/glossary/term/vm-vm-anti-affinity-rule.md)
+- [DRS (Distributed Resource Scheduler)](/glossary/term/drs.md)
 - [Host Groups](/glossary/term/host-groups)
 - [VM Groups](/glossary/term/vm-groups)

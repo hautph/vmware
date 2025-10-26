@@ -1,6 +1,6 @@
 ---
 term: Proactive Performance Monitoring
-category: Monitoring & Performance
+category: Monitoring_Performance
 ---
 
 Proactive Performance Monitoring in vSphere involves continuously analyzing performance metrics to identify potential bottlenecks, resource contention, or performance degradation before they impact applications. This approach aims to anticipate and address performance issues rather than reacting to them after they have occurred.

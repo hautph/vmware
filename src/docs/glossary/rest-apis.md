@@ -1,6 +1,6 @@
 ---
 term: REST APIs
-category: Cloud & Integration
+category: Cloud_Integration
 ---
 
 REST APIs (Representational State Transfer Application Programming Interfaces) are web-based interfaces that allow programmatic access to VMware vSphere and other VMware products, enabling automation and integration with third-party tools.

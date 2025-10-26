@@ -150,9 +150,9 @@ tail -f /var/log/vmkernel.log
 
 ## Related Technologies
 
-- [vSphere](/glossary/term/vsphere)
-- [vCenter Server](/glossary/term/vcenter-server)
-- [VMware Tools](/glossary/term/vmware-tools)
-- [vMotion](/glossary/term/vmotion)
-- [DRS](/glossary/term/drs)
-- [HA](/glossary/term/high-availability)
+- [vSphere](/glossary/term/vsphere.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [DRS](/glossary/term/drs.md)
+- [HA](/glossary/term/vsphere-high-availability.md)

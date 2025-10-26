@@ -120,8 +120,8 @@ tail -f /var/log/vmkernel.log | grep -i disk
 
 ## Công nghệ liên quan
 
-- [Datastore](/glossary/term/datastore)
-- [Storage vMotion](/glossary/term/storage-vmotion)
-- [Snapshot](/glossary/term/snapshot)
+- [Datastore](/glossary/term/datastore.md)
+- [Storage vMotion](/glossary/term/storage-vmotion.md)
+- [Snapshot](/glossary/term/snapshot.md)
 - [Thin Provisioning](/glossary/term/thin-provisioning)
 - [Thick Provisioning](/glossary/term/thick-provisioning)

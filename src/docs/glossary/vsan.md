@@ -158,9 +158,9 @@ esxcli vsan perf query -i vsan-perf-service-instance
 
 ## Related Technologies
 
-- [vSAN ESA](/glossary/term/vsan-express-storage-architecture)
-- [vSAN OSA](/glossary/term/vsan-original-storage-architecture)
-- [vSAN Stretched Cluster](/glossary/term/vsan-stretched-cluster)
-- [Storage DRS](/glossary/term/storage-drs)
-- [Storage I/O Control](/glossary/term/storage-io-control)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
+- [vSAN ESA](/glossary/term/vsan-express-storage-architecture.md)
+- [vSAN OSA](/glossary/term/vsan-original-storage-architecture.md)
+- [vSAN Stretched Cluster](/glossary/term/vsan-stretched-cluster.md)
+- [Storage DRS](/glossary/term/storage-drs.md)
+- [Storage I/O Control](/glossary/term/storage-io-control.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)

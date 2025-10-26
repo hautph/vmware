@@ -96,7 +96,7 @@ Get-VMHost | Select Name, ConnectionState, Version
 
 ## Các công nghệ liên quan
 
-- [vSphere](/glossary/term/vsphere)
-- [ESXi](/glossary/term/esxi)
-- [vCenter Server](/glossary/term/vcenter-server)
+- [vSphere](/glossary/term/vsphere.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vCenter Server](/glossary/term/vcenter.md)
 - [Host Profile](/glossary/term/host-profile)

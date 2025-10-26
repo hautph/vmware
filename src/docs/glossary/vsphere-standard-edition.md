@@ -1,6 +1,6 @@
 ---
 term: vSphere Standard Edition
-category: Licensing & Editions
+category: Licensing_Editions
 ---
 
 vSphere Standard Edition is the entry-level licensing tier of VMware vSphere that provides core virtualization features including vMotion, Storage vMotion, and High Availability, suitable for small to medium-sized environments.

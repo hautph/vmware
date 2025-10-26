@@ -1,6 +1,6 @@
 ---
 term: vSphere Automation SDK
-category: Integration & APIs
+category: Integration_APIs
 ---
 
 The vSphere Automation SDK is a set of client-side libraries and tools that simplify the development of applications and scripts for automating vSphere tasks. It provides a more modern and object-oriented approach to interacting with vSphere compared to the traditional Web Services SDK, particularly for tasks related to the vCenter Server Appliance (VCSA) and its services.

@@ -109,8 +109,8 @@ tail -f /var/log/vmware/vmmemctl.log
 
 ## Công nghệ liên quan
 
-- [Memory Overcommit](/glossary/term/memory-overcommit)
-- [Transparent Page Sharing](/glossary/term/transparent-page-sharing)
-- [Memory Compression](/glossary/term/memory-compression)
+- [Memory Overcommit](/glossary/term/memory-overcommit.md)
+- [Transparent Page Sharing](/glossary/term/transparent-page-sharing.md)
+- [Memory Compression](/glossary/term/memory-compression.md)
 - [Swapping](/glossary/term/swapping)
-- [VMware Tools](/glossary/term/vmware-tools)
+- [VMware Tools](/glossary/term/vmware-tools.md)

@@ -120,7 +120,7 @@ esxcli network nic stats get -n vmnic0
 
 ## Các công nghệ liên quan
 
-- [Virtual Switch](/glossary/term/virtual-switch)
-- [Port Group](/glossary/term/port-group)
-- [NIC Teaming](/glossary/term/nic-teaming)
-- [LACP](/glossary/term/lacp)
+- [Virtual Switch](/glossary/term/virtual-switch.md)
+- [Port Group](/glossary/term/port-group.md)
+- [NIC Teaming](/glossary/term/nic-teaming.md)
+- [LACP](/glossary/term/lacp.md)

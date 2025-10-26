@@ -110,7 +110,7 @@ esxcli network vswitch standard portgroup list
 
 ## Các công nghệ liên quan
 
-- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch)
-- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch)
-- [Port Group](/glossary/term/port-group)
-- [Uplink](/glossary/term/uplinks)
+- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch.md)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
+- [Port Group](/glossary/term/port-group.md)
+- [Uplink](/glossary/term/uplinks.md)

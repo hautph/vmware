@@ -106,8 +106,8 @@ esxcli system settings advanced list -o /Mem/Zip*
 
 ## Related Technologies
 
-- [Memory Overcommitment](/glossary/term/memory-overcommitment)
-- [Balloon Driver](/glossary/term/balloon-driver)
-- [Transparent Page Sharing](/glossary/term/transparent-page-sharing)
-- [ESXi](/glossary/term/esxi)
+- [Memory Overcommitment](/glossary/term/memory-overcommitment.md)
+- [Balloon Driver](/glossary/term/balloon-driver.md)
+- [Transparent Page Sharing](/glossary/term/transparent-page-sharing.md)
+- [ESXi](/glossary/term/esxi.md)
 - [Memory Management](/glossary/term/memory-management)

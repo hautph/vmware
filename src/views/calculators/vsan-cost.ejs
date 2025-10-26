@@ -32,6 +32,38 @@
                         </div>
                     </div>
                     
+                    <!-- Moved cost-related fields to General Information section -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="hardwareCost" class="form-label"><%= t('calculators.vsan_cost_form.hardware_cost') %></label>
+                                <input type="number" class="form-control" id="hardwareCost" name="hardwareCost" min="0" step="1000" value="100000">
+                                <div class="form-text"><%= t('calculators.vsan_cost_form.hardware_cost_info') %></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="licensingCost" class="form-label"><%= t('calculators.vsan_cost_form.licensing_cost') %></label>
+                                <input type="number" class="form-control" id="licensingCost" name="licensingCost" min="0" step="1000" value="50000">
+                                <div class="form-text"><%= t('calculators.vsan_cost_form.licensing_cost_info') %></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="maintenanceRate" class="form-label"><%= t('calculators.vsan_cost_form.maintenance_rate') %></label>
+                                <input type="number" class="form-control" id="maintenanceRate" name="maintenanceRate" min="0" max="100" step="0.1" value="18">
+                                <div class="form-text"><%= t('calculators.vsan_cost_form.maintenance_rate_info') %></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="powerCost" class="form-label"><%= t('calculators.vsan_cost_form.power_cost') %></label>
+                                <input type="number" class="form-control" id="powerCost" name="powerCost" min="0" step="0.01" value="0.15">
+                                <div class="form-text"><%= t('calculators.vsan_cost_form.power_cost_info') %></div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="card mt-4">
                         <div class="card-header">
                             <h4><%= t('calculators.vsan_cost_form.vsan_requirements') %></h4>
@@ -75,12 +107,8 @@
                                 <div class="col-md-3">
                                     <div class="mb-3">
                                         <label for="cpuModel" class="form-label"><%= t('calculators.vsan_cost_form.cpu_model') %></label>
-                                        <select class="form-select" id="cpuModel" name="cpuModel">
-                                            <option value="Intel Xeon Gold 6330" selected>Intel Xeon Gold 6330</option>
-                                            <option value="AMD EPYC 75F3">AMD EPYC 75F3</option>
-                                            <option value="Intel Xeon Gold 5318Y">Intel Xeon Gold 5318Y</option>
-                                            <option value="AMD EPYC 74F3">AMD EPYC 74F3</option>
-                                        </select>
+                                        <!-- Changed from select to text input to allow custom values -->
+                                        <input type="text" class="form-control" id="cpuModel" name="cpuModel" value="Intel Xeon Gold 6330" placeholder="Enter CPU model">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -102,6 +130,7 @@
                                         <select class="form-select" id="ramModuleSize" name="ramModuleSize">
                                             <option value="16">16 GB</option>
                                             <option value="32" selected>32 GB</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

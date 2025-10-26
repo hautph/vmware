@@ -157,8 +157,8 @@ service-control --status tftp
 
 ## Related Technologies
 
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
 - [Host Profiles](/glossary/term/host-profiles)
-- [Image Builder](/glossary/term/image-builder)
+- [Image Builder](/glossary/term/image-builder.md)
 - [PXE Boot](/glossary/term/pxe-boot)
 - [VIBs](/glossary/term/vibs)

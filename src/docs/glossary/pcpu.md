@@ -1,6 +1,6 @@
 ---
 term: Physical CPU (pCPU)
-category: Compute
+category: Resource_Management
 ---
 
 A Physical CPU (pCPU) is an actual processor core or thread on a physical server's CPU package. In virtualized environments, pCPUs are the real computing resources that the hypervisor uses to execute the instructions of virtual machines. The hypervisor schedules and allocates vCPUs (virtual CPUs) from the available pool of pCPUs.
@@ -103,8 +103,8 @@ esxcli system settings advanced list -o /Scheduler/
 
 ## Related Technologies
 
-- [Virtual CPU (vCPU)](/glossary/term/vcpu)
-- [Virtual SMP](/glossary/term/virtual-smp)
-- [ESXi](/glossary/term/esxi)
+- [Virtual CPU (vCPU)](/glossary/term/vcpu.md)
+- [Virtual SMP](/glossary/term/virtual-smp.md)
+- [ESXi](/glossary/term/esxi.md)
 - [NUMA](/glossary/term/numa)
 - [CPU Scheduling](/glossary/term/cpu-scheduling)

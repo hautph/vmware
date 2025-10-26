@@ -1,6 +1,6 @@
 ---
 term: Enhanced vMotion Compatibility (EVC)
-category: Compute
+category: Resource_Management
 ---
 
 Enhanced vMotion Compatibility (EVC) is a feature in VMware vSphere that ensures CPU compatibility between different generations of processors within a cluster, enabling seamless vMotion operations. EVC masks advanced CPU features to present a consistent CPU feature set to virtual machines, allowing them to migrate between hosts with different CPU generations.
@@ -103,7 +103,7 @@ Set-Cluster -Cluster "ClusterName" -EVCMode $null
 
 ## Related Technologies
 
-- [vMotion](/glossary/term/vmotion)
-- [DRS](/glossary/term/drs)
+- [vMotion](/glossary/term/vmotion.md)
+- [DRS](/glossary/term/drs.md)
 - [CPU Compatibility](/glossary/term/cpu-compatibility)
 - [Cluster](/glossary/term/cluster)

@@ -100,8 +100,8 @@ vSphere bao gồm một số thành phần chính:
 
 ## Các công nghệ liên quan
 
-- [ESXi](/glossary/term/esxi)
-- [vCenter Server](/glossary/term/vcenter-server)
-- [vSphere Client](/glossary/term/vsphere-client)
-- [vSAN](/glossary/term/vsan)
-- [NSX](/glossary/term/nsx)
+- [ESXi](/glossary/term/esxi.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [vSphere Client](/glossary/term/vsphere-client.md)
+- [vSAN](/glossary/term/vsan.md)
+- [NSX](/glossary/term/nsx.md)

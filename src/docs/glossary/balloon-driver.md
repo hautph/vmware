@@ -104,8 +104,8 @@ vim-cmd vmsvc/tools.installstate <vmid>
 
 ## Related Technologies
 
-- [Memory Overcommitment](/glossary/term/memory-overcommitment)
-- [Transparent Page Sharing](/glossary/term/transparent-page-sharing)
-- [Memory Compression](/glossary/term/memory-compression)
-- [VMware Tools](/glossary/term/vmware-tools)
-- [ESXi](/glossary/term/esxi)
+- [Memory Overcommitment](/glossary/term/memory-overcommitment.md)
+- [Transparent Page Sharing](/glossary/term/transparent-page-sharing.md)
+- [Memory Compression](/glossary/term/memory-compression.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)
+- [ESXi](/glossary/term/esxi.md)

@@ -103,8 +103,8 @@ esxcli system settings advanced list -o /Mem/
 
 ## Related Technologies
 
-- [Transparent Page Sharing](/glossary/term/transparent-page-sharing)
-- [Balloon Driver](/glossary/term/balloon-driver)
-- [Memory Compression](/glossary/term/memory-compression)
-- [ESXi](/glossary/term/esxi)
-- [Resource Pools](/glossary/term/resource-pool)
+- [Transparent Page Sharing](/glossary/term/transparent-page-sharing.md)
+- [Balloon Driver](/glossary/term/balloon-driver.md)
+- [Memory Compression](/glossary/term/memory-compression.md)
+- [ESXi](/glossary/term/esxi.md)
+- [Resource Pools](/glossary/term/resource-pool.md)

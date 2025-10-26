@@ -1,6 +1,6 @@
 ---
 term: Guest Operating System
-category: Core_Concepts
+category: Core_Architecture
 ---
 
 A Guest Operating System (Guest OS) is the operating system that runs inside a virtual machine. The Guest OS is installed and operates within the virtualized environment provided by the hypervisor, unaware that it is running on virtualized rather than physical hardware. It interacts with virtualized hardware components that are presented by the hypervisor.
@@ -123,8 +123,8 @@ vim-cmd vmsvc/get.customization <vmid>
 
 ## Related Technologies
 
-- [Virtual Machine](/glossary/term/virtual-machine)
-- [VMware Tools](/glossary/term/vmware-tools)
-- [ESXi](/glossary/term/esxi)
-- [vSphere](/glossary/term/vsphere)
+- [Virtual Machine](/glossary/term/virtual-machine.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vSphere](/glossary/term/vsphere.md)
 - [Guest Operations API](/glossary/term/guest-operations-api)

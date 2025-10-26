@@ -105,8 +105,8 @@ esxcli system settings advanced list -o /Mem/
 
 ## Related Technologies
 
-- [Memory Overcommitment](/glossary/term/memory-overcommitment)
-- [Balloon Driver](/glossary/term/balloon-driver)
-- [Memory Compression](/glossary/term/memory-compression)
-- [ESXi](/glossary/term/esxi)
+- [Memory Overcommitment](/glossary/term/memory-overcommitment.md)
+- [Balloon Driver](/glossary/term/balloon-driver.md)
+- [Memory Compression](/glossary/term/memory-compression.md)
+- [ESXi](/glossary/term/esxi.md)
 - [Memory Management](/glossary/term/memory-management)

@@ -143,7 +143,7 @@ Get-SpbmEntityCompliance
 ## Related Technologies
 
 - [Storage Policy-Based Management (SPBM)](/glossary/term/storage-policy-based-management)
-- [vSAN](/glossary/term/vsan)
-- [VMFS](/glossary/term/vmfs)
-- [VASA](/glossary/term/vasa)
-- [Storage DRS](/glossary/term/storage-drs)
+- [vSAN](/glossary/term/vsan.md)
+- [VMFS](/glossary/term/vmfs.md)
+- [VASA](/glossary/term/vasa.md)
+- [Storage DRS](/glossary/term/storage-drs.md)

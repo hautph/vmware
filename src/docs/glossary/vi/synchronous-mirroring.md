@@ -117,8 +117,8 @@ esxcli storage core path list
 
 ## Công nghệ liên quan
 
-- [vSphere Replication](/glossary/term/vsphere-replication)
-- [Site Recovery Manager (SRM)](/glossary/term/site-recovery-manager)
+- [vSphere Replication](/glossary/term/vsphere-replication.md)
+- [Site Recovery Manager (SRM)](/glossary/term/site-recovery-manager.md)
 - [RPO (Recovery Point Objective)](/glossary/term/rpo)
 - [RTO (Recovery Time Objective)](/glossary/term/rto)
 - [Disaster Recovery](/glossary/term/disaster-recovery)

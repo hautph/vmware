@@ -129,8 +129,8 @@ tail -f /var/log/vmware/trustauthority/*.log
 
 ## Related Technologies
 
-- [VM Encryption](/glossary/term/virtual-machine-encryption)
+- [VM Encryption](/glossary/term/virtual-machine-encryption.md)
 - [Hardware Security Module](/glossary/term/hardware-security-module)
 - [Trusted Platform Module](/glossary/term/tpm)
-- [Secure Boot](/glossary/term/secure-boot)
+- [Secure Boot](/glossary/term/secure-boot.md)
 - [Key Management](/glossary/term/key-management)

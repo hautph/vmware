@@ -123,7 +123,7 @@ tail -f /var/log/vmware/spbm.log
 ## Công nghệ liên quan
 
 - [vVol (Virtual Volumes)](/glossary/term/vvol)
-- [VASA (vSphere APIs for Storage Awareness)](/glossary/term/vasa)
-- [Storage DRS](/glossary/term/storage-drs)
-- [Datastore](/glossary/term/datastore)
+- [VASA (vSphere APIs for Storage Awareness)](/glossary/term/vasa.md)
+- [Storage DRS](/glossary/term/storage-drs.md)
+- [Datastore](/glossary/term/datastore.md)
 - [VM Storage Policy](/glossary/term/vm-storage-policy)

@@ -129,7 +129,7 @@ Set-VDResourcePool -Name "Management" -Reservation 100 -Limit 500
 
 ## Các công nghệ liên quan
 
-- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
 - [Quality of Service](/glossary/term/quality-of-service)
-- [Resource Pool](/glossary/term/resource-pool)
+- [Resource Pool](/glossary/term/resource-pool.md)
 - [Traffic Shaping](/glossary/term/traffic-shaping)

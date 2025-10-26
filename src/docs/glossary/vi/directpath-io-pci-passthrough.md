@@ -117,7 +117,7 @@ lspci (trong Guest OS)
 
 ## Công nghệ liên quan
 
-- [SR-IOV](/glossary/term/sr-iov)
+- [SR-IOV](/glossary/term/sr-iov.md)
 - [GPU Virtualization](/glossary/term/gpu-virtualization)
 - [PCI Devices](/glossary/term/pci-devices)
 - [IOMMU](/glossary/term/iommu)

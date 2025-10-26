@@ -186,8 +186,8 @@ GET https://nsx-manager/policy/api/v1/infra/domains/default/security-policies
 
 ## Related Technologies
 
-- [NSX](/glossary/term/nsx)
+- [NSX](/glossary/term/nsx.md)
 - [Kubernetes](/glossary/term/kubernetes)
-- [Tanzu](/glossary/term/tanzu)
+- [Tanzu](/glossary/term/tanzu.md)
 - [VXLAN](/glossary/term/vxlan)
 - [Service Mesh](/glossary/term/service-mesh)

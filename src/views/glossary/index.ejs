@@ -16,12 +16,16 @@
             <div class="card glossary-search-card mb-4">
                 <div class="card-body p-4">
                     <h3 class="card-title mb-3 text-center"><i class="bi bi-search"></i> Find VMware Terms</h3>
-                    <form action="/glossary/search" method="GET">
+                    <form action="/glossary/search" method="GET" id="glossarySearchForm">
                         <div class="input-group input-group-lg">
-                            <input type="text" class="form-control glossary-search-input" name="q" placeholder="<%= t('glossary.search_placeholder') %>" required>
+                            <input type="text" class="form-control glossary-search-input" name="q" placeholder="<%= t('glossary.search_placeholder') %>" required autocomplete="off">
                             <button class="btn btn-primary glossary-search-btn" type="submit">
                                 <i class="bi bi-search"></i> <%= t('glossary.search') %>
                             </button>
+                        </div>
+                        <!-- Suggestions dropdown -->
+                        <div id="searchSuggestions" class="search-suggestions-dropdown d-none">
+                            <ul class="list-group"></ul>
                         </div>
                     </form>
                 </div>
@@ -41,7 +45,7 @@
                         <% categories.forEach(category => { %>
                             <a href="/glossary?page=1&category=<%= encodeURIComponent(category) %>" 
                                class="btn category-btn <%= categoryFilter === category ? 'btn-primary active' : 'btn-outline-primary' %>">
-                                <%= t('glossary.categories.' + category.replace(/[^a-zA-Z0-9]+/g, '_')) || category.replace(/_/g, ' ') %>
+                                <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
                             </a>
                         <% }); %>
                     </div>
@@ -55,7 +59,7 @@
                     <%= t('glossary.results_info', { 
                         count: terms.length, 
                         total: totalTerms, 
-                        categoryText: categoryFilter !== 'all' ? t('glossary.results_info_category', { category: t('glossary.categories.' + categoryFilter.replace(/[^a-zA-Z0-9]+/g, '_')) || categoryFilter.replace(/_/g, ' ') }) : t('glossary.results_info_all') 
+                        categoryText: categoryFilter !== 'all' ? t('glossary.results_info_category', { category: t('glossary.categories.' + categoryFilter) || categoryFilter.replace(/_/g, ' ') }) : t('glossary.results_info_all') 
                     }) %>
                 </h5>
             </div>
@@ -66,7 +70,7 @@
                     <div class="category-section">
                         <div class="category-section-header">
                             <h3 class="category-section-title mb-0">
-                                <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category.replace(/[^a-zA-Z0-9]+/g, '_')) || category.replace(/_/g, ' ') %>
+                                <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
                                 <span class="badge bg-primary ms-2"><%= displayCategories[category].length %> terms</span>
                             </h3>
                         </div>
@@ -144,5 +148,133 @@
         </div>
     </div>
 </div>
+
+<!-- Add search functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.glossary-search-input');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    const suggestionsList = suggestionsContainer.querySelector('ul');
+    let debounceTimer;
+    
+    // Handle input for autocomplete
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        // Clear previous timer
+        clearTimeout(debounceTimer);
+        
+        // Hide suggestions if query is too short
+        if (query.length < 2) {
+            suggestionsContainer.classList.add('d-none');
+            return;
+        }
+        
+        // Debounce API calls
+        debounceTimer = setTimeout(() => {
+            fetch(`/glossary/api/suggestions?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(suggestions => {
+                    if (suggestions.length > 0) {
+                        // Clear previous suggestions
+                        suggestionsList.innerHTML = '';
+                        
+                        // Add new suggestions
+                        suggestions.forEach(suggestion => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action';
+                            li.textContent = suggestion.title || suggestion.term;
+                            li.addEventListener('click', () => {
+                                searchInput.value = suggestion.title || suggestion.term;
+                                suggestionsContainer.classList.add('d-none');
+                                document.getElementById('glossarySearchForm').submit();
+                            });
+                            suggestionsList.appendChild(li);
+                        });
+                        
+                        // Show suggestions
+                        suggestionsContainer.classList.remove('d-none');
+                    } else {
+                        suggestionsContainer.classList.add('d-none');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching suggestions:', error);
+                    suggestionsContainer.classList.add('d-none');
+                });
+        }, 300); // 300ms debounce
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+            suggestionsContainer.classList.add('d-none');
+        }
+    });
+    
+    // Handle keyboard navigation
+    searchInput.addEventListener('keydown', function(event) {
+        const items = suggestionsList.querySelectorAll('li');
+        if (items.length === 0) return;
+        
+        const activeItem = suggestionsList.querySelector('li.active');
+        let activeIndex = activeItem ? Array.from(items).indexOf(activeItem) : -1;
+        
+        switch (event.key) {
+            case 'ArrowDown':
+                event.preventDefault();
+                activeIndex = (activeIndex + 1) % items.length;
+                break;
+            case 'ArrowUp':
+                event.preventDefault();
+                activeIndex = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
+                break;
+            case 'Enter':
+                if (activeItem) {
+                    event.preventDefault();
+                    activeItem.click();
+                }
+                return;
+            case 'Escape':
+                suggestionsContainer.classList.add('d-none');
+                return;
+        }
+        
+        // Update active item
+        items.forEach((item, index) => {
+            item.classList.toggle('active', index === activeIndex);
+        });
+    });
+});
+</script>
+
+<style>
+.search-suggestions-dropdown {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    margin-top: 5px;
+}
+
+.search-suggestions-dropdown ul {
+    margin-bottom: 0;
+}
+
+.search-suggestions-dropdown li {
+    cursor: pointer;
+}
+
+.search-suggestions-dropdown li:hover,
+.search-suggestions-dropdown li.active {
+    background-color: #0d6efd;
+    color: white;
+}
+</style>
 
 <%- include('../partials/footer.ejs') %>

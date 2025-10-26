@@ -1,6 +1,6 @@
 ---
 term: vCenter Server Foundation
-category: Licensing & Editions
+category: Licensing_Editions
 ---
 
 vCenter Server Foundation is a licensing edition of VMware vCenter Server designed for smaller environments. It provides centralized management for vSphere deployments but has limitations on the number of ESXi hosts it can manage. It offers essential management capabilities for virtual machines, hosts, and basic networking and storage configurations.

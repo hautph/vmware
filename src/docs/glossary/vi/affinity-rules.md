@@ -113,8 +113,8 @@ tail -f /var/log/vmware/drsmgr/*.log
 
 ## Công nghệ liên quan
 
-- [DRS (Distributed Resource Scheduler)](/glossary/term/drs)
-- [vMotion](/glossary/term/vmotion)
+- [DRS (Distributed Resource Scheduler)](/glossary/term/drs.md)
+- [vMotion](/glossary/term/vmotion.md)
 - [Host Groups](/glossary/term/host-groups)
 - [VM Groups](/glossary/term/vm-groups)
 - [Cluster](/glossary/term/cluster)

@@ -100,7 +100,7 @@ Get-VirtualPortGroup -Name "Web-Tier" | Set-SecurityPolicy -AllowPromiscuous $fa
 
 ## Các công nghệ liên quan
 
-- [Virtual Switch](/glossary/term/virtual-switch)
-- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch)
-- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch)
-- [VLAN](/glossary/term/vlan)
+- [Virtual Switch](/glossary/term/virtual-switch.md)
+- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch.md)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
+- [VLAN](/glossary/term/vlan.md)

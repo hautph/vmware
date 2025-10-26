@@ -1,6 +1,6 @@
 ---
 term: Per CPU Licensing
-category: Licensing & Editions
+category: Licensing_Editions
 ---
 
 Per CPU Licensing is VMware's licensing model that requires one license for each physical CPU in an ESXi host, regardless of the number of cores per CPU, providing a simple and predictable licensing structure for vSphere deployments.

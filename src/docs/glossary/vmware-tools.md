@@ -1,6 +1,6 @@
 ---
 term: VMware Tools
-category: Compliance & Hardening
+category: Compliance_Hardening
 ---
 
 VMware Tools is a suite of utilities that enhances the performance of a virtual machine's guest operating system and improves its management. Installing VMware Tools in a guest operating system improves virtual machine performance by installing optimized drivers for virtual hardware and enables several important vSphere features.
@@ -141,9 +141,9 @@ Update-Tools -VM "VMName" -NoReboot
 
 ## Related Technologies
 
-- [Virtual Machine](/glossary/term/virtual-machine)
-- [ESXi](/glossary/term/esxi)
-- [vMotion](/glossary/term/vmotion)
-- [High Availability](/glossary/term/high-availability)
-- [DRS](/glossary/term/drs)
-- [Guest Operating System](/glossary/term/guest-operating-system)
+- [Virtual Machine](/glossary/term/virtual-machine.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [High Availability](/glossary/term/vsphere-high-availability.md)
+- [DRS](/glossary/term/drs.md)
+- [Guest Operating System](/glossary/term/guest-operating-system.md)

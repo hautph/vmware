@@ -151,7 +151,7 @@ tail -f /var/log/vmkernel.log | grep -i vmotion
 
 ## Related Technologies
 
-- [vMotion](/glossary/term/vmotion)
-- [Enhanced vMotion](/glossary/term/vmotion)
-- [NFS](/glossary/term/nfs)
-- [vSAN](/glossary/term/vsan)
+- [vMotion](/glossary/term/vmotion.md)
+- [Enhanced vMotion](/glossary/term/vmotion.md)
+- [NFS](/glossary/term/nfs.md)
+- [vSAN](/glossary/term/vsan.md)

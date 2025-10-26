@@ -169,8 +169,10 @@ nc -zv dr-site.domain.com 8043
 
 ## Related Technologies
 
-- [Site Recovery Manager (SRM)](/glossary/term/site-recovery-manager)
-- [Changed Block Tracking (CBT)](/glossary/term/changed-block-tracking)
-- [Snapshot](/glossary/term/snapshot)
-- [vSphere Data Protection](/glossary/term/vsphere-data-protection)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
+- [Site Recovery Manager (SRM)](/glossary/term/site-recovery-manager.md)
+- [Changed Block Tracking (CBT)](/glossary/term/changed-block-tracking.md)
+- [Snapshot](/glossary/term/snapshot.md)
+- [vSphere Data Protection](/glossary/term/vsphere-data-protection.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
+- [Recovery Point Objective (RPO)](/glossary/term/recovery-point-objective.md)
+- [Recovery Time Objective (RTO)](/glossary/term/recovery-time-objective.md)

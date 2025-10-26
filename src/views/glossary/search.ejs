@@ -1,39 +1,56 @@
 <%- include('../partials/header.ejs', { title: t('glossary.title') + ' - ' + t('glossary.search') }) %>
 
-<div class="row">
-    <div class="col-12">
-        <h1><i class="bi bi-search"></i> <%= t('glossary.search') %> <%= t('glossary.title') %></h1>
-        <p class="lead"><%= t('glossary.results_info', { count: results.length, total: results.length, categoryText: t('glossary.results_info_all') }) %> "<%= query %>"</p>
-        
-        <div class="mb-3">
-            <a href="/glossary" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Glossary
-            </a>
-        </div>
-        
-        <% if (results.length === 0) { %>
-            <div class="alert alert-warning" role="alert">
-                <h4><%= t('glossary.no_results') %></h4>
-                <p><%= t('glossary.search_placeholder') %></p>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1><i class="bi bi-search"></i> <%= t('glossary.search') %> <%= t('glossary.title') %></h1>
+            <p class="lead"><%= t('glossary.results_info', { count: results.length, total: results.length, categoryText: t('glossary.results_info_all') }) %> "<%= query %>"</p>
+            
+            <div class="mb-3">
+                <a href="/glossary" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Glossary
+                </a>
             </div>
-        <% } else { %>
-            <div class="row">
-                <% results.forEach(term => { %>
-                    <div class="col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title"><%= term.term %></h5>
-                                <h6 class="card-subtitle mb-2 text-muted"><%= t('glossary.categories.' + term.category.replace(/[^a-zA-Z0-9]+/g, '_')) || term.category %></h6>
-                                <p class="card-text"><%= term.definition %></p>
-                                <a href="/glossary/term/<%= term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-') %>" class="btn btn-primary btn-sm">
-                                    <%= t('glossary.learn_more') %>
-                                </a>
+            
+            <% if (results.length === 0) { %>
+                <div class="alert alert-warning" role="alert">
+                    <h4><%= t('glossary.no_results') %></h4>
+                    <p><%= t('glossary.search_placeholder') %></p>
+                </div>
+            <% } else { %>
+                <div class="row">
+                    <% results.forEach(term => { %>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <% if (term.language === 'vi') { %>
+                                            <% const termTitle = term.title || term.term; %>
+                                            <% if (termTitle.startsWith('[VI]')) { %>
+                                                <%- termTitle %>
+                                            <% } else { %>
+                                                [VI] <%- termTitle %>
+                                            <% } %>
+                                        <% } else { %>
+                                            <%- term.title || term.term %>
+                                        <% } %>
+                                    </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        <%= t('glossary.categories.' + (term.category || '').replace(/[^a-zA-Z0-9]+/g, '_')) || term.category %>
+                                    </h6>
+                                    <p class="card-text">
+                                        <%- term.definition || '' %>
+                                    </p>
+                                    <a href="/glossary/term/<%= term.fileKey || (term.term || '').toLowerCase().replace(/\s+/g, '-') %>" class="btn btn-primary btn-sm">
+                                        <%= t('glossary.learn_more') %>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <% }); %>
-            </div>
-        <% } %>
+                    <% }); %>
+                </div>
+            <% } %>
+        </div>
     </div>
 </div>
 

@@ -120,7 +120,7 @@ Get-View -ViewType ClusterComputeResource -Property Name,Summary | Select Name,S
 
 ## Các công nghệ liên quan
 
-- [vSphere Fault Tolerance](/glossary/term/fault-tolerance)
-- [DRS](/glossary/term/drs)
-- [vSphere Replication](/glossary/term/vsphere-replication)
-- [Site Recovery Manager](/glossary/term/site-recovery-manager)
+- [vSphere Fault Tolerance](/glossary/term/fault-tolerance.md)
+- [DRS](/glossary/term/drs.md)
+- [vSphere Replication](/glossary/term/vsphere-replication.md)
+- [Site Recovery Manager](/glossary/term/site-recovery-manager.md)

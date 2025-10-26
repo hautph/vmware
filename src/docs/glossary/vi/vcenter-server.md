@@ -106,8 +106,8 @@ vdcfg-backup -r /tmp/backup.zip
 
 ## Các công nghệ liên quan
 
-- [vSphere](/glossary/term/vsphere)
-- [ESXi](/glossary/term/esxi)
-- [vSphere Client](/glossary/term/vsphere-client)
-- [DRS](/glossary/term/drs)
-- [HA](/glossary/term/vsphere-high-availability)
+- [vSphere](/glossary/term/vsphere.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vSphere Client](/glossary/term/vsphere-client.md)
+- [DRS](/glossary/term/drs.md)
+- [HA](/glossary/term/vsphere-high-availability.md)

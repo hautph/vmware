@@ -1,6 +1,6 @@
 ---
 term: vSphere Health Monitoring
-category: Monitoring & Performance
+category: Monitoring_Performance
 ---
 
 vSphere Health Monitoring refers to the built-in capabilities within vCenter Server and ESXi to monitor the health and status of the vSphere infrastructure. This includes monitoring hardware components, software services, and overall system health to ensure the stability and availability of the virtualized environment.

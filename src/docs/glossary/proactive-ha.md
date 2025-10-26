@@ -1,6 +1,6 @@
 ---
 term: Proactive HA
-category: Availability & Migration
+category: Availability_Migration
 ---
 
 Proactive HA is a vSphere feature that works with hardware vendors to monitor the health of ESXi hosts and proactively evacuate virtual machines before a hardware failure occurs, reducing unplanned downtime.

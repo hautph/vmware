@@ -1,6 +1,6 @@
 ---
 term: vSphere Enterprise Plus Edition
-category: Licensing & Editions
+category: Licensing_Editions
 ---
 
 vSphere Enterprise Plus Edition is the highest licensing tier of VMware vSphere that includes all available features such as Distributed Resource Scheduler (DRS), Fault Tolerance, vSAN, and vSphere with Tanzu, providing comprehensive virtualization capabilities for enterprise environments.

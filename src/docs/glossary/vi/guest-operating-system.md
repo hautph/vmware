@@ -105,7 +105,7 @@ esxtop -c /path/to/guest/config
 
 ## Công nghệ liên quan
 
-- [Virtual Machine](/glossary/term/virtual-machine)
-- [VMware Tools](/glossary/term/vmware-tools)
-- [vSphere Client](/glossary/term/vsphere-client)
+- [Virtual Machine](/glossary/term/virtual-machine.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)
+- [vSphere Client](/glossary/term/vsphere-client.md)
 - [Guest Operations API](/glossary/term/guest-operations-api)

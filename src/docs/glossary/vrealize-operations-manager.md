@@ -1,6 +1,6 @@
 ---
 term: vRealize Operations Manager
-category: Monitoring & Performance
+category: Monitoring_Performance
 ---
 
 vRealize Operations Manager (vROps) is VMware's comprehensive operations management platform for the software-defined data center (SDDC) and cloud environments. It provides intelligent operations management with AI/ML-powered performance, capacity, and cost optimization, as well as proactive monitoring and troubleshooting capabilities.

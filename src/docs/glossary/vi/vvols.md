@@ -124,8 +124,8 @@ tail -f /var/log/vmware/vvol.log
 
 ## Công nghệ liên quan
 
-- [SPBM (Storage Policy-Based Management)](/glossary/term/spbm)
-- [VASA (vSphere APIs for Storage Awareness)](/glossary/term/vasa)
-- [Datastore](/glossary/term/datastore)
+- [SPBM (Storage Policy-Based Management)](/glossary/term/spbm.md)
+- [VASA (vSphere APIs for Storage Awareness)](/glossary/term/vasa.md)
+- [Datastore](/glossary/term/datastore.md)
 - [Storage Container](/glossary/term/storage-container)
 - [Protocol Endpoint](/glossary/term/protocol-endpoint)

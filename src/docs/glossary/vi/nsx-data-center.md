@@ -127,7 +127,7 @@ get logical-routers
 
 ## Các công nghệ liên quan
 
-- [NSX-T Data Center](/glossary/term/nsx-t)
+- [NSX-T Data Center](/glossary/term/nsx-t.md)
 - [vSphere Networking](/glossary/term/vsphere-networking)
 - [Network Virtualization](/glossary/term/network-virtualization)
 - [Zero-Trust Security](/glossary/term/zero-trust-security)

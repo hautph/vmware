@@ -1,6 +1,6 @@
 ---
 term: Limits
-category: Advanced Features
+category: Advanced_Features
 ---
 
 Limits specify the maximum amount of CPU or memory resources that a virtual machine or resource pool can consume, preventing any single entity from monopolizing resources and ensuring fair distribution among all workloads.

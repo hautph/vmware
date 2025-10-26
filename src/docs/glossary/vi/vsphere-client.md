@@ -88,7 +88,7 @@ tail -f /var/log/vmware/vsphere-client/logs/vsphere_client_virgo.log
 
 ## Các công nghệ liên quan
 
-- [vSphere](/glossary/term/vsphere)
-- [vCenter Server](/glossary/term/vcenter-server)
-- [ESXi](/glossary/term/esxi)
-- [Virtual Machine](/glossary/term/virtual-machine)
+- [vSphere](/glossary/term/vsphere.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [ESXi](/glossary/term/esxi.md)
+- [Virtual Machine](/glossary/term/virtual-machine.md)

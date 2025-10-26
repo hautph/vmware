@@ -241,7 +241,7 @@ tail -f /var/log/vmware/vra/*.log
 
 ## Related Technologies
 
-- [vSphere](/glossary/term/vsphere)
+- [vSphere](/glossary/term/vsphere.md)
 - [vRealize Operations](/glossary/term/vrealize-operations)
 - [vRealize Automation](/glossary/term/vrealize-automation)
 - [vRealize Log Insight](/glossary/term/vrealize-log-insight)

@@ -100,8 +100,8 @@ esxcli system settings advanced list -o /Scheduler/CpuScheduler
 
 ## Công nghệ liên quan
 
-- [vCPU](/glossary/term/vcpu)
-- [Virtual SMP](/glossary/term/virtual-smp)
+- [vCPU](/glossary/term/vcpu.md)
+- [Virtual SMP](/glossary/term/virtual-smp.md)
 - [NUMA](/glossary/term/numa)
 - [CPU Ready Time](/glossary/term/cpu-ready-time)
 - [CPU Overcommit](/glossary/term/cpu-overcommit)

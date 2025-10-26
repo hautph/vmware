@@ -148,8 +148,8 @@ tail -f /var/log/vmware/hostd.log | grep -i ha
 
 ## Related Technologies
 
-- [Fault Tolerance](/glossary/term/fault-tolerance)
-- [vMotion](/glossary/term/vmotion)
-- [DRS](/glossary/term/drs)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
-- [VMware Tools](/glossary/term/vmware-tools)
+- [Fault Tolerance](/glossary/term/fault-tolerance.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [DRS](/glossary/term/drs.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)

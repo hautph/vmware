@@ -2,10 +2,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.jumbotron {
-    background: linear-gradient(135deg, #007acc, #005a99);
+    background-color: #f8f9fa;
 }
 
 .card {
@@ -79,7 +76,7 @@ body {
 
 /* Footer Styles */
 .footer {
-    background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+    background-color: #2c3e50;
     color: #e9ecef;
     border-top: none;
 }
@@ -131,7 +128,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Back to Top Button - Enhanced Design */
+/* Back to Top Button */
 .back-to-top-btn {
     position: fixed;
     bottom: 30px;
@@ -150,8 +147,8 @@ body {
 }
 
 .back-to-top-btn .btn {
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: #007bff;
     color: white;
@@ -168,20 +165,6 @@ body {
     background: #0056b3;
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
-}
-
-.back-to-top-btn .btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-/* Add animation to the arrow icon */
-.back-to-top-btn .bi {
-    transition: transform 0.3s ease;
-}
-
-.back-to-top-btn .btn:hover .bi {
-    transform: translateY(-2px);
 }
 
 /* Code block copy button styles */

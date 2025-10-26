@@ -125,6 +125,6 @@ esxcli network sriov vf list -n vmnic0
 ## Các công nghệ liên quan
 
 - [PCI Passthrough](/glossary/term/pci-passthrough)
-- [Virtual Switch](/glossary/term/virtual-switch)
+- [Virtual Switch](/glossary/term/virtual-switch.md)
 - [Network Performance](/glossary/term/network-performance)
 - [Hardware Acceleration](/glossary/term/hardware-acceleration)

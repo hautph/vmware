@@ -1,6 +1,6 @@
 ---
-term: [VI] Site Recovery Manager (SRM)
-category: Availability_Data_Protection
+term: Site Recovery Manager (SRM)
+category: Backup_Disaster_Recovery
 language: vi
 ---
 
@@ -112,7 +112,7 @@ Get-SrmStatus
 
 ## Các công nghệ liên quan
 
-- [vSphere Replication](/glossary/term/vsphere-replication)
-- [Disaster Recovery](/glossary/term/disaster-recovery)
-- [Business Continuity](/glossary/term/business-continuity)
-- [Orchestration](/glossary/term/orchestration)
+- [vSphere Replication](/glossary/term/vsphere-replication.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
+- [Recovery Point Objective (RPO)](/glossary/term/recovery-point-objective.md)
+- [Recovery Time Objective (RTO)](/glossary/term/recovery-time-objective.md)

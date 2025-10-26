@@ -1,6 +1,6 @@
 ---
 term: vSphere Performance Charts
-category: Monitoring & Performance
+category: Monitoring_Performance
 ---
 
 vSphere Performance Charts are graphical representations of performance metrics collected from various vSphere objects, such as ESXi hosts, virtual machines, datastores, and networks. These charts provide administrators with real-time and historical insights into the resource utilization and performance trends of their vSphere environment.

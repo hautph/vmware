@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Distributed Resource Scheduler (DRS)
+term: vSphere Distributed Resource Scheduler (DRS)
 category: Compute_Resource_Management
 language: vi
 ---
@@ -110,7 +110,7 @@ Get-DrsRecommendation -Cluster "Cluster01" | Apply-DrsRecommendation
 
 ## Các công nghệ liên quan
 
-- [vSphere](/glossary/term/vsphere)
-- [vMotion](/glossary/term/vmotion)
-- [vSphere HA](/glossary/term/vsphere-high-availability)
+- [vSphere](/glossary/term/vsphere.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [vSphere HA](/glossary/term/vsphere-high-availability.md)
 - [Cluster](/glossary/term/cluster)

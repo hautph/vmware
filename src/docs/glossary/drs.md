@@ -142,9 +142,9 @@ esxcli system stats get -s cpu.util
 
 ## Related Technologies
 
-- [vMotion](/glossary/term/vmotion)
-- [Resource Pools](/glossary/term/resource-pool)
-- [Shares](/glossary/term/shares)
-- [Reservations](/glossary/term/reservations)
-- [Limits](/glossary/term/limits)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
+- [vMotion](/glossary/term/vmotion.md)
+- [Resource Pools](/glossary/term/resource-pool.md)
+- [Shares](/glossary/term/shares.md)
+- [Reservations](/glossary/term/reservations.md)
+- [Limits](/glossary/term/limits.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)

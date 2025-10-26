@@ -214,8 +214,8 @@ GET https://nsx-manager/api/v1/firewall/sections
 
 ## Related Technologies
 
-- [NSX](/glossary/term/nsx)
-- [NSX-T](/glossary/term/nsx-t)
-- [vSphere](/glossary/term/vsphere)
-- [Tanzu](/glossary/term/tanzu)
+- [NSX](/glossary/term/nsx.md)
+- [NSX-T](/glossary/term/nsx-t.md)
+- [vSphere](/glossary/term/vsphere.md)
+- [Tanzu](/glossary/term/tanzu.md)
 - [Micro-segmentation](/glossary/term/micro-segmentation)

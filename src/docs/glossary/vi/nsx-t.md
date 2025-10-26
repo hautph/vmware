@@ -136,7 +136,7 @@ get logical-routers
 
 ## Các công nghệ liên quan
 
-- [NSX Data Center](/glossary/term/nsx-data-center)
+- [NSX Data Center](/glossary/term/nsx-data-center.md)
 - [Network Virtualization](/glossary/term/network-virtualization)
 - [Kubernetes CNI](/glossary/term/kubernetes-cni)
 - [Micro-Segmentation](/glossary/term/micro-segmentation)

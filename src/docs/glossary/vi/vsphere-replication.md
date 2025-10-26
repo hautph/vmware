@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Replication
+term: vSphere Replication
 category: Availability_Data_Protection
 language: vi
 ---
@@ -111,7 +111,9 @@ Stop-VMReplication -VM "VM01"
 
 ## Các công nghệ liên quan
 
-- [Site Recovery Manager](/glossary/term/site-recovery-manager)
-- [vSphere High Availability](/glossary/term/vsphere-high-availability)
+- [Site Recovery Manager](/glossary/term/site-recovery-manager.md)
+- [vSphere High Availability](/glossary/term/vsphere-high-availability.md)
 - [Disaster Recovery](/glossary/term/disaster-recovery)
 - [Data Protection](/glossary/term/data-protection)
+- [Recovery Point Objective (RPO)](/glossary/term/recovery-point-objective.md)
+- [Recovery Time Objective (RTO)](/glossary/term/recovery-time-objective.md)

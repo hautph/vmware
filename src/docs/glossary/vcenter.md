@@ -154,9 +154,9 @@ psql -h localhost -p 5432 -U postgres -d VCDB
 
 ## Related Technologies
 
-- [vSphere](/glossary/term/vsphere)
-- [ESXi](/glossary/term/esxi)
-- [vSphere Client](/glossary/term/vsphere-client)
-- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager)
-- [DRS](/glossary/term/drs)
-- [HA](/glossary/term/high-availability)
+- [vSphere](/glossary/term/vsphere.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vSphere Client](/glossary/term/vsphere-client.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
+- [DRS](/glossary/term/drs.md)
+- [HA](/glossary/term/vsphere-high-availability.md)

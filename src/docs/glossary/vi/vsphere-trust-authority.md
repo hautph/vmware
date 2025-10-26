@@ -129,4 +129,4 @@ Get-TrustAuthorityHostAttestation -VMHost "ESXi-Host"
 - [VM Encryption](/glossary/term/vm-encryption)
 - [Key Management](/glossary/term/key-management)
 - [TPM](/glossary/term/tpm)
-- [Secure Boot](/glossary/term/secure-boot)
+- [Secure Boot](/glossary/term/secure-boot.md)

@@ -104,7 +104,7 @@ esxcli hardware platform get
 
 ## Công nghệ liên quan
 
-- [vSphere Auto Deploy](/glossary/term/vsphere-auto-deploy)
-- [Image Builder](/glossary/term/image-builder)
-- [Update Manager](/glossary/term/update-manager)
+- [vSphere Auto Deploy](/glossary/term/vsphere-auto-deploy.md)
+- [Image Builder](/glossary/term/image-builder.md)
+- [Update Manager](/glossary/term/update-manager.md)
 - [Hardware Support Packages (HSP)](/glossary/term/hardware-support-packages)

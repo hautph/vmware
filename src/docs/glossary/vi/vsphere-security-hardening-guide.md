@@ -116,7 +116,7 @@ Hướng dẫn bao gồm các thành phần sau:
 
 ## Các công nghệ liên quan
 
-- [vSphere Trust Authority](/glossary/term/vsphere-trust-authority)
+- [vSphere Trust Authority](/glossary/term/vsphere-trust-authority.md)
 - [VM Encryption](/glossary/term/vm-encryption)
 - [Role-Based Access Control](/glossary/term/role-based-access-control)
 - [Network Security](/glossary/term/network-security)

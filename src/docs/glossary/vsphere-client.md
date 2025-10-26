@@ -137,8 +137,8 @@ openssl x509 -in /etc/vmware-vpx/ssl/rui.crt -text -noout
 
 ## Related Technologies
 
-- [vCenter Server](/glossary/term/vcenter-server)
-- [ESXi](/glossary/term/esxi)
-- [vSphere Host Client](/glossary/term/vsphere-host-client)
-- [PowerCLI](/glossary/term/powercli)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [ESXi](/glossary/term/esxi.md)
+- [vSphere Host Client](/glossary/term/vsphere-host-client.md)
+- [PowerCLI](/glossary/term/powercli.md)
 - [vRealize Operations](/glossary/term/vrealize-operations)

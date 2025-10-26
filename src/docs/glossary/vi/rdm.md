@@ -123,8 +123,8 @@ tail -f /var/log/vmkernel.log | grep -i rdm
 
 ## Công nghệ liên quan
 
-- [VMFS](/glossary/term/vmfs)
-- [Datastore](/glossary/term/datastore)
+- [VMFS](/glossary/term/vmfs.md)
+- [Datastore](/glossary/term/datastore.md)
 - [LUN](/glossary/term/lun)
-- [Storage vMotion](/glossary/term/storage-vmotion)
+- [Storage vMotion](/glossary/term/storage-vmotion.md)
 - [Clustering](/glossary/term/clustering)

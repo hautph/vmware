@@ -1,6 +1,6 @@
 ---
 term: vSphere Web Services SDK
-category: Integration & APIs
+category: Integration_APIs
 ---
 
 The vSphere Web Services SDK (Software Development Kit) provides the necessary tools, libraries, and documentation for developers to build applications that interact with the vSphere API. It simplifies the process of developing custom solutions for managing and automating vSphere environments.

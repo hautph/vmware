@@ -240,8 +240,8 @@ netstat -an | grep 4172
 
 ## Related Technologies
 
-- [vSphere](/glossary/term/vsphere)
-- [vSAN](/glossary/term/vsan)
+- [vSphere](/glossary/term/vsphere.md)
+- [vSAN](/glossary/term/vsan.md)
 - [Unified Access Gateway](/glossary/term/unified-access-gateway)
 - [Blast Extreme](/glossary/term/blast-extreme)
 - [ThinApp](/glossary/term/thinapp)

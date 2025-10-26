@@ -130,7 +130,7 @@ Stop-VMFaultTolerance -VM "VM01"
 
 ## Các công nghệ liên quan
 
-- [vSphere High Availability](/glossary/term/vsphere-high-availability)
-- [vMotion](/glossary/term/vmotion)
-- [DRS](/glossary/term/drs)
-- [Synchronous Mirroring](/glossary/term/synchronous-mirroring)
+- [vSphere High Availability](/glossary/term/vsphere-high-availability.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [DRS](/glossary/term/drs.md)
+- [Synchronous Mirroring](/glossary/term/synchronous-mirroring.md)

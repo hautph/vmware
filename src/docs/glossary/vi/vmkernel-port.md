@@ -132,8 +132,8 @@ tail -f /var/log/vmkernel.log | grep -i net
 
 ## Công nghệ liên quan
 
-- [Virtual Switch](/glossary/term/virtual-switch)
-- [Port Group](/glossary/term/port-group)
-- [vMotion](/glossary/term/vmotion)
-- [vSAN](/glossary/term/vsan)
+- [Virtual Switch](/glossary/term/virtual-switch.md)
+- [Port Group](/glossary/term/port-group.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [vSAN](/glossary/term/vsan.md)
 - [TCP/IP Stack](/glossary/term/tcp-ip-stack)

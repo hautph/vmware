@@ -1,6 +1,6 @@
 ---
 term: Virtual Symmetric Multiprocessing (Virtual SMP)
-category: Compute
+category: Resource_Management
 ---
 
 Virtual Symmetric Multiprocessing (Virtual SMP) is a virtualization feature that allows a single virtual machine to be configured with multiple virtual CPUs (vCPUs), enabling the guest operating system to take advantage of multiple processor cores simultaneously. Virtual SMP enables VMs to run multi-threaded applications and operating systems that require multiple processors for optimal performance.
@@ -103,8 +103,8 @@ esxcli system settings advanced list -o /Scheduler/Cosched*
 
 ## Related Technologies
 
-- [Virtual CPU (vCPU)](/glossary/term/vcpu)
-- [Physical CPU (pCPU)](/glossary/term/pcpu)
-- [ESXi](/glossary/term/esxi)
+- [Virtual CPU (vCPU)](/glossary/term/vcpu.md)
+- [Physical CPU (pCPU)](/glossary/term/pcpu.md)
+- [ESXi](/glossary/term/esxi.md)
 - [NUMA](/glossary/term/numa)
 - [CPU Scheduling](/glossary/term/cpu-scheduling)

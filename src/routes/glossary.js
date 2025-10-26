@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { getIndex, searchTerms, getTerm } from '../controllers/glossary.js';
+import { getIndex, searchTerms, getTerm, getSearchSuggestions } from '../controllers/glossary.js';
 
 console.log('Glossary routes loaded');
 
@@ -14,6 +14,12 @@ router.get('/', (req, res) => {
 router.get('/search', (req, res) => {
   console.log('Glossary search route matched');
   searchTerms(req, res);
+});
+
+// API endpoint for search suggestions
+router.get('/api/suggestions', (req, res) => {
+  console.log('Glossary suggestions API route matched');
+  getSearchSuggestions(req, res);
 });
 
 // Simple test route

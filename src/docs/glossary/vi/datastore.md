@@ -124,8 +124,8 @@ esxcli storage nfs list
 
 ## Công nghệ liên quan
 
-- [VMFS](/glossary/term/vmfs)
-- [NFS](/glossary/term/nfs)
+- [VMFS](/glossary/term/vmfs.md)
+- [NFS](/glossary/term/nfs.md)
 - [vVol](/glossary/term/vvol)
-- [Storage vMotion](/glossary/term/storage-vmotion)
+- [Storage vMotion](/glossary/term/storage-vmotion.md)
 - [Datastore Browser](/glossary/term/datastore-browser)

@@ -1,6 +1,6 @@
 ---
 term: VMware Cloud on AWS
-category: Cloud & Integration
+category: Cloud_Integration
 ---
 
 VMware Cloud on AWS is a jointly developed cloud service that delivers VMware's enterprise infrastructure as a service on AWS infrastructure, providing consistent infrastructure and operations across data centers and cloud.

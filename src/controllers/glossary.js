@@ -198,7 +198,7 @@ function groupTermsByCategory(terms) {
   const categories = {};
   
   terms.forEach(term => {
-    const category = term.category || 'Uncategorized';
+    const category = normalizeCategoryForDisplay(term.category) || 'Uncategorized';
     if (!categories[category]) {
       categories[category] = [];
     }
@@ -224,8 +224,55 @@ function normalizeCategoryForUrl(category) {
 // Function to normalize category names for display/lookup
 function normalizeCategoryForDisplay(category) {
   if (!category) return '';
-  // Convert underscores to spaces for display and lookup
-  return category.replace(/_/g, ' ');
+  // Keep underscores for lookup since translation keys use underscores
+  return category.replace(/\s+/g, '_');
+}
+
+// Function to highlight search terms in text
+function highlightText(text, query) {
+  if (!text || !query) return text;
+  
+  // Escape special regex characters in query
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  
+  // Create regex to match the query (case insensitive)
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  
+  // Replace matches with highlighted version
+  return text.replace(regex, '<mark>$1</mark>');
+}
+
+// Function to calculate search relevance score
+function calculateRelevance(term, query) {
+  const lowerQuery = query.toLowerCase();
+  let score = 0;
+  
+  // Title match (highest priority)
+  if (term.title && term.title.toLowerCase().includes(lowerQuery)) {
+    score += 100;
+  }
+  
+  // Term name match (high priority)
+  if (term.term && term.term.toLowerCase().includes(lowerQuery)) {
+    score += 80;
+  }
+  
+  // Category match (medium priority)
+  if (term.category && term.category.toLowerCase().includes(lowerQuery)) {
+    score += 50;
+  }
+  
+  // Definition match (lower priority)
+  if (term.definition && term.definition.toLowerCase().includes(lowerQuery)) {
+    score += 20;
+  }
+  
+  // Full content match (lowest priority)
+  if (term.fullContent && term.fullContent.toLowerCase().includes(lowerQuery)) {
+    score += 10;
+  }
+  
+  return score;
 }
 
 // Get glossary index page with pagination and categorization
@@ -242,12 +289,12 @@ export const getIndex = (req, res) => {
   let filteredTerms = terms;
   if (categoryFilter !== 'all') {
     // Normalize the filter to handle both underscore and space formats
-    const normalizedFilter = normalizeCategoryForDisplay(categoryFilter);
+    const normalizedFilter = normalizeCategoryForUrl(categoryFilter);
     filteredTerms = terms.filter(term => {
       if (!term.category) return false;
-      // Compare with both the original category and the normalized version
-      return term.category.toLowerCase() === normalizedFilter.toLowerCase() || 
-             term.category.toLowerCase() === categoryFilter.toLowerCase();
+      // Normalize term category for comparison
+      const normalizedTermCategory = normalizeCategoryForDisplay(term.category);
+      return normalizedTermCategory.toLowerCase() === normalizedFilter.toLowerCase();
     });
   }
   
@@ -286,9 +333,10 @@ export const getIndex = (req, res) => {
     displayCategories[item.category].push(item.term);
   });
   
-  // Normalize category names for URL parameters in the categories list
-  const urlSafeCategories = Object.keys(groupTermsByCategory(terms))
-    .map(cat => normalizeCategoryForUrl(cat))
+  // Create unique list of categories with normalized names
+  const uniqueCategories = [...new Set(Object.keys(groupTermsByCategory(terms)))];
+  const urlSafeCategories = uniqueCategories
+    .map(category => normalizeCategoryForUrl(category))
     .sort();
   
   res.render('glossary/index', { 
@@ -299,12 +347,48 @@ export const getIndex = (req, res) => {
     currentPage: page,
     totalPages,
     totalTerms,
-    categoryFilter,
+    categoryFilter: normalizeCategoryForUrl(categoryFilter),
     termsPerPage
   });
 };
 
-// Search glossary terms
+// API endpoint to get search suggestions
+export const getSearchSuggestions = (req, res) => {
+  const query = req.query.q || '';
+  
+  if (!query || query.length < 2) {
+    return res.json([]);
+  }
+  
+  const terms = Object.values(loadGlossaryTerms());
+  const suggestions = [];
+  
+  // Collect unique terms that match the query
+  const uniqueTerms = new Set();
+  
+  terms.forEach(term => {
+    // Check if term title or name matches the query
+    if ((term.title && term.title.toLowerCase().includes(query.toLowerCase())) ||
+        (term.term && term.term.toLowerCase().includes(query.toLowerCase()))) {
+      // Only add if not already added
+      if (!uniqueTerms.has(term.term)) {
+        uniqueTerms.add(term.term);
+        suggestions.push({
+          term: term.term,
+          title: term.title,
+          category: term.category
+        });
+      }
+    }
+  });
+  
+  // Limit to 10 suggestions
+  const limitedSuggestions = suggestions.slice(0, 10);
+  
+  res.json(limitedSuggestions);
+};
+
+// Search glossary terms with improved ranking and highlighting
 export const searchTerms = (req, res) => {
   const query = req.query.q ? req.query.q.toLowerCase() : '';
   
@@ -312,16 +396,43 @@ export const searchTerms = (req, res) => {
     return res.redirect('/glossary');
   }
   
-  const terms = loadGlossaryTerms();
-  const results = Object.values(terms).filter(term => 
-    term.term.toLowerCase().includes(query) || 
-    term.definition.toLowerCase().includes(query) ||
-    term.category.toLowerCase().includes(query)
-  );
+  const terms = Object.values(loadGlossaryTerms());
+  
+  // Filter and rank terms
+  const rankedResults = terms
+    .map(term => {
+      // Check if term matches the query
+      const matches = 
+        (term.title && term.title.toLowerCase().includes(query)) ||
+        (term.term && term.term.toLowerCase().includes(query)) ||
+        (term.definition && term.definition.toLowerCase().includes(query)) ||
+        (term.category && term.category.toLowerCase().includes(query)) ||
+        (term.fullContent && term.fullContent.toLowerCase().includes(query));
+      
+      if (!matches) return null;
+      
+      // Calculate relevance score
+      const relevance = calculateRelevance(term, query);
+      
+      // Highlight query in title, term, and definition
+      const highlightedTitle = term.title ? highlightText(term.title, query) : term.title;
+      const highlightedTerm = term.term ? highlightText(term.term, query) : term.term;
+      const highlightedDefinition = term.definition ? highlightText(term.definition, query) : term.definition;
+      
+      return {
+        ...term,
+        relevance,
+        title: highlightedTitle,
+        term: highlightedTerm,
+        definition: highlightedDefinition
+      };
+    })
+    .filter(term => term !== null)
+    .sort((a, b) => b.relevance - a.relevance); // Sort by relevance (highest first)
   
   res.render('glossary/search', { 
     title: 'Glossary Search Results',
-    results,
+    results: rankedResults,
     query
   });
 };
@@ -460,6 +571,13 @@ export const getTerm = (req, res) => {
   
   // Fix glossary links to use the correct URL format
   fullContentHtml = fullContentHtml.replace(/href="\/glossary\/(?!term\/)([^"]+)"/g, 'href="/glossary/term/$1"');
+  
+  // Also fix links that already have term/ but might have .md extensions
+  fullContentHtml = fullContentHtml.replace(/href="\/glossary\/term\/([^"]+\.md)"/g, function(match, termPath) {
+    // Remove .md extension
+    const cleanPath = termPath.replace(/\.md$/, '');
+    return `href="/glossary/term/${cleanPath}"`;
+  });
   
   // Find related terms (same category, excluding current term)
   const relatedTerms = Object.values(allTerms)

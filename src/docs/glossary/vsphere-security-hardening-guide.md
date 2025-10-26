@@ -134,8 +134,8 @@ The Security Hardening Guide provides:
 
 ## Related Technologies
 
-- [vSphere Trust Authority](/glossary/term/vsphere-trust-authority)
-- [VMware Tools](/glossary/term/vmware-tools)
+- [vSphere Trust Authority](/glossary/term/vsphere-trust-authority.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)
 - [Role-Based Access Control](/glossary/term/role-based-access-control)
-- [Virtual Machine Encryption](/glossary/term/virtual-machine-encryption)
-- [Secure Boot](/glossary/term/secure-boot)
+- [Virtual Machine Encryption](/glossary/term/virtual-machine-encryption.md)
+- [Secure Boot](/glossary/term/secure-boot.md)

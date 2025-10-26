@@ -110,7 +110,7 @@ Get-VirtualSwitch -Name "vSwitch0" | Set-VirtualSwitch -Nic "vmnic0", "vmnic1"
 
 ## Các công nghệ liên quan
 
-- [Virtual Switch](/glossary/term/virtual-switch)
-- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch)
-- [Port Group](/glossary/term/port-group)
-- [Uplink](/glossary/term/uplinks)
+- [Virtual Switch](/glossary/term/virtual-switch.md)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
+- [Port Group](/glossary/term/port-group.md)
+- [Uplink](/glossary/term/uplinks.md)

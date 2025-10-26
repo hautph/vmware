@@ -116,6 +116,6 @@ kubectl logs -n <namespace> <pod-name>
 
 - [Tanzu Kubernetes Grid](/glossary/term/tanzu-kubernetes-grid)
 - [Kubernetes](/glossary/term/kubernetes)
-- [Supervisor Cluster](/glossary/term/supervisor-cluster)
-- [Workload Availability Zones](/glossary/term/workload-availability-zones)
+- [Supervisor Cluster](/glossary/term/supervisor-cluster.md)
+- [Workload Availability Zones](/glossary/term/workload-availability-zones.md)
 - [Cluster Classes](/glossary/term/cluster-classes)

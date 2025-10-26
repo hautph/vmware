@@ -97,8 +97,8 @@ esxcli system settings advanced list -o /Scheduler/CpuScheduler
 
 ## Công nghệ liên quan
 
-- [vCPU](/glossary/term/vcpu)
-- [pCPU](/glossary/term/pcpu)
+- [vCPU](/glossary/term/vcpu.md)
+- [pCPU](/glossary/term/pcpu.md)
 - [NUMA](/glossary/term/numa)
 - [CPU Hot Add](/glossary/term/cpu-hot-add)
 - [CPU Ready Time](/glossary/term/cpu-ready-time)

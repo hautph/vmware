@@ -103,8 +103,8 @@ Get-DrsRule -Cluster "ClusterName" | Select Name, Enabled, Mandatory
 
 ## Related Technologies
 
-- [DRS](/glossary/term/drs)
-- [VM-Host Affinity Rule](/glossary/term/vm-host-affinity-rule)
-- [VM-VM Affinity Rule](/glossary/term/vm-vm-affinity-rule)
-- [VM-VM Anti-Affinity Rule](/glossary/term/vm-vm-anti-affinity-rule)
+- [DRS](/glossary/term/drs.md)
+- [VM-Host Affinity Rule](/glossary/term/vm-host-affinity-rule.md)
+- [VM-VM Affinity Rule](/glossary/term/vm-vm-affinity-rule.md)
+- [VM-VM Anti-Affinity Rule](/glossary/term/vm-vm-anti-affinity-rule.md)
 - [Cluster](/glossary/term/cluster)

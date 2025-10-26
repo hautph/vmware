@@ -1,6 +1,6 @@
 ---
 term: Virtual Machine
-category: Core_Concepts
+category: Core_Architecture
 ---
 
 A Virtual Machine (VM) is a software-based emulation of a physical computer system that runs operating systems and applications just like a physical machine. VMs are created and managed by a hypervisor, which allocates physical resources such as CPU, memory, storage, and network to each virtual machine.
@@ -141,9 +141,9 @@ vim-cmd vmsvc/power.shutdown <vmid>
 
 ## Related Technologies
 
-- [ESXi](/glossary/term/esxi)
-- [vSphere](/glossary/term/vsphere)
-- [vCenter Server](/glossary/term/vcenter-server)
-- [VMware Tools](/glossary/term/vmware-tools)
-- [vMotion](/glossary/term/vmotion)
-- [Snapshots](/glossary/term/snapshot)
+- [ESXi](/glossary/term/esxi.md)
+- [vSphere](/glossary/term/vsphere.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [VMware Tools](/glossary/term/vmware-tools.md)
+- [vMotion](/glossary/term/vmotion.md)
+- [Snapshots](/glossary/term/snapshot.md)

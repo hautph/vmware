@@ -134,8 +134,8 @@ vmkping -I vmk0 192.168.1.1
 
 ## Related Technologies
 
-- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch)
-- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch)
-- [Port Group](/glossary/term/port-group)
-- [Uplink](/glossary/term/uplink)
-- [Network I/O Control](/glossary/term/network-i-o-control)
+- [vSphere Standard Switch](/glossary/term/vsphere-standard-switch.md)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
+- [Port Group](/glossary/term/port-group.md)
+- [Uplink](/glossary/term/uplink.md)
+- [Network I/O Control](/glossary/term/network-i-o-control.md)

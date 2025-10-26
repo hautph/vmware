@@ -29,6 +29,10 @@
                                 <div class="col-md-6">
                                     <h5><i class="bi bi-currency-dollar"></i> <%= t('calculators.vsan_cost_results.cost_breakdown') %></h5>
                                     <ul class="list-unstyled">
+                                        <li><strong><%= t('calculators.vsan_cost_form.hardware_cost') %>:</strong> $<%= results.hardwareCost.toLocaleString() %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.licensing_cost') %>:</strong> $<%= results.licensingCost.toLocaleString() %></li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.maintenance_rate') %>:</strong> <%= results.maintenanceRate %>%</li>
+                                        <li><strong><%= t('calculators.vsan_cost_form.power_cost') %>:</strong> $<%= results.powerCost %>/W/yr</li>
                                         <li><strong><%= t('calculators.vsan_cost_results.capex') %>:</strong> $<%= results.capex.total.toLocaleString() %></li>
                                         <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.hardware_total') %>: $<%= results.hardwareCosts.total.toLocaleString() %></li>
                                         <li style="margin-left: 20px;"><%= t('calculators.vsan_cost_results.licensing') %>: $<%= results.licenseCosts.total.toLocaleString() %></li>
