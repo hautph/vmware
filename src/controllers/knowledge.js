@@ -32,7 +32,8 @@ function parseMarkdownFile(filePath) {
       title: metadata.title,
       category: metadata.category,
       excerpt: metadata.excerpt,
-      content: markdownContent
+      content: markdownContent,
+      language: metadata.language
     };
   }
   
@@ -40,7 +41,8 @@ function parseMarkdownFile(filePath) {
   return {
     id: path.basename(filePath, '.md'),
     title: path.basename(filePath, '.md'),
-    content: content
+    content: content,
+    language: 'en'
   };
 }
 
@@ -81,10 +83,14 @@ function generateTOCFromContent(content) {
 }
 
 // Function to load all knowledge base articles from Markdown files
-function loadKnowledgeArticles() {
+function loadKnowledgeArticles(req) {
   const knowledgeDir = path.join(__dirname, '..', 'docs', 'knowledge');
   const articles = [];
   
+  // Determine current language from request
+  const currentLanguage = req && req.language ? req.language : 'en';
+  
+  // Load articles from main directory
   if (fs.existsSync(knowledgeDir)) {
     const files = fs.readdirSync(knowledgeDir);
     
@@ -94,6 +100,30 @@ function loadKnowledgeArticles() {
         const articleData = parseMarkdownFile(filePath);
         
         if (articleData) {
+          // Add language information
+          articleData.language = articleData.language || 'en';
+          // Only include articles that match the current language or are in the main directory (English)
+          if (articleData.language === currentLanguage || (!articleData.language && currentLanguage === 'en')) {
+            articles.push(articleData);
+          }
+        }
+      }
+    });
+  }
+  
+  // Load articles from language-specific directory
+  const langKnowledgeDir = path.join(knowledgeDir, currentLanguage);
+  if (currentLanguage !== 'en' && fs.existsSync(langKnowledgeDir)) {
+    const langFiles = fs.readdirSync(langKnowledgeDir);
+    
+    langFiles.forEach(file => {
+      if (file.endsWith('.md')) {
+        const filePath = path.join(langKnowledgeDir, file);
+        const articleData = parseMarkdownFile(filePath);
+        
+        if (articleData) {
+          // Add language information
+          articleData.language = currentLanguage;
           articles.push(articleData);
         }
       }
@@ -105,7 +135,7 @@ function loadKnowledgeArticles() {
 
 // Get knowledge base index page
 export const getIndex = (req, res) => {
-  const articles = loadKnowledgeArticles();
+  const articles = loadKnowledgeArticles(req);
   res.render('knowledge/index', { 
     title: 'Knowledge Base',
     articles
@@ -120,7 +150,7 @@ export const searchArticles = (req, res) => {
     return res.redirect('/knowledge');
   }
   
-  const articles = loadKnowledgeArticles();
+  const articles = loadKnowledgeArticles(req);
   const results = articles.filter(article => 
     article.title.toLowerCase().includes(query) || 
     (article.content && article.content.toLowerCase().includes(query)) ||
@@ -144,7 +174,7 @@ export const searchArticles = (req, res) => {
 // Get specific article
 export const getArticle = (req, res) => {
   const articleId = req.params.id;
-  const articles = loadKnowledgeArticles();
+  const articles = loadKnowledgeArticles(req);
   const article = articles.find(a => a.id === articleId);
   
   if (!article) {

@@ -1,6 +1,7 @@
 ---
 title: Cấu hình vPC trên Cisco Nexus N9K-C93180YC-FX3
 category: Networking
+language: vi
 excerpt: Hướng dẫn chi tiết cấu hình Virtual Port Channel (vPC) trên cặp switch Cisco Nexus N9K-C93180YC-FX3 để đạt được High Availability với băng thông tối ưu.
 ---
 
