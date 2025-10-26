@@ -109,3 +109,4 @@ vim-cmd vmsvc/tools.installstate <vmid>
 - [Memory Compression](/glossary/term/memory-compression.md)
 - [VMware Tools](/glossary/term/vmware-tools.md)
 - [ESXi](/glossary/term/esxi.md)
+- [Performance Tuning](/knowledge/article/performance-tuning-in-vsphere-8)

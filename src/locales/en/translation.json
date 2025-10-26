@@ -92,6 +92,7 @@
     "no_results": "No terms found matching your criteria.",
     "learn_more": "Learn More",
     "categories": {
+      "Virtualization_Platform": "Virtualization Platform",
       "Core Architecture": "Core Architecture",
       "Networking": "Networking",
       "Storage": "Storage",

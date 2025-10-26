@@ -140,8 +140,8 @@ esxcli storage core adapter rescan -A vmhba64
 
 ## Related Technologies
 
-- [Storage vMotion](/glossary/storage-vmotion)
-- [VMFS](/glossary/vmfs)
-- [vSAN](/glossary/vsan)
-- [Fibre Channel](/glossary/fibre-channel)
-- [Storage DRS](/glossary/storage-drs)
+- [Storage vMotion](/glossary/term/storage-vmotion.md)
+- [VMFS](/glossary/term/vmfs-8.md)
+- [vSAN](/glossary/term/vsan.md)
+- [Fibre Channel](/glossary/term/fibre-channel.md)
+- [Storage DRS](/glossary/term/storage-drs.md)

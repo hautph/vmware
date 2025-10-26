@@ -20,3 +20,11 @@ An SR-IOV-enabled physical device (e.g., network adapter) presents multiple VFs 
 ## Comparison with DirectPath I/O
 
 Unlike DirectPath I/O, which dedicates an entire physical device to a single VM, SR-IOV Passthrough allows multiple VMs to share a single physical device by accessing its virtual functions. This offers a more flexible and scalable approach to direct hardware access.
+
+## Related Technologies
+
+- [DirectPath I/O](/glossary/term/directpath-io.md)
+- [vGPU (Virtual GPU)](/glossary/term/vgpu.md)
+- [DPU](/glossary/term/dpu.md)
+- [NIC Teaming](/glossary/term/nic-teaming.md)
+- [VM Migration](/glossary/term/vm-migration.md)

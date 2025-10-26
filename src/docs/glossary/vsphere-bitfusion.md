@@ -1,6 +1,6 @@
 ---
 term: vSphere Bitfusion
-category: Advanced Technologies
+category: Advanced_Technologies
 ---
 
 vSphere Bitfusion is a technology that allows the disaggregation and sharing of GPU resources across the network. It enables multiple users or virtual machines to share a single physical GPU, or for a single virtual machine to access multiple GPUs located on different physical servers. This optimizes the utilization of expensive GPU resources, particularly for AI/ML and high-performance computing (HPC) workloads.
@@ -15,3 +15,11 @@ Bitfusion virtualizes GPUs and makes them available as a shared resource pool. W
 *   **Flexible GPU Allocation:** Dynamically allocates GPU resources to virtual machines based on demand.
 *   **Reduced Costs:** Optimizes GPU investments by improving utilization and reducing the need for dedicated GPUs per server.
 *   **Accelerated AI/ML and HPC:** Provides efficient access to GPU resources for compute-intensive workloads.
+
+## Related Technologies
+
+- [vGPU (Virtual GPU)](/glossary/term/vgpu.md)
+- [DirectPath I/O](/glossary/term/directpath-io.md)
+- [DPU](/glossary/term/dpu.md)
+- [Cluster Level GPU Monitoring](/glossary/term/cluster-level-gpu-monitoring.md)
+- [vSphere with Tanzu](/glossary/term/vsphere-with-tanzu.md)

@@ -5,6 +5,8 @@ category: Management Tools
 
 The vSphere Host Client is an HTML5-based client that is embedded directly into each ESXi host. It provides a direct interface for managing individual ESXi hosts and their virtual machines, independent of vCenter Server. This is particularly useful for managing standalone ESXi hosts, troubleshooting hosts when vCenter Server is unavailable, or performing initial configurations.
 
+For a detailed guide on VMware vSphere Host Client, including its features, capabilities, and best practices, see the [vSphere Host Client Detailed Guide](/knowledge/article/vsphere-host-client-detailed).
+
 ## Key Features
 
 *   **Direct ESXi Host Management:** Allows direct management of an ESXi host without requiring vCenter Server.

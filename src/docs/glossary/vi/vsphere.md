@@ -1,6 +1,6 @@
 ---
 term: [VI] vSphere
-category: Core_Architecture
+category: Virtualization_Platform
 language: vi
 ---
 

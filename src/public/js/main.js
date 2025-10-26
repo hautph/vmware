@@ -1,6 +1,27 @@
 // Main JavaScript file for VMware Tool
 
+// Function to handle scroll to top functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Get the scroll to top button
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('show');
+        } else {
+            scrollToTopBtn.classList.remove('show');
+        }
+    });
+    
+    // Scroll to top when button is clicked
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
     // Add any client-side functionality here
     
     // Form validation enhancements

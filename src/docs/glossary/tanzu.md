@@ -117,7 +117,7 @@ kubectl logs -n tkg-system <pod-name>
 ## Related Technologies
 
 - [vSphere with Tanzu](/glossary/term/vsphere-with-tanzu.md)
-- [Kubernetes](/glossary/term/kubernetes)
+- [Kubernetes](/glossary/term/kubernetes.md)
 - [Supervisor Cluster](/glossary/term/supervisor-cluster.md)
 - [Workload Availability Zones](/glossary/term/workload-availability-zones.md)
-- [Cluster Classes](/glossary/term/cluster-classes)
+- [Cluster Classes](/glossary/term/cluster-classes.md)

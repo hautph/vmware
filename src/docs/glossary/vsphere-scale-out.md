@@ -1,6 +1,6 @@
 ---
 term: vSphere Scale-Out
-category: Advanced Technologies
+category: Advanced_Technologies
 ---
 
 vSphere Scale-Out refers to the ability of the vSphere platform to expand its compute, storage, and networking resources horizontally by adding more ESXi hosts and associated infrastructure components. This allows organizations to grow their virtualized environment to meet increasing workload demands without compromising performance or availability.
@@ -17,3 +17,11 @@ vSphere Scale-Out refers to the ability of the vSphere platform to expand its co
 *   **Improved Performance:** Distributes workloads across more resources, preventing bottlenecks and enhancing overall performance.
 *   **High Availability:** Enhances fault tolerance by distributing components across multiple hosts, reducing the impact of individual hardware failures.
 *   **Cost-Effective Growth:** Allows for incremental growth by adding commodity hardware, avoiding large upfront investments.
+
+## Related Technologies
+
+- [DRS](/glossary/term/drs.md)
+- [vSAN](/glossary/term/vsan.md)
+- [vSphere Distributed Switch](/glossary/term/vsphere-distributed-switch.md)
+- [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
+- [High Availability](/glossary/term/vsphere-high-availability.md)

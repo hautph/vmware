@@ -2,18 +2,18 @@
 
 This glossary provides definitions and details for key terms and features related to VMware vSphere, with a focus on enhancements and new concepts introduced in vSphere 8.
 
-## CORE ARCHITECTURE
+## VIRTUALIZATION PLATFORM
 *   [vSphere](vsphere.md)
 *   [ESXi](esxi.md)
 *   [vCenter Server](vcenter.md)
+
+## COMPUTE & RESOURCE MANAGEMENT
 *   [Virtual Machine (VM)](virtual-machine.md)
 *   [[VI] Guest Operating System (Guest OS)](../vi/guest-operating-system.md)
 *   [vSphere Client](vsphere-client.md)
 *   [[VI] vSphere Lifecycle Manager (vLCM)](../vi/vsphere-lifecycle-manager.md)
 *   [[VI] vSphere Auto Deploy](../vi/vsphere-auto-deploy.md)
 *   [[VI] VMware Tools](../vi/vmware-tools.md)
-
-## COMPUTE & RESOURCE MANAGEMENT
 *   [[VI] vCPU](../vi/vcpu.md)
 *   [[VI] pCPU](../vi/pcpu.md)
 *   [[VI] Virtual SMP](../vi/virtual-smp.md)
@@ -40,6 +40,10 @@ This glossary provides definitions and details for key terms and features relate
 *   [[VI] Storage Policy-Based Management (SPBM)](../vi/spbm.md)
 *   [vSphere APIs for Storage Awareness (VASA)](vasa.md)
 *   [[VI] Virtual Volumes (vVols)](../vi/vvols.md)
+*   [Logical Unit Number (LUN)](lun.md)
+*   [[VI] Logical Unit Number (LUN)](../vi/lun.md)
+*   [IOPS (Input/Output Operations Per Second)](iops.md)
+*   [[VI] IOPS (Input/Output Operations Per Second)](../vi/iops.md)
 
 ## NETWORKING
 *   [[VI] Virtual Switch (vSwitch)](../vi/virtual-switch.md)
@@ -60,13 +64,17 @@ This glossary provides definitions and details for key terms and features relate
 
 ## SECURITY
 *   [[VI] vSphere Trust Authority (vTA)](../vi/vsphere-trust-authority.md)
-*   [[VI] VMware Tools](../vi/vmware-tools.md)
 *   [[VI] vSphere Security Hardening Guide](../vi/vsphere-security-hardening-guide.md)
+*   [[VI] VMware Tools](../vi/vmware-tools.md)
 
 ## DESKTOP VIRTUALIZATION
 *   [[VI] Horizon](../vi/horizon.md)
 
 ## CLOUD MANAGEMENT
+*   [Kubernetes](kubernetes.md)
+*   [Cluster Classes](cluster-classes.md)
+*   [[VI] Kubernetes](../vi/kubernetes.md)
+*   [[VI] Cluster Classes](../vi/cluster-classes.md)
 *   [[VI] vRealize Suite](../vi/vrealize-suite.md)
 
 ## OTHER PRODUCTS & SOLUTIONS

@@ -148,3 +148,4 @@ esxcli system stats get -s cpu.util
 - [Reservations](/glossary/term/reservations.md)
 - [Limits](/glossary/term/limits.md)
 - [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
+- [Performance Tuning](/knowledge/article/performance-tuning-in-vsphere-8)

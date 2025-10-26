@@ -115,8 +115,8 @@ esxcli network ip route ipv4 list
 
 ## Related Technologies
 
-- [VMkernel](/glossary/vmkernel)
-- [vSphere Client](/glossary/vsphere-client)
-- [vCenter Server](/glossary/vcenter-server)
-- [VMkernel Networking](/glossary/vmkernel-networking)
-- [Port Group](/glossary/port-group)
+- [VMkernel](/glossary/term/vmkernel.md)
+- [vSphere Client](/glossary/term/vsphere-client.md)
+- [vCenter Server](/glossary/term/vcenter.md)
+- [VMkernel Networking](/glossary/term/vmkernel-networking.md)
+- [Port Group](/glossary/term/port-group.md)

@@ -108,3 +108,4 @@ esxcli system settings advanced list -o /Mem/
 - [Memory Compression](/glossary/term/memory-compression.md)
 - [ESXi](/glossary/term/esxi.md)
 - [Resource Pools](/glossary/term/resource-pool.md)
+- [Performance Tuning](/knowledge/article/performance-tuning-in-vsphere-8)
