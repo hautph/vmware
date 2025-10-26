@@ -1,5 +1,5 @@
 ---
-term: [VI] Kubernetes
+term: Kubernetes
 category: Cloud_Native
 language: vi
 ---

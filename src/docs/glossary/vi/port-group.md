@@ -1,5 +1,5 @@
 ---
-term: [VI] Port Group
+term: Port Group
 category: Networking
 language: vi
 ---

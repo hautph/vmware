@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Standard Switch (vSS)
+term: vSphere Standard Switch (vSS)
 category: Networking
 language: vi
 ---

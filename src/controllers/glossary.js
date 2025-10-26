@@ -106,9 +106,12 @@ function generateTOCFromContent(content) {
 }
 
 // Function to load all glossary terms from Markdown files
-function loadGlossaryTerms() {
+function loadGlossaryTerms(req) {
   const glossaryDir = path.join(__dirname, '..', 'docs', 'glossary');
   const terms = {};
+  
+  // Determine current language from request
+  const currentLanguage = req && req.language ? req.language : 'en';
   
   // Load terms from main directory
   if (fs.existsSync(glossaryDir)) {
@@ -155,7 +158,19 @@ function loadGlossaryTerms() {
     });
   }
   
-  return terms;
+  // Filter terms by current language
+  const filteredTerms = {};
+  Object.keys(terms).forEach(key => {
+    const term = terms[key];
+    // For English, show terms with language 'en' or no language specified
+    // For Vietnamese, show terms with language 'vi'
+    if ((currentLanguage === 'en' && (term.language === 'en' || !term.language)) ||
+        (currentLanguage === 'vi' && term.language === 'vi')) {
+      filteredTerms[key] = term;
+    }
+  });
+  
+  return filteredTerms;
 }
 
 // Function to create a URL-friendly key from a term name
@@ -277,7 +292,7 @@ function calculateRelevance(term, query) {
 
 // Get glossary index page with pagination and categorization
 export const getIndex = (req, res) => {
-  const terms = Object.values(loadGlossaryTerms());
+  const terms = Object.values(loadGlossaryTerms(req));
   const categories = groupTermsByCategory(terms);
   
   // Pagination parameters
@@ -298,18 +313,118 @@ export const getIndex = (req, res) => {
     });
   }
   
-  // For category-based display, we'll show all categories but paginate within each
-  // Calculate total terms and pages based on filtered terms
-  const totalTerms = filteredTerms.length;
-  const totalPages = Math.ceil(totalTerms / termsPerPage);
+  // For "All Categories", we'll load all terms but still group them by category
+  // For specific categories, we'll use pagination
+  let displayCategories = {};
+  let totalTerms = filteredTerms.length;
+  let totalPages = 1;
+  
+  if (categoryFilter === 'all') {
+    // For "All Categories", load all terms but limit initial display
+    displayCategories = groupTermsByCategory(filteredTerms);
+    totalPages = Math.ceil(totalTerms / termsPerPage);
+    
+    // Limit initial display to first page of terms
+    const startIndex = (page - 1) * termsPerPage;
+    const endIndex = startIndex + termsPerPage;
+    
+    // Flatten all terms with their categories, sort by category name, then by term name
+    const allTermsWithCategory = [];
+    Object.keys(displayCategories).sort().forEach(category => {
+      displayCategories[category].sort((a, b) => (a.term || '').localeCompare(b.term || '')); // Sort terms within category
+      displayCategories[category].forEach(term => {
+        allTermsWithCategory.push({category, term});
+      });
+    });
+    
+    // Get the slice for current page
+    const pageTerms = allTermsWithCategory.slice(startIndex, endIndex);
+    
+    // Regroup the page terms by category
+    displayCategories = {};
+    pageTerms.forEach(item => {
+      if (!displayCategories[item.category]) {
+        displayCategories[item.category] = [];
+      }
+      displayCategories[item.category].push(item.term);
+    });
+  } else {
+    // For specific categories, use pagination as before
+    totalPages = Math.ceil(totalTerms / termsPerPage);
+    
+    // Group filtered terms by category for display
+    const groupedTerms = groupTermsByCategory(filteredTerms);
+    
+    // Group filtered terms by category for display
+    displayCategories = {};
+    let termsAdded = 0;
+    const startIndex = (page - 1) * termsPerPage;
+    const endIndex = startIndex + termsPerPage;
+    
+    // Flatten all terms with their categories, sort by category name, then by term name
+    const allTermsWithCategory = [];
+    Object.keys(groupedTerms).sort().forEach(category => {
+      groupedTerms[category].sort((a, b) => (a.term || '').localeCompare(b.term || '')); // Sort terms within category
+      groupedTerms[category].forEach(term => {
+        allTermsWithCategory.push({category, term});
+      });
+    });
+    
+    // Get the slice for current page
+    const pageTerms = allTermsWithCategory.slice(startIndex, endIndex);
+    
+    // Group the page terms by category
+    pageTerms.forEach(item => {
+      if (!displayCategories[item.category]) {
+        displayCategories[item.category] = [];
+      }
+      displayCategories[item.category].push(item.term);
+    });
+  }
+  
+  // Create unique list of categories with normalized names
+  const uniqueCategories = [...new Set(Object.keys(groupTermsByCategory(terms)))];
+  const urlSafeCategories = uniqueCategories
+    .map(category => normalizeCategoryForUrl(category))
+    .sort();
+  
+  res.render('glossary/index', { 
+    title: 'VMware Glossary',
+    terms: Object.values(displayCategories).flat().filter(term => term !== undefined),
+    categories: urlSafeCategories,
+    displayCategories,
+    currentPage: page,
+    totalPages: totalPages,
+    totalTerms: totalTerms,
+    categoryFilter: normalizeCategoryForUrl(categoryFilter),
+    termsPerPage
+  });
+};
+
+// API endpoint to load more glossary terms for lazy loading
+export const getMoreTerms = (req, res) => {
+  const terms = Object.values(loadGlossaryTerms(req));
+  const categoryFilter = req.query.category || 'all';
+  const page = parseInt(req.query.page) || 1;
+  const termsPerPage = 10;
+  
+  // Filter terms by category if specified
+  let filteredTerms = terms;
+  if (categoryFilter !== 'all') {
+    // Normalize the filter to handle both underscore and space formats
+    const normalizedFilter = normalizeCategoryForUrl(categoryFilter);
+    filteredTerms = terms.filter(term => {
+      if (!term.category) return false;
+      // Normalize term category for comparison
+      const normalizedTermCategory = normalizeCategoryForDisplay(term.category);
+      return normalizedTermCategory.toLowerCase() === normalizedFilter.toLowerCase();
+    });
+  }
   
   // Group filtered terms by category for display
   const groupedTerms = groupTermsByCategory(filteredTerms);
   
-  // For the current page, we need to determine which terms to show
-  // We'll take termsPerPage terms total, distributed across categories
-  const displayCategories = {};
-  let termsAdded = 0;
+  // Calculate pagination
   const startIndex = (page - 1) * termsPerPage;
   const endIndex = startIndex + termsPerPage;
   
@@ -326,6 +441,7 @@ export const getIndex = (req, res) => {
   const pageTerms = allTermsWithCategory.slice(startIndex, endIndex);
   
   // Group the page terms by category
+  const displayCategories = {};
   pageTerms.forEach(item => {
     if (!displayCategories[item.category]) {
       displayCategories[item.category] = [];
@@ -333,22 +449,13 @@ export const getIndex = (req, res) => {
     displayCategories[item.category].push(item.term);
   });
   
-  // Create unique list of categories with normalized names
-  const uniqueCategories = [...new Set(Object.keys(groupTermsByCategory(terms)))];
-  const urlSafeCategories = uniqueCategories
-    .map(category => normalizeCategoryForUrl(category))
-    .sort();
+  // Check if there are more terms to load
+  const hasMore = endIndex < allTermsWithCategory.length;
   
-  res.render('glossary/index', { 
-    title: 'VMware Glossary',
-    terms: pageTerms.map(item => item.term).filter(term => term !== undefined),
-    categories: urlSafeCategories,
+  res.json({
     displayCategories,
-    currentPage: page,
-    totalPages,
-    totalTerms,
-    categoryFilter: normalizeCategoryForUrl(categoryFilter),
-    termsPerPage
+    hasMore,
+    nextPage: page + 1
   });
 };
 
@@ -360,7 +467,7 @@ export const getSearchSuggestions = (req, res) => {
     return res.json([]);
   }
   
-  const terms = Object.values(loadGlossaryTerms());
+  const terms = Object.values(loadGlossaryTerms(req));
   const suggestions = [];
   
   // Collect unique terms that match the query
@@ -396,7 +503,7 @@ export const searchTerms = (req, res) => {
     return res.redirect('/glossary');
   }
   
-  const terms = Object.values(loadGlossaryTerms());
+  const terms = Object.values(loadGlossaryTerms(req));
   
   // Filter and rank terms
   const rankedResults = terms
@@ -458,7 +565,7 @@ export const getTerm = (req, res) => {
   const termKey = termPath.toLowerCase();
   console.log('Term key to search:', termKey);
   
-  const allTerms = loadGlossaryTerms();
+  const allTerms = loadGlossaryTerms(req);
   console.log('Available terms count:', Object.keys(allTerms).length);
   
   // Log some of the available terms to see what keys we have
@@ -579,9 +686,35 @@ export const getTerm = (req, res) => {
     return `href="/glossary/term/${cleanPath}"`;
   });
   
+  // For Vietnamese terms, update links to point to Vietnamese versions when they exist
+  if (term.language === 'vi') {
+    // Get all Vietnamese term keys for comparison
+    const viTermKeys = Object.keys(allTerms).filter(key => allTerms[key].language === 'vi');
+    const viTermNames = viTermKeys.map(key => {
+      // Extract the term name from the key (remove 'vi/' prefix if present)
+      return key.replace(/^vi\//, '');
+    });
+    
+    // Update links to point to Vietnamese versions when they exist
+    fullContentHtml = fullContentHtml.replace(/href="\/glossary\/term\/([^"]+)"/g, function(match, termName) {
+      // Check if there's a Vietnamese version of this term
+      const termKey = termName.toLowerCase().replace(/\s+/g, '-');
+      if (viTermNames.includes(termKey)) {
+        return `href="/glossary/term/vi/${termName}"`;
+      }
+      return match;
+    });
+  }
+  
   // Find related terms (same category, excluding current term)
+  // For Vietnamese terms, only show Vietnamese related terms
+  // For English terms, only show English related terms
   const relatedTerms = Object.values(allTerms)
-    .filter(t => t.category === term.category && t.term !== term.term)
+    .filter(t => 
+      t.category === term.category && 
+      t.term !== term.term &&
+      t.language === term.language
+    )
     .slice(0, 5); // Limit to 5 related terms
   
   // Generate TOC from content AFTER processing with marked

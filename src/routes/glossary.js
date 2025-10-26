@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { getIndex, searchTerms, getTerm, getSearchSuggestions } from '../controllers/glossary.js';
+import { getIndex, searchTerms, getTerm, getSearchSuggestions, getMoreTerms } from '../controllers/glossary.js';
 
 console.log('Glossary routes loaded');
 
@@ -20,6 +20,12 @@ router.get('/search', (req, res) => {
 router.get('/api/suggestions', (req, res) => {
   console.log('Glossary suggestions API route matched');
   getSearchSuggestions(req, res);
+});
+
+// API endpoint for loading more terms (lazy loading)
+router.get('/api/more-terms', (req, res) => {
+  console.log('Glossary more terms API route matched');
+  getMoreTerms(req, res);
 });
 
 // Simple test route

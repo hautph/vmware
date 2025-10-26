@@ -1,5 +1,5 @@
 ---
-term: [VI] Single Root I/O Virtualization (SR-IOV)
+term: Single Root I/O Virtualization (SR-IOV)
 category: Networking
 language: vi
 ---

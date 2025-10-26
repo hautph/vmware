@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere
+term: vSphere
 category: Virtualization_Platform
 language: vi
 ---

@@ -1,5 +1,5 @@
 ---
-term: [VI] Tanzu
+term: Tanzu
 category: Other_Products_Solutions
 language: vi
 ---

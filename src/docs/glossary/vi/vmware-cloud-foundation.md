@@ -1,5 +1,5 @@
 ---
-term: [VI] VMware Cloud Foundation (VCF)
+term: VMware Cloud Foundation (VCF)
 category: Other_Products_Solutions
 language: vi
 ---

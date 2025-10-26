@@ -1,5 +1,5 @@
 ---
-term: [VI] Horizon
+term: Horizon
 category: Desktop_Virtualization
 language: vi
 ---

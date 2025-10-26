@@ -1,5 +1,5 @@
 ---
-term: [VI] vSAN
+term: vSAN
 category: Storage
 language: vi
 ---

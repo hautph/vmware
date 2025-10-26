@@ -1,5 +1,5 @@
 ---
-term: [VI] Guest Operating System
+term: Guest Operating System
 category: Virtual_Machine
 language: vi
 ---

@@ -1,5 +1,5 @@
 ---
-term: [VI] vRealize Suite
+term: vRealize Suite
 category: Cloud_Management
 language: vi
 ---

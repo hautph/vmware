@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere High Availability (HA)
+term: vSphere High Availability (HA)
 category: Availability_Data_Protection
 language: vi
 ---

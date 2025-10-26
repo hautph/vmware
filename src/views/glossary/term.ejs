@@ -32,7 +32,7 @@
                                 <% if (relatedTerm.language === 'vi') { %>
                                     <a href="/glossary/term/vi/<%= relatedTerm.fileKey.replace('vi/', '') || relatedTerm.term.toLowerCase().replace(/\s+/g, '-') %>" 
                                        class="btn btn-outline-info w-100 text-start related-term-btn">
-                                        <i class="bi bi-bookmark"></i> [VI] <%= relatedTerm.title %>
+                                        <i class="bi bi-bookmark"></i> <%= relatedTerm.title.replace('[VI] ', '') %>
                                     </a>
                                 <% } else { %>
                                     <a href="/glossary/term/<%= relatedTerm.fileKey || relatedTerm.term.toLowerCase().replace(/\s+/g, '-') %>" 

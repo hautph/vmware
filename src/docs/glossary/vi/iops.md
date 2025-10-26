@@ -1,5 +1,5 @@
 ---
-term: [VI] IOPS (Input/Output Operations Per Second)
+term: IOPS (Input/Output Operations Per Second)
 category: Storage
 language: vi
 ---

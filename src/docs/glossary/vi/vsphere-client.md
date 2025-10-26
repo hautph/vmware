@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Client
+term: vSphere Client
 category: Core_Architecture
 language: vi
 ---

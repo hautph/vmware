@@ -1,5 +1,5 @@
 ---
-term: [VI] Network I/O Control (NIOC)
+term: Network I/O Control (NIOC)
 category: Networking
 language: vi
 ---

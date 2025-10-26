@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Auto Deploy
+term: vSphere Auto Deploy
 category: Core_Architecture
 language: vi
 ---

@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Distributed Switch (vDS)
+term: vSphere Distributed Switch (vDS)
 category: Networking
 language: vi
 ---

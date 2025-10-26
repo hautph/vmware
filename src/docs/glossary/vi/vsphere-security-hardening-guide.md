@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Security Hardening Guide
+term: vSphere Security Hardening Guide
 category: Security
 language: vi
 ---

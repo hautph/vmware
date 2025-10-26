@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere with Tanzu
+term: vSphere with Tanzu
 category: Other_Products_Solutions
 language: vi
 ---

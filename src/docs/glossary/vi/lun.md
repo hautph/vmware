@@ -1,5 +1,5 @@
 ---
-term: [VI] Logical Unit Number (LUN)
+term: Logical Unit Number (LUN)
 category: Storage
 language: vi
 ---

@@ -1,5 +1,5 @@
 ---
-term: [VI] VMware Tools
+term: VMware Tools
 category: Core_Architecture
 language: vi
 ---

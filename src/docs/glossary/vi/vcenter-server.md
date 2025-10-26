@@ -1,5 +1,5 @@
 ---
-term: [VI] vCenter Server
+term: vCenter Server
 category: Core_Architecture
 language: vi
 ---

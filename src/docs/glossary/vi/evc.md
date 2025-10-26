@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Enhanced vMotion Compatibility (EVC)
+term: vSphere Enhanced vMotion Compatibility (EVC)
 category: Compute_Resource_Management
 language: vi
 ---

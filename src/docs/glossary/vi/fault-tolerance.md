@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Fault Tolerance (FT)
+term: vSphere Fault Tolerance (FT)
 category: Availability_Data_Protection
 language: vi
 ---

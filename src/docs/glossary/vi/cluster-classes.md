@@ -1,5 +1,5 @@
 ---
-term: [VI] Cluster Classes
+term: Cluster Classes
 category: Cloud_Native
 language: vi
 ---

@@ -1,5 +1,5 @@
 ---
-term: [VI] Uplink
+term: Uplink
 category: Networking
 language: vi
 ---

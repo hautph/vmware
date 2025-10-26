@@ -38,13 +38,15 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-center">
-                        <a href="/glossary?page=1&category=all" 
-                           class="btn category-btn <%= categoryFilter === 'all' ? 'btn-primary active' : 'btn-outline-primary' %>">
+                        <a href="/glossary?category=all" 
+                           class="btn category-btn <%= categoryFilter === 'all' ? 'btn-primary active' : 'btn-outline-primary' %>"
+                           data-category="all">
                             <i class="bi bi-grid"></i> <%= t('glossary.all_categories') %>
                         </a>
                         <% categories.forEach(category => { %>
-                            <a href="/glossary?page=1&category=<%= encodeURIComponent(category) %>" 
-                               class="btn category-btn <%= categoryFilter === category ? 'btn-primary active' : 'btn-outline-primary' %>">
+                            <a href="/glossary?category=<%= encodeURIComponent(category) %>" 
+                               class="btn category-btn <%= categoryFilter === category ? 'btn-primary active' : 'btn-outline-primary' %>"
+                               data-category="<%= category %>">
                                 <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
                             </a>
                         <% }); %>
@@ -56,95 +58,80 @@
             <div class="alert results-info text-center">
                 <h5 class="mb-0">
                     <i class="bi bi-info-circle"></i> 
-                    <%= t('glossary.results_info', { 
+                    <span id="resultsInfo"><%= t('glossary.results_info', { 
                         count: terms.length, 
                         total: totalTerms, 
                         categoryText: categoryFilter !== 'all' ? t('glossary.results_info_category', { category: t('glossary.categories.' + categoryFilter) || categoryFilter.replace(/_/g, ' ') }) : t('glossary.results_info_all') 
-                    }) %>
+                    }) %></span>
                 </h5>
             </div>
             
+            <!-- Loading indicator -->
+            <div id="loadingIndicator" class="text-center d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading more terms...</p>
+            </div>
+            
             <!-- Terms by Category -->
-            <% if (Object.keys(displayCategories).length > 0) { %>
-                <% Object.keys(displayCategories).forEach(category => { %>
-                    <div class="category-section">
-                        <div class="category-section-header">
-                            <h3 class="category-section-title mb-0">
-                                <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
-                                <span class="badge bg-primary ms-2"><%= displayCategories[category].length %> terms</span>
-                            </h3>
-                        </div>
-                        <div class="row">
-                            <% displayCategories[category].forEach(term => { %>
-                                <div class="col-lg-6 col-xl-4 mb-4">
-                                    <div class="card term-card h-100">
-                                        <div class="card-body d-flex flex-column">
-                                            <h4 class="term-card-title">
-                                                <% if (term.language === 'vi') { %>
+            <div id="glossaryContent">
+                <% if (Object.keys(displayCategories).length > 0) { %>
+                    <% Object.keys(displayCategories).forEach(category => { %>
+                        <div class="category-section" data-category="<%= category %>">
+                            <div class="category-section-header">
+                                <h3 class="category-section-title mb-0">
+                                    <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
+                                    <span class="badge bg-primary ms-2"><%= displayCategories[category].length %> terms</span>
+                                </h3>
+                            </div>
+                            <div class="row" id="category-<%= category.replace(/[^a-zA-Z0-9]/g, '-') %>">
+                                <% displayCategories[category].forEach(term => { %>
+                                    <div class="col-lg-6 col-xl-4 mb-4">
+                                        <div class="card term-card h-100">
+                                            <div class="card-body d-flex flex-column">
+                                                <h4 class="term-card-title">
                                                     <% const termTitle = term.title || term.term; %>
                                                     <% if (termTitle.startsWith('[VI]')) { %>
-                                                        <%= termTitle %>
+                                                        <%- termTitle.replace('[VI] ', '') %>
                                                     <% } else { %>
-                                                        [VI] <%= termTitle %>
+                                                        <%- termTitle %>
                                                     <% } %>
-                                                <% } else { %>
-                                                    <%= term.title || term.term %>
-                                                <% } %>
-                                            </h4>
-                                            <span class="term-card-category"><%= term.category %></span>
-                                            <p class="term-card-definition flex-grow-1"><%= term.definition.substring(0, 150) %>...</p>
-                                            <a href="/glossary/term/<%= term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-') %>" 
-                                               class="btn btn-primary term-card-btn mt-auto">
-                                                <i class="bi bi-book"></i> <%= t('glossary.learn_more') %>
-                                            </a>
+                                                </h4>
+                                                <span class="term-card-category"><%= term.category %></span>
+                                                <p class="term-card-definition flex-grow-1"><%= term.definition.substring(0, 150) %>...</p>
+                                                <a href="/glossary/term/<%= term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-') %>" 
+                                                   class="btn btn-primary term-card-btn mt-auto">
+                                                    <i class="bi bi-book"></i> <%= t('glossary.learn_more') %>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <% }); %>
+                                <% }); %>
+                            </div>
                         </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="alert alert-warning text-center">
+                        <h4><i class="bi bi-exclamation-triangle"></i> No Terms Found</h4>
+                        <p><%= t('glossary.no_results') %></p>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div class="alert alert-warning text-center">
-                    <h4><i class="bi bi-exclamation-triangle"></i> No Terms Found</h4>
-                    <p><%= t('glossary.no_results') %></p>
-                </div>
-            <% } %>
+                <% } %>
+            </div>
             
-            <!-- Pagination -->
-            <% if (totalPages > 1) { %>
-                <div class="card pagination-card">
-                    <div class="card-body">
-                        <nav aria-label="Glossary pagination">
-                            <ul class="pagination justify-content-center mb-0">
-                                <% if (currentPage > 1) { %>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/glossary?page=<%= currentPage - 1 %>&category=<%= encodeURIComponent(categoryFilter) %>">
-                                            <i class="bi bi-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                <% } %>
-                                
-                                <% for (let i = 1; i <= totalPages; i++) { %>
-                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                        <a class="page-link" href="/glossary?page=<%= i %>&category=<%= encodeURIComponent(categoryFilter) %>">
-                                            <%= i %>
-                                        </a>
-                                    </li>
-                                <% } %>
-                                
-                                <% if (currentPage < totalPages) { %>
-                                    <li class="page-item">
-                                        <a class="page-link" href="/glossary?page=<%= currentPage + 1 %>&category=<%= encodeURIComponent(categoryFilter) %>">
-                                            <i class="bi bi-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                <% } %>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            <% } %>
+            <!-- End of content indicator -->
+            <div id="endOfContent" class="text-center d-none">
+                <p><i class="bi bi-check-circle-fill text-success"></i> All terms loaded</p>
+            </div>
+            
+            <!-- Data for JavaScript -->
+            <div id="glossary-data" 
+                 data-total-pages="<%= totalPages %>" 
+                 data-total-terms="<%= totalTerms %>" 
+                 data-loaded-terms="<%= terms.length %>" 
+                 data-category-filter="<%= categoryFilter %>"
+                 class="d-none">
+            </div>
         </div>
     </div>
 </div>
@@ -155,6 +142,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.querySelector('.glossary-search-input');
     const suggestionsContainer = document.getElementById('searchSuggestions');
     const suggestionsList = suggestionsContainer.querySelector('ul');
+    const glossaryContent = document.getElementById('glossaryContent');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const endOfContent = document.getElementById('endOfContent');
+    const resultsInfo = document.getElementById('resultsInfo');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const glossaryData = document.getElementById('glossary-data');
+    
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = parseInt(glossaryData.getAttribute('data-total-pages')) > 1;
+    let currentCategory = glossaryData.getAttribute('data-category-filter');
+    let totalTerms = parseInt(glossaryData.getAttribute('data-total-terms'));
+    let loadedTerms = parseInt(glossaryData.getAttribute('data-loaded-terms'));
+    
     let debounceTimer;
     
     // Handle input for autocomplete
@@ -244,6 +245,137 @@ document.addEventListener('DOMContentLoaded', function() {
         items.forEach((item, index) => {
             item.classList.toggle('active', index === activeIndex);
         });
+    });
+    
+    // Handle category filtering
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const category = this.getAttribute('data-category');
+            
+            // Update active button
+            categoryButtons.forEach(btn => btn.classList.remove('active', 'btn-primary'));
+            categoryButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
+            this.classList.remove('btn-outline-primary');
+            this.classList.add('btn-primary', 'active');
+            
+            // Reset state
+            currentCategory = category;
+            currentPage = 1;
+            loadedTerms = 0;
+            hasMore = true;
+            
+            // Clear content and load new terms
+            glossaryContent.innerHTML = '';
+            loadingIndicator.classList.remove('d-none');
+            endOfContent.classList.add('d-none');
+            
+            loadMoreTerms();
+        });
+    });
+    
+    // Function to load more terms
+    function loadMoreTerms() {
+        if (isLoading || !hasMore) return;
+        
+        isLoading = true;
+        loadingIndicator.classList.remove('d-none');
+        
+        fetch(`/glossary/api/more-terms?category=${encodeURIComponent(currentCategory)}&page=${currentPage}`)
+            .then(response => response.json())
+            .then(data => {
+                // Update state
+                hasMore = data.hasMore;
+                currentPage = data.nextPage;
+                
+                // Process the loaded terms
+                if (Object.keys(data.displayCategories).length > 0) {
+                    Object.keys(data.displayCategories).forEach(category => {
+                        const terms = data.displayCategories[category];
+                        loadedTerms += terms.length;
+                        
+                        // Check if category section already exists
+                        let categorySection = document.querySelector(`.category-section[data-category="${category}"]`);
+                        
+                        if (!categorySection) {
+                            // Create new category section
+                            categorySection = document.createElement('div');
+                            categorySection.className = 'category-section';
+                            categorySection.setAttribute('data-category', category);
+                            categorySection.innerHTML = `
+                                <div class="category-section-header">
+                                    <h3 class="category-section-title mb-0">
+                                        <i class="bi bi-folder"></i> ${category.replace(/_/g, ' ')}
+                                        <span class="badge bg-primary ms-2">${terms.length} terms</span>
+                                    </h3>
+                                </div>
+                                <div class="row" id="category-${category.replace(/[^a-zA-Z0-9]/g, '-')}"></div>
+                            `;
+                            glossaryContent.appendChild(categorySection);
+                        }
+                        
+                        // Get the row container for this category
+                        const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')} `);
+                        
+                        // Add terms to the category
+                        terms.forEach(term => {
+                            const termCard = document.createElement('div');
+                            termCard.className = 'col-lg-6 col-xl-4 mb-4';
+                            termCard.innerHTML = `
+                                <div class="card term-card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h4 class="term-card-title">${term.title || term.term}</h4>
+                                        <span class="term-card-category">${term.category}</span>
+                                        <p class="term-card-definition flex-grow-1">${term.definition.substring(0, 150)}...</p>
+                                        <a href="/glossary/term/${term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-')}" 
+                                           class="btn btn-primary term-card-btn mt-auto">
+                                            <i class="bi bi-book"></i> Learn More
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            rowContainer.appendChild(termCard);
+                        });
+                        
+                        // Update category badge count
+                        const badge = categorySection.querySelector('.badge');
+                        if (badge) {
+                            const currentCount = parseInt(badge.textContent) || 0;
+                            badge.textContent = (currentCount + terms.length) + ' terms';
+                        }
+                    });
+                }
+                
+                // Update results info
+                const categoryText = currentCategory !== 'all' ? currentCategory.replace(/_/g, ' ') : 'All Categories';
+                resultsInfo.textContent = `Showing ${loadedTerms} of ${totalTerms} terms in ${categoryText}`;
+                
+                // Hide loading indicator
+                loadingIndicator.classList.add('d-none');
+                isLoading = false;
+                
+                // Show end of content if no more terms
+                if (!hasMore) {
+                    endOfContent.classList.remove('d-none');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading more terms:', error);
+                loadingIndicator.classList.add('d-none');
+                isLoading = false;
+            });
+    }
+    
+    // Handle infinite scroll
+    window.addEventListener('scroll', function() {
+        if (isLoading || !hasMore) return;
+        
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const pageHeight = document.body.offsetHeight - 1000; // Trigger 1000px before end
+        
+        if (scrollPosition >= pageHeight) {
+            loadMoreTerms();
+        }
     });
 });
 </script>

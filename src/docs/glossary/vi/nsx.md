@@ -1,5 +1,5 @@
 ---
-term: [VI] NSX
+term: NSX
 category: Networking
 language: vi
 ---

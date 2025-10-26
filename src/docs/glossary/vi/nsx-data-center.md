@@ -1,5 +1,5 @@
 ---
-term: [VI] NSX Data Center
+term: NSX Data Center
 category: Networking
 language: vi
 ---

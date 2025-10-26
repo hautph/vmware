@@ -27,9 +27,9 @@
                                         <% if (term.language === 'vi') { %>
                                             <% const termTitle = term.title || term.term; %>
                                             <% if (termTitle.startsWith('[VI]')) { %>
-                                                <%- termTitle %>
+                                                <%- termTitle.replace('[VI] ', '') %>
                                             <% } else { %>
-                                                [VI] <%- termTitle %>
+                                                <%- termTitle %>
                                             <% } %>
                                         <% } else { %>
                                             <%- term.title || term.term %>

@@ -1,5 +1,5 @@
 ---
-term: [VI] Virtual Switch (vSwitch)
+term: Virtual Switch (vSwitch)
 category: Networking
 language: vi
 ---

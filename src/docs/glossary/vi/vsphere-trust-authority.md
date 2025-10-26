@@ -1,5 +1,5 @@
 ---
-term: [VI] vSphere Trust Authority (vTA)
+term: vSphere Trust Authority (vTA)
 category: Security
 language: vi
 ---
