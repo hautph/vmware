@@ -129,7 +129,10 @@
       "Availability_Data_Protection": "Availability & Data Protection",
       "Cloud_Management": "Cloud Management",
       "Compute_Resource_Management": "Compute & Resource Management",
-      "Other_Products_Solutions": "Other Products & Solutions"
+      "Other_Products_Solutions": "Other Products & Solutions",
+      "Kubernetes_and_Workloads": "Kubernetes and Workloads",
+      "Management_and_Clusters": "Management and Clusters",
+      "VMware_vSphere_Foundation_9": "VMware vSphere Foundation 9"
     }
   },
   "calculators": {

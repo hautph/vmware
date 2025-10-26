@@ -128,7 +128,10 @@
       "Availability_Data_Protection": "Khả dụng & Bảo vệ Dữ liệu",
       "Cloud_Management": "Quản lý Đám mây",
       "Compute_Resource_Management": "Tính toán & Quản lý Tài nguyên",
-      "Other_Products_Solutions": "Các Sản phẩm & Giải pháp Khác"
+      "Other_Products_Solutions": "Các Sản phẩm & Giải pháp Khác",
+      "Kubernetes_and_Workloads": "Kubernetes và Khối lượng công việc",
+      "Management_and_Clusters": "Quản lý và Cụm",
+      "VMware_vSphere_Foundation_9": "VMware vSphere Foundation 9"
     }
   },
   "calculators": {

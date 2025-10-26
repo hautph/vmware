@@ -47,7 +47,8 @@
                             <a href="/glossary?category=<%= encodeURIComponent(category) %>" 
                                class="btn category-btn <%= categoryFilter === category ? 'btn-primary active' : 'btn-outline-primary' %>"
                                data-category="<%= category %>">
-                                <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
+                                <% const normalizedCategory = category.replace(/\s+/g, '_'); %>
+                                <%= t('glossary.categories.' + normalizedCategory) || category.replace(/_/g, ' ') %>
                             </a>
                         <% }); %>
                     </div>
@@ -81,7 +82,8 @@
                         <div class="category-section" data-category="<%= category %>">
                             <div class="category-section-header">
                                 <h3 class="category-section-title mb-0">
-                                    <i class="bi bi-folder"></i> <%= t('glossary.categories.' + category) || category.replace(/_/g, ' ') %>
+                                    <i class="bi bi-folder"></i> <% const normalizedCategory = category.replace(/\s+/g, '_'); %>
+                                    <%= t('glossary.categories.' + normalizedCategory) || category.replace(/_/g, ' ') %>
                                     <span class="badge bg-primary ms-2"><%= displayCategories[category].length %> terms</span>
                                 </h3>
                             </div>
@@ -292,7 +294,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (Object.keys(data.displayCategories).length > 0) {
                     Object.keys(data.displayCategories).forEach(category => {
                         const terms = data.displayCategories[category];
-                        loadedTerms += terms.length;
+                        
+                        // We'll update loadedTerms after successfully adding terms to the DOM
                         
                         // Check if category section already exists
                         let categorySection = document.querySelector(`.category-section[data-category="${category}"]`);
@@ -302,46 +305,79 @@ document.addEventListener('DOMContentLoaded', function() {
                             categorySection = document.createElement('div');
                             categorySection.className = 'category-section';
                             categorySection.setAttribute('data-category', category);
+                            const normalizedCategory = category.replace(/\s+/g, '_');
+                            const categoryDisplayName = normalizedCategory.replace(/_/g, ' ');
                             categorySection.innerHTML = `
                                 <div class="category-section-header">
                                     <h3 class="category-section-title mb-0">
-                                        <i class="bi bi-folder"></i> ${category.replace(/_/g, ' ')}
-                                        <span class="badge bg-primary ms-2">${terms.length} terms</span>
+                                        <i class="bi bi-folder"></i> CATEGORY_DISPLAY_NAME
+                                        <span class="badge bg-primary ms-2">TERMS_LENGTH terms</span>
                                     </h3>
                                 </div>
-                                <div class="row" id="category-${category.replace(/[^a-zA-Z0-9]/g, '-')}"></div>
-                            `;
+                                <div class="row" id="CATEGORY_ID"></div>
+                            `.replace('CATEGORY_DISPLAY_NAME', categoryDisplayName)
+                              .replace('TERMS_LENGTH', terms.length)
+                              .replace('CATEGORY_ID', 'category-' + category.replace(/[^a-zA-Z0-9]/g, '-'));
                             glossaryContent.appendChild(categorySection);
+                        } else {
+                            // For category filtering, we need to update the badge with the correct count
+                            // When filtering by category, we show the total loaded terms for that category
+                            if (currentCategory !== 'all') {
+                                // For specific category filtering, update badge with loaded terms count
+                                const badge = categorySection.querySelector('.badge');
+                                if (badge) {
+                                    // Find all term cards in this category to get accurate count
+                                    const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')}`);
+                                    const existingCards = rowContainer ? rowContainer.querySelectorAll('.term-card').length : 0;
+                                    const newCount = existingCards + terms.length;
+                                    badge.textContent = `${newCount} terms`;
+                                }
+                            } else {
+                                // For 'all' view, just show the count of terms in current batch
+                                const badge = categorySection.querySelector('.badge');
+                                if (badge) {
+                                    badge.textContent = `${terms.length} terms`;
+                                }
+                            }
+                                                    
+                            // Clear existing terms to avoid duplicates
+                            const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')}`);
+                            if (rowContainer) {
+                                rowContainer.innerHTML = '';
+                            }
                         }
                         
                         // Get the row container for this category
-                        const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')} `);
+                        const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')}`);
                         
                         // Add terms to the category
-                        terms.forEach(term => {
-                            const termCard = document.createElement('div');
-                            termCard.className = 'col-lg-6 col-xl-4 mb-4';
-                            termCard.innerHTML = `
-                                <div class="card term-card h-100">
-                                    <div class="card-body d-flex flex-column">
-                                        <h4 class="term-card-title">${term.title || term.term}</h4>
-                                        <span class="term-card-category">${term.category}</span>
-                                        <p class="term-card-definition flex-grow-1">${term.definition.substring(0, 150)}...</p>
-                                        <a href="/glossary/term/${term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-')}" 
-                                           class="btn btn-primary term-card-btn mt-auto">
-                                            <i class="bi bi-book"></i> Learn More
-                                        </a>
+                        if (rowContainer) {
+                            terms.forEach(term => {
+                                const termCard = document.createElement('div');
+                                termCard.className = 'col-lg-6 col-xl-4 mb-4';
+                                termCard.innerHTML = `
+                                    <div class="card term-card h-100">
+                                        <div class="card-body d-flex flex-column">
+                                            <h4 class="term-card-title">TERM_TITLE</h4>
+                                            <span class="term-card-category">TERM_CATEGORY</span>
+                                            <p class="term-card-definition flex-grow-1">TERM_DEFINITION</p>
+                                            <a href="TERM_LINK" 
+                                               class="btn btn-primary term-card-btn mt-auto">
+                                                <i class="bi bi-book"></i> Learn More
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
-                            rowContainer.appendChild(termCard);
-                        });
-                        
-                        // Update category badge count
-                        const badge = categorySection.querySelector('.badge');
-                        if (badge) {
-                            const currentCount = parseInt(badge.textContent) || 0;
-                            badge.textContent = (currentCount + terms.length) + ' terms';
+                                `.replace('TERM_TITLE', term.title || term.term)
+                                  .replace('TERM_CATEGORY', term.category)
+                                  .replace('TERM_DEFINITION', term.definition.substring(0, 150) + '...')
+                                  .replace('TERM_LINK', '/glossary/term/' + (term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-')));
+                                rowContainer.appendChild(termCard);
+                            });
+                            
+                            // Update loaded terms count after successfully adding terms
+                            if (currentCategory === 'all' || currentCategory === category) {
+                                loadedTerms += terms.length;
+                            }
                         }
                     });
                 }
