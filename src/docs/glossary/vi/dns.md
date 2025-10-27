@@ -1,6 +1,7 @@
 ---
 term: DNS (Domain Name System)
 category: Networking
+language: vi
 ---
 
 Hệ thống Tên miền (DNS) là hệ thống đặt tên phân cấp và phân tán cho máy tính, dịch vụ hoặc các tài nguyên khác kết nối với Internet hoặc mạng riêng. Trong môi trường VMware, DNS rất cần thiết để phân giải tên, khám phá dịch vụ và giao tiếp đúng giữa các máy ảo, host ESXi và vCenter Server.

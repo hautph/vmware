@@ -1,6 +1,7 @@
 ---
 term: NIC Card (Network Interface Card)
 category: Hardware
+language: vi
 ---
 
 NIC (Thẻ Giao Diện Mạng) là thành phần phần cứng cho phép hệ thống máy tính kết nối và giao tiếp qua mạng máy tính. Trong môi trường ảo hóa, NIC vật lý được trừu tượng hóa bởi hypervisor để cung cấp kết nối mạng cho máy ảo thông qua bộ điều hợp mạng ảo và switch phân tán.

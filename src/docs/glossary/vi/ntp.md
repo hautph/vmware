@@ -1,6 +1,7 @@
 ---
 term: NTP (Network Time Protocol)
 category: Networking
+language: vi
 ---
 
 Giao thức Thời gian Mạng (NTP) là một giao thức mạng được thiết kế để đồng bộ hóa đồng hồ của các hệ thống máy tính qua mạng. Trong môi trường VMware, NTP rất quan trọng để duy trì tính nhất quán thời gian trên các host ESXi, vCenter Server và máy ảo, đảm bảo hoạt động đúng của các ứng dụng nhạy cảm thời gian và tương quan nhật ký chính xác.

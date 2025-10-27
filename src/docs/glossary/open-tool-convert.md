@@ -1,6 +1,7 @@
 ---
 term: Open Tool Convert
 category: Migration
+language: en
 ---
 
 Open Tool Convert refers to open-source and third-party tools designed for converting virtual machines and disk images between different virtualization platforms and formats. These tools provide flexible, cost-effective alternatives to proprietary conversion solutions, supporting a wide range of source and destination formats for heterogeneous virtualization environments.

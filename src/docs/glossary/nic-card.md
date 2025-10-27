@@ -1,6 +1,7 @@
 ---
 term: NIC Card (Network Interface Card)
 category: Hardware
+language: en
 ---
 
 A Network Interface Card (NIC) is a hardware component that enables a computer system to connect to and communicate over a computer network. In virtualized environments, physical NICs are abstracted by the hypervisor to provide network connectivity to virtual machines through virtual network adapters and distributed switches.

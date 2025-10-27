@@ -1,6 +1,7 @@
 ---
 term: TCP (Transmission Control Protocol)
 category: Networking
+language: en
 ---
 
 Transmission Control Protocol (TCP) is a core protocol of the Internet protocol suite that provides reliable, ordered, and error-checked delivery of data between applications running on hosts communicating via an IP network. In VMware environments, TCP is fundamental for management interfaces, vMotion, storage protocols, and virtually all network communications between virtual machines and external systems.

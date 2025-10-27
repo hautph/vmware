@@ -1,6 +1,7 @@
 ---
 term: HBA/HCA Card (Host Bus Adapter/Host Channel Adapter)
 category: Hardware
+language: vi
 ---
 
 HBA (Bộ Điều Hợp Bus Máy Chủ) hoặc HCA (Bộ Điều Hợp Kênh Máy Chủ) là thành phần phần cứng kết nối bus máy chủ hoặc bus hệ thống của máy tính với các thành phần khác, thường là thiết bị lưu trữ hoặc mạng. Trong môi trường ảo hóa, HBAs/HCAs cung cấp kết nối tốc độ cao đến mạng lưu trữ (SAN), mạng fiber channel và mạng InfiniBand cho khối lượng công việc lưu trữ doanh nghiệp và tính toán hiệu suất cao.

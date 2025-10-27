@@ -1,6 +1,7 @@
 ---
 term: NTP (Network Time Protocol)
 category: Networking
+language: en
 ---
 
 Network Time Protocol (NTP) is a networking protocol designed to synchronize the clocks of computer systems over a network. In VMware environments, NTP is critical for maintaining time consistency across ESXi hosts, vCenter Server, and virtual machines, ensuring proper operation of time-sensitive applications and accurate log correlation.

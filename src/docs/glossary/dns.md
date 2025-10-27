@@ -1,6 +1,7 @@
 ---
 term: DNS (Domain Name System)
 category: Networking
+language: en
 ---
 
 Domain Name System (DNS) is a hierarchical and distributed naming system for computers, services, or other resources connected to the Internet or a private network. In VMware environments, DNS is essential for name resolution, service discovery, and proper communication between virtual machines, ESXi hosts, and vCenter Server.

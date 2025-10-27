@@ -1,6 +1,7 @@
 ---
 term: OVF/OVA (Open Virtualization Format/Open Virtualization Archive)
 category: Virtualization
+language: vi
 ---
 
 OVF (Định dạng Ảo hóa Mở) và OVA (Kho lưu trữ Ảo hóa Mở) là các tiêu chuẩn mở để đóng gói và phân phối các thiết bị ảo và giải pháp phần mềm. OVF xác định định dạng dựa trên XML để mô tả máy ảo và tài nguyên của chúng, trong khi OVA cung cấp định dạng lưu trữ tệp đơn gói tất cả các thành phần OVF để phân phối và triển khai dễ dàng.

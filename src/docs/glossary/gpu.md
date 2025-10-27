@@ -1,6 +1,7 @@
 ---
 term: GPU (Graphics Processing Unit)
 category: Hardware
+language: en
 ---
 
 A Graphics Processing Unit (GPU) is a specialized electronic circuit designed to rapidly manipulate and alter memory to accelerate the creation of images in a frame buffer intended for output to a display device. In modern virtualized environments, GPUs can be shared among multiple virtual machines through GPU virtualization technologies, enabling graphics-intensive workloads like 3D rendering, machine learning, and scientific computing.

@@ -1,6 +1,7 @@
 ---
 term: OVF/OVA (Open Virtualization Format/Open Virtualization Archive)
 category: Virtualization
+language: en
 ---
 
 OVF (Open Virtualization Format) and OVA (Open Virtualization Archive) are open standards for packaging and distributing virtual appliances and software solutions. OVF defines an XML-based format for describing virtual machines and their resources, while OVA provides a single-file archive format that bundles all OVF components for easy distribution and deployment.

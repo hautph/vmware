@@ -1,6 +1,7 @@
 ---
 term: VMware vCenter Converter
 category: Migration
+language: en
 ---
 
 VMware vCenter Converter is a software tool that enables the conversion of physical machines and virtual machines from third-party platforms into VMware virtual machines. It provides a streamlined process for migrating workloads to VMware vSphere environments, supporting both hot (live) and cold (offline) migrations with minimal downtime.

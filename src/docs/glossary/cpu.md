@@ -1,6 +1,7 @@
 ---
 term: CPU (Central Processing Unit)
 category: Hardware
+language: en
 ---
 
 The Central Processing Unit (CPU) is the primary component of a computer system that executes instructions and performs calculations for all software applications and operating systems. In virtualized environments, CPUs are shared among multiple virtual machines through hypervisor scheduling and resource allocation mechanisms.

@@ -1,6 +1,7 @@
 ---
 term: CPU (Central Processing Unit)
 category: Hardware
+language: vi
 ---
 
 CPU (Bộ xử lý trung tâm) là thành phần chính của hệ thống máy tính thực thi các lệnh và thực hiện các phép tính cho tất cả các ứng dụng phần mềm và hệ điều hành. Trong môi trường ảo hóa, CPU được chia sẻ giữa nhiều máy ảo thông qua cơ chế lập lịch và phân bổ tài nguyên của hypervisor.

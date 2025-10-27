@@ -1,6 +1,7 @@
 ---
 term: GPU (Graphics Processing Unit)
 category: Hardware
+language: vi
 ---
 
 GPU (Bộ xử lý đồ họa) là mạch điện tử chuyên dụng được thiết kế để thao tác và thay đổi bộ nhớ nhanh chóng nhằm tăng tốc việc tạo hình ảnh trong bộ đệm khung hình dự định xuất ra thiết bị hiển thị. Trong môi trường ảo hóa hiện đại, GPU có thể được chia sẻ giữa nhiều máy ảo thông qua các công nghệ ảo hóa GPU, cho phép các khối lượng công việc đòi hỏi đồ họa như kết xuất 3D, học máy và tính toán khoa học.

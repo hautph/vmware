@@ -1,6 +1,7 @@
 ---
 term: TCP (Transmission Control Protocol)
 category: Networking
+language: vi
 ---
 
 Giao thức Điều khiển Truyền tải (TCP) là giao thức cốt lõi của bộ giao thức Internet cung cấp việc giao dữ liệu đáng tin cậy, có thứ tự và kiểm tra lỗi giữa các ứng dụng chạy trên các máy chủ giao tiếp qua mạng IP. Trong môi trường VMware, TCP là cơ bản cho giao diện quản lý, vMotion, giao thức lưu trữ và hầu như tất cả các giao tiếp mạng giữa máy ảo và hệ thống bên ngoài.

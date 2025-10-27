@@ -1,6 +1,7 @@
 ---
 term: VMware vCenter Converter
 category: Migration
+language: vi
 ---
 
 VMware vCenter Converter là công cụ phần mềm cho phép chuyển đổi máy vật lý và máy ảo từ các nền tảng bên thứ ba thành máy ảo VMware. Nó cung cấp quy trình đơn giản hóa để di chuyển khối lượng công việc đến môi trường VMware vSphere, hỗ trợ cả di chuyển nóng (trực tiếp) và lạnh (ngoại tuyến) với thời gian ngừng hoạt động tối thiểu.

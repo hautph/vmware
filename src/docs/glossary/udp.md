@@ -1,6 +1,7 @@
 ---
 term: UDP (User Datagram Protocol)
 category: Networking
+language: en
 ---
 
 User Datagram Protocol (UDP) is a core protocol of the Internet protocol suite that provides a simple, connectionless communication model with minimal overhead and no guarantees for message delivery, ordering, or duplicate protection. In VMware environments, UDP is used for time synchronization, DNS queries, syslog transmission, and various real-time applications where speed is more important than reliability.

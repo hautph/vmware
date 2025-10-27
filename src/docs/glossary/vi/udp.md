@@ -1,6 +1,7 @@
 ---
 term: UDP (User Datagram Protocol)
 category: Networking
+language: vi
 ---
 
 Giao thức Datagram Người dùng (UDP) là giao thức cốt lõi của bộ giao thức Internet cung cấp mô hình giao tiếp không kết nối với chi phí tối thiểu và không đảm bảo giao hàng tin nhắn, sắp xếp hoặc bảo vệ trùng lặp. Trong môi trường VMware, UDP được sử dụng để đồng bộ hóa thời gian, truy vấn DNS, truyền syslog và các ứng dụng thời gian thực khác nơi tốc độ quan trọng hơn độ tin cậy.

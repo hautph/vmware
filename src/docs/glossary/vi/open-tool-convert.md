@@ -1,6 +1,7 @@
 ---
 term: Open Tool Convert
 category: Migration
+language: vi
 ---
 
 Open Tool Convert đề cập đến các công cụ mã nguồn mở và bên thứ ba được thiết kế để chuyển đổi máy ảo và hình ảnh đĩa giữa các nền tảng và định dạng ảo hóa khác nhau. Các công cụ này cung cấp các giải pháp thay thế linh hoạt, tiết kiệm chi phí cho các giải pháp chuyển đổi độc quyền, hỗ trợ nhiều định dạng nguồn và đích cho các môi trường ảo hóa hỗn hợp.

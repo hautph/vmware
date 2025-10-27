@@ -1,6 +1,7 @@
 ---
 term: HBA/HCA Card (Host Bus Adapter/Host Channel Adapter)
 category: Hardware
+language: en
 ---
 
 A Host Bus Adapter (HBA) or Host Channel Adapter (HCA) is a hardware component that connects a computer's host bus or system bus to other components, typically storage devices or network fabrics. In virtualized environments, HBAs/HCAs provide high-speed connectivity to storage area networks (SANs), fiber channel networks, and InfiniBand fabrics for enterprise storage and high-performance computing workloads.
