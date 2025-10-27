@@ -272,7 +272,37 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingIndicator.classList.remove('d-none');
             endOfContent.classList.add('d-none');
             
-            loadMoreTerms();
+            // Update total terms count for the selected category
+            // We need to fetch the actual count for the selected category
+            fetch(`/glossary/api/more-terms?category=${encodeURIComponent(category)}&page=1`)
+                .then(response => response.json())
+                .then(data => {
+                    // For 'all' categories, use the total from initial data
+                    // For specific categories, we'll update this after loading the first page
+                    if (category === 'all') {
+                        const glossaryData = document.getElementById('glossary-data');
+                        totalTerms = parseInt(glossaryData.getAttribute('data-total-terms'));
+                    } else {
+                        // For specific categories, use the total terms count from the API response
+                        totalTerms = data.totalTerms || 0;
+                    }
+                    
+                    // Now load the terms
+                    loadMoreTerms();
+                })
+                .catch(error => {
+                    console.error('Error fetching category count:', error);
+                    // Fallback to using the total terms from initial data
+                    const glossaryData = document.getElementById('glossary-data');
+                    totalTerms = parseInt(glossaryData.getAttribute('data-total-terms'));
+                    
+                    // Still load the terms even if we couldn't get the count
+                    loadMoreTerms();
+                });
+            
+            // Return early since we're handling the loading in the fetch callback
+            return;
+            // This line is now handled in the fetch callback above
         });
     });
     
@@ -295,8 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     Object.keys(data.displayCategories).forEach(category => {
                         const terms = data.displayCategories[category];
                         
-                        // We'll update loadedTerms after successfully adding terms to the DOM
-                        
                         // Check if category section already exists
                         let categorySection = document.querySelector(`.category-section[data-category="${category}"]`);
                         
@@ -310,41 +338,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             categorySection.innerHTML = `
                                 <div class="category-section-header">
                                     <h3 class="category-section-title mb-0">
-                                        <i class="bi bi-folder"></i> CATEGORY_DISPLAY_NAME
-                                        <span class="badge bg-primary ms-2">TERMS_LENGTH terms</span>
+                                        <i class="bi bi-folder"></i> ${categoryDisplayName}
+                                        <span class="badge bg-primary ms-2">${terms.length} terms</span>
                                     </h3>
                                 </div>
-                                <div class="row" id="CATEGORY_ID"></div>
-                            `.replace('CATEGORY_DISPLAY_NAME', categoryDisplayName)
-                              .replace('TERMS_LENGTH', terms.length)
-                              .replace('CATEGORY_ID', 'category-' + category.replace(/[^a-zA-Z0-9]/g, '-'));
+                                <div class="row" id="category-${category.replace(/[^a-zA-Z0-9]/g, '-')}"></div>
+                            `;
                             glossaryContent.appendChild(categorySection);
-                        } else {
-                            // For category filtering, we need to update the badge with the correct count
-                            // When filtering by category, we show the total loaded terms for that category
-                            if (currentCategory !== 'all') {
-                                // For specific category filtering, update badge with loaded terms count
-                                const badge = categorySection.querySelector('.badge');
-                                if (badge) {
-                                    // Find all term cards in this category to get accurate count
-                                    const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')}`);
-                                    const existingCards = rowContainer ? rowContainer.querySelectorAll('.term-card').length : 0;
-                                    const newCount = existingCards + terms.length;
-                                    badge.textContent = `${newCount} terms`;
-                                }
-                            } else {
-                                // For 'all' view, just show the count of terms in current batch
-                                const badge = categorySection.querySelector('.badge');
-                                if (badge) {
-                                    badge.textContent = `${terms.length} terms`;
-                                }
-                            }
-                                                    
-                            // Clear existing terms to avoid duplicates
-                            const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')}`);
-                            if (rowContainer) {
-                                rowContainer.innerHTML = '';
-                            }
                         }
                         
                         // Get the row container for this category
@@ -355,28 +355,41 @@ document.addEventListener('DOMContentLoaded', function() {
                             terms.forEach(term => {
                                 const termCard = document.createElement('div');
                                 termCard.className = 'col-lg-6 col-xl-4 mb-4';
+                                
+                                // Create proper term link
+                                const termLink = '/glossary/term/' + (term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-'));
+                                
                                 termCard.innerHTML = `
                                     <div class="card term-card h-100">
                                         <div class="card-body d-flex flex-column">
-                                            <h4 class="term-card-title">TERM_TITLE</h4>
-                                            <span class="term-card-category">TERM_CATEGORY</span>
-                                            <p class="term-card-definition flex-grow-1">TERM_DEFINITION</p>
-                                            <a href="TERM_LINK" 
+                                            <h4 class="term-card-title">${term.title || term.term}</h4>
+                                            <span class="term-card-category">${term.category || ''}</span>
+                                            <p class="term-card-definition flex-grow-1">${(term.definition || '').substring(0, 150)}...</p>
+                                            <a href="${termLink}" 
                                                class="btn btn-primary term-card-btn mt-auto">
                                                 <i class="bi bi-book"></i> Learn More
                                             </a>
                                         </div>
                                     </div>
-                                `.replace('TERM_TITLE', term.title || term.term)
-                                  .replace('TERM_CATEGORY', term.category)
-                                  .replace('TERM_DEFINITION', term.definition.substring(0, 150) + '...')
-                                  .replace('TERM_LINK', '/glossary/term/' + (term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-')));
+                                `;
                                 rowContainer.appendChild(termCard);
                             });
                             
-                            // Update loaded terms count after successfully adding terms
-                            if (currentCategory === 'all' || currentCategory === category) {
-                                loadedTerms += terms.length;
+                            // Update loaded terms count
+                            loadedTerms += terms.length;
+                            
+                            // Update category badge with total count for this category
+                            const badge = categorySection.querySelector('.badge');
+                            if (badge) {
+                                // For category filtering, show total terms in category
+                                if (currentCategory !== 'all') {
+                                    // Get the actual count of terms in this category
+                                    const categoryTerms = data.displayCategories[category] || [];
+                                    badge.textContent = `${categoryTerms.length} terms`;
+                                } else {
+                                    // For 'all' view, show terms in current batch
+                                    badge.textContent = `${terms.length} terms`;
+                                }
                             }
                         }
                     });
@@ -384,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Update results info
                 const categoryText = currentCategory !== 'all' ? currentCategory.replace(/_/g, ' ') : 'All Categories';
-                resultsInfo.textContent = `Showing ${loadedTerms} of ${totalTerms} terms in ${categoryText}`;
+                resultsInfo.innerHTML = `Showing <strong>${loadedTerms}</strong> of <strong>${totalTerms}</strong> terms in <strong>${categoryText}</strong>`;
                 
                 // Hide loading indicator
                 loadingIndicator.classList.add('d-none');
@@ -407,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isLoading || !hasMore) return;
         
         const scrollPosition = window.innerHeight + window.scrollY;
-        const pageHeight = document.body.offsetHeight - 1000; // Trigger 1000px before end
+        const pageHeight = document.body.offsetHeight - 500; // Trigger 500px before end
         
         if (scrollPosition >= pageHeight) {
             loadMoreTerms();

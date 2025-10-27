@@ -298,7 +298,7 @@ export const getIndex = (req, res) => {
   // Pagination parameters
   const page = parseInt(req.query.page) || 1;
   const categoryFilter = req.query.category || 'all';
-  const termsPerPage = 10;
+  const termsPerPage = 12; // Increased from 10 to load more terms initially
   
   // Filter terms by category if specified
   let filteredTerms = terms;
@@ -317,7 +317,7 @@ export const getIndex = (req, res) => {
   // For specific categories, we'll use pagination
   let displayCategories = {};
   let totalTerms = filteredTerms.length;
-  let totalPages = 1;
+  let totalPages = Math.ceil(totalTerms / termsPerPage);
   
   if (categoryFilter === 'all') {
     // For "All Categories", load all terms but limit initial display
@@ -357,7 +357,6 @@ export const getIndex = (req, res) => {
     
     // Group filtered terms by category for display
     displayCategories = {};
-    let termsAdded = 0;
     const startIndex = (page - 1) * termsPerPage;
     const endIndex = startIndex + termsPerPage;
     
@@ -406,7 +405,7 @@ export const getMoreTerms = (req, res) => {
   const terms = Object.values(loadGlossaryTerms(req));
   const categoryFilter = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
-  const termsPerPage = 10;
+  const termsPerPage = 12; // Match the initial page size
   
   // Filter terms by category if specified
   let filteredTerms = terms;
@@ -455,7 +454,8 @@ export const getMoreTerms = (req, res) => {
   res.json({
     displayCategories,
     hasMore,
-    nextPage: page + 1
+    nextPage: page + 1,
+    totalTerms: filteredTerms.length // Add total terms count for accurate display
   });
 };
 

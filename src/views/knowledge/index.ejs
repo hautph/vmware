@@ -1,40 +1,238 @@
 <%- include('../partials/header.ejs', { title: 'Knowledge Base' }) %>
 
-<div class="row">
-    <div class="col-12">
-        <h1><i class="bi bi-journals"></i> Knowledge Base</h1>
-        <p class="lead">Access articles, guides, and best practices in Markdown format.</p>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <form action="/knowledge/search" method="GET">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="q" placeholder="Search knowledge base..." required>
-                        <button class="btn btn-outline-secondary" type="submit">
-                            <i class="bi bi-search"></i> Search
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <div class="row">
-            <% articles.forEach(article => { %>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= article.title %></h5>
-                            <h6 class="card-subtitle mb-2 text-muted"><%= article.category %></h6>
-                            <p class="card-text"><%= article.excerpt %></p>
-                            <a href="/knowledge/article/<%= article.id %>" class="btn btn-primary btn-sm">
-                                Read Article
-                            </a>
-                        </div>
-                    </div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Enhanced Knowledge Base Header -->
+            <div class="knowledge-header text-center mb-4">
+                <div class="container">
+                    <h1 class="display-4 fw-bold"><i class="bi bi-journals"></i> Knowledge Base</h1>
+                    <p class="lead fs-4">Access articles, guides, and best practices in Markdown format.</p>
                 </div>
-            <% }); %>
+            </div>
+            
+            <!-- Enhanced Search Section -->
+            <div class="card knowledge-search-card mb-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3 text-center"><i class="bi bi-search"></i> Find Knowledge Base Articles</h3>
+                    <form action="/knowledge/search" method="GET" id="knowledgeSearchForm">
+                        <div class="input-group input-group-lg">
+                            <input type="text" class="form-control knowledge-search-input" name="q" placeholder="Search knowledge base..." required autocomplete="off">
+                            <button class="btn btn-primary knowledge-search-btn" type="submit">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                        </div>
+                        <!-- Suggestions dropdown -->
+                        <div id="searchSuggestions" class="search-suggestions-dropdown d-none">
+                            <ul class="list-group"></ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Articles by Category -->
+            <% if (typeof groupedArticles !== 'undefined' && Object.keys(groupedArticles).length > 0) { %>
+                <% Object.keys(groupedArticles).forEach(categoryGroup => { %>
+                    <% if (groupedArticles[categoryGroup].length > 0) { %>
+                        <div class="category-group mb-5">
+                            <h2 class="category-group-title border-bottom pb-2 mb-4"><%= categoryGroup %></h2>
+                            <div class="row">
+                                <% groupedArticles[categoryGroup].forEach(article => { %>
+                                    <div class="col-lg-6 col-xl-4 mb-4">
+                                        <div class="card h-100 knowledge-article-card">
+                                            <div class="card-body d-flex flex-column">
+                                                <h5 class="card-title"><%= article.title %></h5>
+                                                <h6 class="card-subtitle mb-2 text-muted"><%= article.category %></h6>
+                                                <p class="card-text flex-grow-1"><%= article.excerpt %></p>
+                                                <a href="/knowledge/article/<%= article.id %>" class="btn btn-primary mt-auto">
+                                                    <i class="bi bi-book"></i> Read Article
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }); %>
+            <% } else { %>
+                <!-- Fallback to original display if grouping is not available -->
+                <div class="row">
+                    <% articles.forEach(article => { %>
+                        <div class="col-lg-6 col-xl-4 mb-4">
+                            <div class="card h-100 knowledge-article-card">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title"><%= article.title %></h5>
+                                    <h6 class="card-subtitle mb-2 text-muted"><%= article.category %></h6>
+                                    <p class="card-text flex-grow-1"><%= article.excerpt %></p>
+                                    <a href="/knowledge/article/<%= article.id %>" class="btn btn-primary mt-auto">
+                                        <i class="bi bi-book"></i> Read Article
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>
+
+<!-- Add search functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.knowledge-search-input');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    const suggestionsList = suggestionsContainer.querySelector('ul');
+    
+    let debounceTimer;
+    
+    // Handle input for autocomplete
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        // Clear previous timer
+        clearTimeout(debounceTimer);
+        
+        // Hide suggestions if query is too short
+        if (query.length < 2) {
+            suggestionsContainer.classList.add('d-none');
+            return;
+        }
+        
+        // Debounce API calls
+        debounceTimer = setTimeout(() => {
+            fetch(`/knowledge/api/suggestions?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(suggestions => {
+                    if (suggestions.length > 0) {
+                        // Clear previous suggestions
+                        suggestionsList.innerHTML = '';
+                        
+                        // Add new suggestions
+                        suggestions.forEach(suggestion => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action';
+                            li.textContent = suggestion.title;
+                            li.addEventListener('click', () => {
+                                searchInput.value = suggestion.title;
+                                suggestionsContainer.classList.add('d-none');
+                                document.getElementById('knowledgeSearchForm').submit();
+                            });
+                            suggestionsList.appendChild(li);
+                        });
+                        
+                        // Show suggestions
+                        suggestionsContainer.classList.remove('d-none');
+                    } else {
+                        suggestionsContainer.classList.add('d-none');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching suggestions:', error);
+                    suggestionsContainer.classList.add('d-none');
+                });
+        }, 300); // 300ms debounce
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+            suggestionsContainer.classList.add('d-none');
+        }
+    });
+    
+    // Handle keyboard navigation
+    searchInput.addEventListener('keydown', function(event) {
+        const items = suggestionsList.querySelectorAll('li');
+        if (items.length === 0) return;
+        
+        const activeItem = suggestionsList.querySelector('li.active');
+        let activeIndex = activeItem ? Array.from(items).indexOf(activeItem) : -1;
+        
+        switch (event.key) {
+            case 'ArrowDown':
+                event.preventDefault();
+                activeIndex = (activeIndex + 1) % items.length;
+                break;
+            case 'ArrowUp':
+                event.preventDefault();
+                activeIndex = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
+                break;
+            case 'Enter':
+                if (activeItem) {
+                    event.preventDefault();
+                    activeItem.click();
+                }
+                return;
+            case 'Escape':
+                suggestionsContainer.classList.add('d-none');
+                return;
+        }
+        
+        // Update active item
+        items.forEach((item, index) => {
+            item.classList.toggle('active', index === activeIndex);
+        });
+    });
+});
+</script>
+
+<style>
+.search-suggestions-dropdown {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    margin-top: 5px;
+}
+
+.search-suggestions-dropdown ul {
+    margin-bottom: 0;
+}
+
+.search-suggestions-dropdown li {
+    cursor: pointer;
+}
+
+.search-suggestions-dropdown li:hover,
+.search-suggestions-dropdown li.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.category-group-title {
+    color: #2c3e50;
+    font-weight: 600;
+    position: relative;
+}
+
+.category-group-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #0d6efd, #6610f2);
+    border-radius: 2px;
+}
+
+.knowledge-article-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.knowledge-article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
 
 <%- include('../partials/footer.ejs') %>
