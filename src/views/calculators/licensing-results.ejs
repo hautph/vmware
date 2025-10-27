@@ -1,0 +1,164 @@
+<%- include('../partials/header.ejs', { title: 'Licensing Cost Calculation Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-currency-dollar"></i> VMware Licensing Cost Results</h1>
+        <p class="lead">Detailed breakdown of your VMware licensing costs</p>
+        
+        <div class="mb-3">
+            <a href="/calculators/licensing" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-receipt"></i> Cost Breakdown</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Cost</th>
+                                    <th>Total Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>vSphere <%= results.vsphereEdition.charAt(0).toUpperCase() + results.vsphereEdition.slice(1) %></td>
+                                    <td><%= results.vsphereCPUs %> CPUs</td>
+                                    <td>$<%= (results.vsphereLicenseCost / results.vsphereCPUs).toFixed(2) %></td>
+                                    <td>$<%= results.vsphereLicenseCost.toFixed(2) %></td>
+                                </tr>
+                                <% if (results.vsanLicenseCost > 0) { %>
+                                <tr>
+                                    <td>vSAN</td>
+                                    <td><%= results.vsanCapacityTB %> TB</td>
+                                    <td>$<%= (results.vsanLicenseCost / results.vsanCapacityTB).toFixed(2) %></td>
+                                    <td>$<%= results.vsanLicenseCost.toFixed(2) %></td>
+                                </tr>
+                                <% } %>
+                                <% if (results.nsxLicenseCost > 0) { %>
+                                <tr>
+                                    <td>NSX <%= results.nsxEdition.charAt(0).toUpperCase() + results.nsxEdition.slice(1) %></td>
+                                    <td><%= results.vsphereCPUs %> CPUs</td>
+                                    <td>$<%= (results.nsxLicenseCost / results.vsphereCPUs).toFixed(2) %></td>
+                                    <td>$<%= results.nsxLicenseCost.toFixed(2) %></td>
+                                </tr>
+                                <% } %>
+                                <tr>
+                                    <td>Support (<%= results.supportLevel.charAt(0).toUpperCase() + results.supportLevel.slice(1) %>)</td>
+                                    <td></td>
+                                    <td><%= (results.supportCost / results.totalLicenseCost * 100).toFixed(1) %>%</td>
+                                    <td>$<%= results.supportCost.toFixed(2) %></td>
+                                </tr>
+                                <tr class="table-primary">
+                                    <td><strong>Total License Cost</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>$<%= results.totalLicenseCost.toFixed(2) %></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-graph-up"></i> Cost Summary</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Licensing Model: <%= results.licensingModel.charAt(0).toUpperCase() + results.licensingModel.slice(1) %></h4>
+                        
+                        <% if (results.licensingModel === 'perpetual') { %>
+                        <p><strong>Upfront Cost:</strong> $<%= results.upfrontCost.toFixed(2) %></p>
+                        <% } %>
+                        
+                        <p><strong>Annual Cost:</strong> $<%= results.annualCost.toFixed(2) %></p>
+                        
+                        <p><strong>3-Year Total:</strong> $<%= results.total3YearCost.toFixed(2) %></p>
+                        <p><strong>5-Year Total:</strong> $<%= results.total5YearCost.toFixed(2) %></p>
+                        
+                        <hr>
+                        
+                        <p><strong>Cost per VM:</strong> $<%= results.costPerVM.toFixed(2) %></p>
+                        <p><strong>Cost per Host:</strong> $<%= results.costPerHost.toFixed(2) %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-arrow-left-right"></i> Alternative Edition Comparison</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Comparing with vSphere <%= results.alternative.edition === 'standard' ? 'Standard' : 'Enterprise Plus' %></h4>
+                        
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Period</th>
+                                    <th>Current Edition</th>
+                                    <th>Alternative</th>
+                                    <th>Difference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>3-Year Total</td>
+                                    <td>$<%= results.total3YearCost.toFixed(2) %></td>
+                                    <td>$<%= results.alternative.total3YearCost.toFixed(2) %></td>
+                                    <td>$<%= (results.alternative.total3YearCost - results.total3YearCost).toFixed(2) %></td>
+                                </tr>
+                                <tr>
+                                    <td>5-Year Total</td>
+                                    <td>$<%= results.total5YearCost.toFixed(2) %></td>
+                                    <td>$<%= results.alternative.total5YearCost.toFixed(2) %></td>
+                                    <td>$<%= (results.alternative.total5YearCost - results.total5YearCost).toFixed(2) %></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <% if (results.alternative.total3YearCost < results.total3YearCost) { %>
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> The alternative edition saves $<%= (results.total3YearCost - results.alternative.total3YearCost).toFixed(2) %> over 3 years.
+                        </div>
+                        <% } else { %>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Your current edition is more cost-effective.
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <% if (results.recommendations.length > 0) { %>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="bi bi-lightbulb"></i> Recommendations</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <% results.recommendations.forEach(rec => { %>
+                            <li><%= rec %></li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

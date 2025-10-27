@@ -63,6 +63,40 @@
                 </ul>
             </div>
         </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Calculation History</h3>
+            </div>
+            <div class="card-body">
+                <p>Recent calculations will appear here once you've performed some calculations.</p>
+                <ul id="calculationHistory">
+                    <!-- History items will be added here dynamically -->
+                </ul>
+            </div>
+        </div>
+        
+        <script>
+            // Simple client-side history storage
+            if (typeof(Storage) !== "undefined") {
+                // Check if we have stored history
+                let history = localStorage.getItem('vmDensityHistory');
+                if (history) {
+                    history = JSON.parse(history);
+                    const historyList = document.getElementById('calculationHistory');
+                    historyList.innerHTML = '';
+                    
+                    // Show last 5 calculations
+                    history.slice(-5).forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `Host: ${item.physicalCores} cores @ ${item.coreSpeed}GHz, ${item.memoryGB}GB RAM | 
+                                       VM: ${item.vmCores} cores, ${item.vmRamGB}GB RAM | 
+                                       Result: ${item.conservativeDensity} VMs`;
+                        historyList.appendChild(li);
+                    });
+                }
+            }
+        </script>
     </div>
 </div>
 

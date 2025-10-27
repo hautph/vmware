@@ -83,8 +83,50 @@
             <button class="btn btn-secondary" onclick="window.print()">
                 <i class="bi bi-printer"></i> <%= t('calculators.vm_consolidation_results.print_results') %>
             </button>
+            <form method="POST" action="/calculators/vm-density" style="display: inline;" id="exportForm">
+                <input type="hidden" name="physicalCores" value="<%= results.physicalCores %>" id="physicalCores">
+                <input type="hidden" name="coreSpeed" value="<%= results.coreSpeed %>" id="coreSpeed">
+                <input type="hidden" name="memoryGB" value="<%= results.memoryGB %>" id="memoryGB">
+                <input type="hidden" name="vmCores" value="<%= results.vmCores %>" id="vmCores">
+                <input type="hidden" name="vmRamGB" value="<%= results.vmRamGB %>" id="vmRamGB">
+                <input type="hidden" name="conservativeDensity" value="<%= results.conservativeDensity %>" id="conservativeDensity">
+                <button type="submit" name="exportFormat" value="pdf" class="btn btn-info">
+                    <i class="bi bi-file-pdf"></i> Export to PDF
+                </button>
+                <button type="submit" name="exportFormat" value="csv" class="btn btn-success">
+                    <i class="bi bi-file-spreadsheet"></i> Export to CSV
+                </button>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    // Save calculation to history
+    if (typeof(Storage) !== "undefined") {
+        // Get existing history or create new array
+        let history = localStorage.getItem('vmDensityHistory');
+        history = history ? JSON.parse(history) : [];
+        
+        // Add current calculation
+        history.push({
+            timestamp: new Date().toISOString(),
+            physicalCores: parseInt(document.getElementById('physicalCores').value),
+            coreSpeed: parseFloat(document.getElementById('coreSpeed').value),
+            memoryGB: parseInt(document.getElementById('memoryGB').value),
+            vmCores: parseInt(document.getElementById('vmCores').value),
+            vmRamGB: parseInt(document.getElementById('vmRamGB').value),
+            conservativeDensity: parseInt(document.getElementById('conservativeDensity').value)
+        });
+        
+        // Keep only last 10 calculations
+        if (history.length > 10) {
+            history = history.slice(-10);
+        }
+        
+        // Save back to localStorage
+        localStorage.setItem('vmDensityHistory', JSON.stringify(history));
+    }
+</script>
 
 <%- include('../partials/footer.ejs') %>

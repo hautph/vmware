@@ -1,0 +1,111 @@
+<%- include('../partials/header.ejs', { title: 'VMware Licensing Cost Calculator' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-currency-dollar"></i> VMware Licensing Cost Calculator</h1>
+        <p class="lead">Calculate and compare VMware licensing costs</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-input-cursor"></i> Environment Information</h3>
+            </div>
+            <div class="card-body">
+                <form action="/calculators/licensing" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <input type="number" class="form-control" id="numVMs" name="numVMs" required min="1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="numHosts" class="form-label">Number of Hosts</label>
+                                <input type="number" class="form-control" id="numHosts" name="numHosts" required min="1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="vsphereEdition" class="form-label">vSphere Edition</label>
+                                <select class="form-select" id="vsphereEdition" name="vsphereEdition" required>
+                                    <option value="standard">vSphere Standard</option>
+                                    <option value="enterprisePlus">vSphere Enterprise Plus</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="licensingModel" class="form-label">Licensing Model</label>
+                                <select class="form-select" id="licensingModel" name="licensingModel" required>
+                                    <option value="perpetual">Perpetual License</option>
+                                    <option value="subscription">Subscription</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="supportLevel" class="form-label">Support Level</label>
+                                <select class="form-select" id="supportLevel" name="supportLevel" required>
+                                    <option value="basic">Basic Support (18%)</option>
+                                    <option value="production">Production Support (24%)</option>
+                                    <option value="premier">Premier Support (29%)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="region" class="form-label">Region</label>
+                                <select class="form-select" id="region" name="region" required>
+                                    <option value="north-america">North America</option>
+                                    <option value="europe">Europe</option>
+                                    <option value="asia-pacific">Asia Pacific</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="vsanEnabled" name="vsanEnabled" value="yes">
+                                <label class="form-check-label" for="vsanEnabled">Enable vSAN Licensing</label>
+                            </div>
+                            
+                            <div class="mb-3" id="vsanFields" style="display: none;">
+                                <label for="vsanCapacityTB" class="form-label">vSAN Capacity (TB)</label>
+                                <input type="number" class="form-control" id="vsanCapacityTB" name="vsanCapacityTB" min="1" step="0.1">
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="nsxEnabled" name="nsxEnabled" value="yes">
+                                <label class="form-check-label" for="nsxEnabled">Enable NSX Licensing</label>
+                            </div>
+                            
+                            <div class="mb-3" id="nsxFields" style="display: none;">
+                                <label for="nsxEdition" class="form-label">NSX Edition</label>
+                                <select class="form-select" id="nsxEdition" name="nsxEdition">
+                                    <option value="standard">NSX Standard</option>
+                                    <option value="advanced">NSX Advanced</option>
+                                    <option value="datacenter">NSX Data Center</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Calculate Licensing Costs
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle vSAN fields
+    document.getElementById('vsanEnabled').addEventListener('change', function() {
+        document.getElementById('vsanFields').style.display = this.checked ? 'block' : 'none';
+    });
+    
+    // Toggle NSX fields
+    document.getElementById('nsxEnabled').addEventListener('change', function() {
+        document.getElementById('nsxFields').style.display = this.checked ? 'block' : 'none';
+    });
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

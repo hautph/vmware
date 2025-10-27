@@ -1,0 +1,95 @@
+<%- include('../partials/header.ejs', { title: 'Performance & Optimization Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-speedometer2"></i> Performance & Optimization Results</h1>
+        <p class="lead">Analysis of your VMware environment performance</p>
+        
+        <div class="mb-3">
+            <a href="/calculators/performance" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-cpu"></i> CPU Performance</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>CPU Ready Time: <%= results.cpuReadyTimePercent %>%</h4>
+                        <div class="alert alert-<%= results.cpuReadyAssessment.toLowerCase() === 'excellent' ? 'success' : results.cpuReadyAssessment.toLowerCase() === 'good' ? 'info' : results.cpuReadyAssessment.toLowerCase() === 'fair' ? 'warning' : 'danger' %>">
+                            Assessment: <%= results.cpuReadyAssessment %>
+                        </div>
+                        <p>CPU ready time represents the time a VM was ready to run but had to wait for a physical CPU.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-memory"></i> Memory Performance</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Memory Ballooning: <%= results.balloonPercent %>%</h4>
+                        <div class="alert alert-<%= results.memoryPressureAssessment.toLowerCase() === 'low' ? 'success' : results.memoryPressureAssessment.toLowerCase() === 'moderate' ? 'info' : results.memoryPressureAssessment.toLowerCase() === 'high' ? 'warning' : 'danger' %>">
+                            Assessment: <%= results.memoryPressureAssessment %>
+                        </div>
+                        <p>Memory ballooning indicates memory pressure in the host.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-hdd"></i> Storage Performance</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Storage Latency: <%= results.storageLatencyMs %> ms</h4>
+                        <div class="alert alert-<%= results.storageLatencyAssessment.toLowerCase() === 'excellent' ? 'success' : results.storageLatencyAssessment.toLowerCase() === 'good' ? 'info' : results.storageLatencyAssessment.toLowerCase() === 'fair' ? 'warning' : 'danger' %>">
+                            Assessment: <%= results.storageLatencyAssessment %>
+                        </div>
+                        <p>Storage latency affects VM responsiveness and application performance.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3><i class="bi bi-diagram-3"></i> Network Performance</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Network Utilization: <%= results.networkUtilization %>%</h4>
+                        <div class="alert alert-<%= results.networkAssessment.toLowerCase() === 'excellent' ? 'success' : results.networkAssessment.toLowerCase() === 'good' ? 'info' : results.networkAssessment.toLowerCase() === 'fair' ? 'warning' : 'danger' %>">
+                            Assessment: <%= results.networkAssessment %>
+                        </div>
+                        <p>Network utilization affects data transfer speeds and application responsiveness.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <% if (results.recommendations.length > 0) { %>
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-lightbulb"></i> Recommendations</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <% results.recommendations.forEach(rec => { %>
+                    <li><%= rec %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

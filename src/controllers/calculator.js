@@ -11,8 +11,10 @@ export const getVMDensity = (req, res) => {
   });
 };
 
+import { exportToPDF, exportToCSV } from '../utils/export.js';
+
 export const calculateVMDensity = (req, res) => {
-  const { physicalCores, coreSpeed, memoryGB, vmCores, vmRamGB } = req.body;
+  const { physicalCores, coreSpeed, memoryGB, vmCores, vmRamGB, exportFormat } = req.body;
   
   // Calculate density
   const cpuBasedDensity = Math.floor(physicalCores / vmCores);
@@ -40,6 +42,13 @@ export const calculateVMDensity = (req, res) => {
     ]
   };
   
+  // Handle export requests
+  if (exportFormat === 'pdf') {
+    return exportToPDF(results, 'vm-density', res);
+  } else if (exportFormat === 'csv') {
+    return exportToCSV(results, 'vm-density', res);
+  }
+  
   res.render('calculators/vm-density-results', { 
     title: 'VM Density Calculation Results',
     results
@@ -54,7 +63,7 @@ export const getStorage = (req, res) => {
 };
 
 export const calculateStorage = (req, res) => {
-  const { numVMs, avgVMSize, growthRate, retentionPeriod } = req.body;
+  const { numVMs, avgVMSize, growthRate, retentionPeriod, exportFormat } = req.body;
   
   // Calculate storage requirements
   const currentStorage = numVMs * avgVMSize;
@@ -79,6 +88,13 @@ export const calculateStorage = (req, res) => {
       'Plan for storage performance, not just capacity'
     ]
   };
+  
+  // Handle export requests
+  if (exportFormat === 'pdf') {
+    return exportToPDF(results, 'storage', res);
+  } else if (exportFormat === 'csv') {
+    return exportToCSV(results, 'storage', res);
+  }
   
   res.render('calculators/storage-results', { 
     title: 'Storage Calculation Results',

@@ -1,0 +1,107 @@
+<%- include('../partials/header.ejs', { title: 'Performance & Optimization Calculator' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-speedometer2"></i> Performance & Optimization Calculator</h1>
+        <p class="lead">Analyze and optimize your VMware environment performance</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="bi bi-input-cursor"></i> Environment Information</h3>
+            </div>
+            <div class="card-body">
+                <form action="/calculators/performance" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="numVMs" class="form-label">Number of VMs</label>
+                                <input type="number" class="form-control" id="numVMs" name="numVMs" required min="1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="avgCPUUtilization" class="form-label">Average CPU Utilization (%)</label>
+                                <input type="number" class="form-control" id="avgCPUUtilization" name="avgCPUUtilization" required min="0" max="100" step="0.1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cpuReadyTimeMs" class="form-label">CPU Ready Time (ms)</label>
+                                <input type="number" class="form-control" id="cpuReadyTimeMs" name="cpuReadyTimeMs" required min="0" step="0.1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="memoryAllocationGB" class="form-label">Memory Allocation (GB)</label>
+                                <input type="number" class="form-control" id="memoryAllocationGB" name="memoryAllocationGB" required min="1" step="0.1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="memoryUsageGB" class="form-label">Actual Memory Usage (GB)</label>
+                                <input type="number" class="form-control" id="memoryUsageGB" name="memoryUsageGB" required min="1" step="0.1">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="memoryBalloonGB" class="form-label">Memory Ballooned (GB)</label>
+                                <input type="number" class="form-control" id="memoryBalloonGB" name="memoryBalloonGB" required min="0" step="0.1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="storageIOPSTotal" class="form-label">Total Storage IOPS</label>
+                                <input type="number" class="form-control" id="storageIOPSTotal" name="storageIOPSTotal" required min="0">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="storageLatencyMs" class="form-label">Storage Latency (ms)</label>
+                                <input type="number" class="form-control" id="storageLatencyMs" name="storageLatencyMs" required min="0" step="0.1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="networkBandwidthMbps" class="form-label">Network Bandwidth (Mbps)</label>
+                                <input type="number" class="form-control" id="networkBandwidthMbps" name="networkBandwidthMbps" required min="1">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="networkUtilization" class="form-label">Network Utilization (%)</label>
+                                <input type="number" class="form-control" id="networkUtilization" name="networkUtilization" required min="0" max="100" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="hostCPUCount" class="form-label">Host CPU Count</label>
+                                <input type="number" class="form-control" id="hostCPUCount" name="hostCPUCount" required min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="hostMemoryGB" class="form-label">Host Memory (GB)</label>
+                                <input type="number" class="form-control" id="hostMemoryGB" name="hostMemoryGB" required min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="storageType" class="form-label">Storage Type</label>
+                                <select class="form-select" id="storageType" name="storageType" required>
+                                    <option value="ssd">SSD</option>
+                                    <option value="sas">15K RPM SAS</option>
+                                    <option value="sata">7.2K RPM SATA</option>
+                                    <option value="nvme">NVMe</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Calculate Performance
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

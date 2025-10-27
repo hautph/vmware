@@ -10,7 +10,18 @@
     "export": "node export.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["vmware", "resource", "sizing", "calculator", "vsan", "cost", "analysis", "capex", "opex", "tco"],
+  "keywords": [
+    "vmware",
+    "resource",
+    "sizing",
+    "calculator",
+    "vsan",
+    "cost",
+    "analysis",
+    "capex",
+    "opex",
+    "tco"
+  ],
   "author": "VMware Tool Team",
   "license": "ISC",
   "type": "module",
@@ -22,7 +33,8 @@
     "i18next": "^25.6.0",
     "i18next-fs-backend": "^2.6.0",
     "i18next-http-middleware": "^3.8.1",
-    "marked": "^16.4.1"
+    "marked": "^16.4.1",
+    "pdfkit": "^0.17.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

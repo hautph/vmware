@@ -82,6 +82,18 @@
             <button class="btn btn-secondary" onclick="window.print()">
                 <i class="bi bi-printer"></i> <%= t('calculators.storage_results.print_results') %>
             </button>
+            <form method="POST" action="/calculators/storage" style="display: inline;">
+                <input type="hidden" name="numVMs" value="<%= results.numVMs %>">
+                <input type="hidden" name="avgVMSize" value="<%= results.avgVMSize %>">
+                <input type="hidden" name="growthRate" value="<%= results.growthRate %>">
+                <input type="hidden" name="retentionPeriod" value="<%= results.retentionPeriod %>">
+                <button type="submit" name="exportFormat" value="pdf" class="btn btn-info">
+                    <i class="bi bi-file-pdf"></i> Export to PDF
+                </button>
+                <button type="submit" name="exportFormat" value="csv" class="btn btn-success">
+                    <i class="bi bi-file-spreadsheet"></i> Export to CSV
+                </button>
+            </form>
         </div>
     </div>
 </div>
