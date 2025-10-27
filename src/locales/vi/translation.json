@@ -131,7 +131,8 @@
       "Other_Products_Solutions": "Các Sản phẩm & Giải pháp Khác",
       "Kubernetes_and_Workloads": "Kubernetes và Khối lượng công việc",
       "Management_and_Clusters": "Quản lý và Cụm",
-      "VMware_vSphere_Foundation_9": "VMware vSphere Foundation 9"
+      "VMware_vSphere_Foundation_9": "VMware vSphere Foundation 9",
+      "Virtualization": "Ảo hóa"
     }
   },
   "calculators": {
