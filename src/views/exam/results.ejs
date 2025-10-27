@@ -1,0 +1,139 @@
+<%- include('../partials/header.ejs', { title: 'Exam Results' }) %>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/exam">Exam Modules</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Results</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0"><i class="bi bi-clipboard-check"></i> Exam Results</h1>
+                    <p class="text-muted mb-0"><%= exam.title %></p>
+                </div>
+                <div>
+                    <a href="/exam/exam/<%= exam.id %>" class="btn btn-primary">
+                        <i class="bi bi-arrow-repeat"></i> Retake Exam
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Performance Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="bg-primary text-white rounded p-3">
+                                        <h3><%= totalQuestions %></h3>
+                                        <p class="mb-0">Total Questions</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="bg-success text-white rounded p-3">
+                                        <h3><%= answeredQuestions %></h3>
+                                        <p class="mb-0">Answered</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="bg-warning text-dark rounded p-3">
+                                        <h3><%= flaggedQuestions %></h3>
+                                        <p class="mb-0">Flagged</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="bg-info text-white rounded p-3">
+                                        <h3><%= timeTaken %></h3>
+                                        <p class="mb-0">Time Taken</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5>Performance Analysis</h5>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
+                                        Answered (70%)
+                                    </div>
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
+                                        Flagged (10%)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Question Review</h5>
+                        </div>
+                        <div class="card-body">
+                            <% questions.forEach((question, index) => { %>
+                                <div class="border-bottom pb-3 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <h6>Question <%= index + 1 %>: <%= question.title.replace('Question ' + (index + 1), '') %></h6>
+                                        <% if (question.flagged) { %>
+                                            <span class="badge bg-warning">Flagged</span>
+                                        <% } %>
+                                    </div>
+                                    <p><strong>Your Answer:</strong> 
+                                        <% if (userAnswers[index]) { %>
+                                            <%= userAnswers[index].join(', ') %>
+                                        <% } else { %>
+                                            <span class="text-muted">Not answered</span>
+                                        <% } %>
+                                    </p>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="/exam/exam/<%= exam.id %>" class="btn btn-primary">
+                                    <i class="bi bi-arrow-repeat"></i> Retake Exam
+                                </a>
+                                <button class="btn btn-success" onclick="window.print()">
+                                    <i class="bi bi-printer"></i> Print Results
+                                </button>
+                                <a href="/exam" class="btn btn-secondary">
+                                    <i class="bi bi-list"></i> All Exams
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Study Recommendations</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>Review questions you flagged for further study</li>
+                                <li>Focus on topics with unanswered questions</li>
+                                <li>Practice similar question types</li>
+                                <li>Time yourself for better exam preparation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

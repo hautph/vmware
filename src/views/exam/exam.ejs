@@ -1,0 +1,505 @@
+<%- include('../partials/header.ejs', { title: exam.title }) %>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/exam">Exam Modules</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= exam.title %></li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0"><i class="bi bi-clipboard-check"></i> <%= exam.title %></h1>
+                    <p class="text-muted mb-0">Module: <%= exam.module %> | Total Questions: <%= exam.total_questions %></p>
+                </div>
+                <div>
+                    <button id="startExamBtn" class="btn btn-success">
+                        <i class="bi bi-play-circle"></i> Start Exam
+                    </button>
+                </div>
+            </div>
+            
+            <div id="examContent">
+                <%- content %>
+            </div>
+            
+            <div id="examInterface" class="d-none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Exam in Progress</h5>
+                            <div>
+                                <span class="badge bg-primary">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">0</span></span>
+                                <span class="badge bg-success ms-2">Time: <span id="timer">00:00</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <div id="questionContainer">
+                                    <!-- Questions will be loaded here dynamically -->
+                                </div>
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button id="prevBtn" class="btn btn-secondary" disabled>Previous</button>
+                                    <button id="nextBtn" class="btn btn-primary">Next</button>
+                                    <button id="submitBtn" class="btn btn-success d-none">Submit Exam</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Exam Progress</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button id="reviewBtn" class="btn btn-info btn-sm">
+                                                <i class="bi bi-list-check"></i> Review Answers
+                                            </button>
+                                            <button id="flagBtn" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-flag"></i> Flag Question
+                                            </button>
+                                        </div>
+                                        <hr>
+                                        <h6>Questions Summary</h6>
+                                        <div id="questionSummary" class="question-summary-grid">
+                                            <!-- Question summary will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review Modal -->
+            <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reviewModalLabel">Review Your Answers</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="reviewContent">
+                                <!-- Review content will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="submitExamBtn">Submit Exam</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.question-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.question-summary-item {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.question-summary-item:not(.answered) {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
+.question-summary-item.answered {
+    background-color: #28a745;
+    color: white;
+}
+
+.question-summary-item.current {
+    border: 2px solid #007bff;
+}
+
+.question-summary-item.flagged {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.review-question {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.review-question:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startExamBtn = document.getElementById('startExamBtn');
+    const examContent = document.getElementById('examContent');
+    const examInterface = document.getElementById('examInterface');
+    const questionContainer = document.getElementById('questionContainer');
+    const currentQuestionEl = document.getElementById('currentQuestion');
+    const totalQuestionsEl = document.getElementById('totalQuestions');
+    const timerEl = document.getElementById('timer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const reviewBtn = document.getElementById('reviewBtn');
+    const flagBtn = document.getElementById('flagBtn');
+    const questionSummary = document.getElementById('questionSummary');
+    const reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+    const submitExamBtn = document.getElementById('submitExamBtn');
+    
+    // Extract questions from the displayed content
+    function extractQuestions() {
+        const questions = [];
+        const examContentDiv = document.getElementById('examContent');
+        const questionElements = examContentDiv.querySelectorAll('h3');
+        
+        questionElements.forEach((element, index) => {
+            const questionObj = {
+                number: index + 1,
+                title: element.textContent,
+                content: '',
+                options: [],
+                type: 'single',
+                flagged: false
+            };
+            
+            // Get the content and options that follow this question
+            let nextElement = element.nextElementSibling;
+            const contentElements = [];
+            
+            while (nextElement && nextElement.tagName !== 'H3') {
+                if (nextElement.textContent.includes('Select one or more:')) {
+                    questionObj.type = 'multiple';
+                } else if (nextElement.textContent.includes('Select one:')) {
+                    questionObj.type = 'single';
+                } else if (nextElement.tagName === 'OL') {
+                    // Extract options from ordered list
+                    const optionItems = nextElement.querySelectorAll('li');
+                    optionItems.forEach((item, idx) => {
+                        questionObj.options.push({
+                            letter: String.fromCharCode(65 + idx),
+                            text: item.textContent.trim()
+                        });
+                    });
+                    break;
+                } else {
+                    contentElements.push(nextElement.outerHTML);
+                }
+                nextElement = nextElement.nextElementSibling;
+            }
+            
+            questionObj.content = contentElements.join('');
+            questions.push(questionObj);
+        });
+        
+        return questions;
+    }
+    
+    // Timer variables
+    let startTime;
+    let timerInterval;
+    
+    // Exam state
+    let currentQuestion = 0;
+    let userAnswers = {};
+    let flaggedQuestions = {};
+    let allQuestions = [];
+    let timeTaken = '00:00';
+    
+    // Start exam
+    startExamBtn.addEventListener('click', function() {
+        // Extract questions when starting the exam
+        allQuestions = extractQuestions();
+        totalQuestionsEl.textContent = allQuestions.length;
+        
+        examContent.classList.add('d-none');
+        examInterface.classList.remove('d-none');
+        startTimer();
+        loadQuestion();
+        renderQuestionSummary();
+    });
+    
+    // Timer function
+    function startTimer() {
+        startTime = new Date();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+    
+    function updateTimer() {
+        const now = new Date();
+        const diff = Math.floor((now - startTime) / 1000);
+        const minutes = Math.floor(diff / 60).toString().padStart(2, '0');
+        const seconds = (diff % 60).toString().padStart(2, '0');
+        timeTaken = minutes + ':' + seconds;
+        timerEl.textContent = timeTaken;
+    }
+    
+    // Save user answer
+    function saveAnswer() {
+        const selectedOptions = [];
+        const inputs = questionContainer.querySelectorAll('input[name="answer"]:checked');
+        
+        inputs.forEach(input => {
+            selectedOptions.push(input.value);
+        });
+        
+        if (selectedOptions.length > 0) {
+            userAnswers[currentQuestion] = selectedOptions;
+        } else {
+            delete userAnswers[currentQuestion];
+        }
+        
+        renderQuestionSummary();
+    }
+    
+    // Load question
+    function loadQuestion() {
+        if (allQuestions.length === 0) {
+            questionContainer.innerHTML = '<p>No questions available.</p>';
+            return;
+        }
+        
+        if (currentQuestion >= allQuestions.length) {
+            currentQuestion = allQuestions.length - 1;
+        }
+        
+        const question = allQuestions[currentQuestion];
+        let optionsHtml = '';
+        
+        question.options.forEach(option => {
+            const inputType = question.type === 'multiple' ? 'checkbox' : 'radio';
+            const isChecked = userAnswers[currentQuestion] && userAnswers[currentQuestion].includes(option.letter) ? 'checked' : '';
+            optionsHtml += `
+                <div class="form-check">
+                    <input class="form-check-input" type="${inputType}" name="answer" id="option${option.letter}" value="${option.letter}" ${isChecked}>
+                    <label class="form-check-label" for="option${option.letter}">${option.letter}. ${option.text}</label>
+                </div>
+            `;
+        });
+        
+        questionContainer.innerHTML = `
+            <div class="question">
+                <h5>${question.title}</h5>
+                <div class="question-content">${question.content}</div>
+                <div class="options mt-3">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        
+        // Add event listeners to options
+        const optionInputs = questionContainer.querySelectorAll('input[name="answer"]');
+        optionInputs.forEach(input => {
+            input.addEventListener('change', saveAnswer);
+        });
+        
+        updateNavigation();
+        updateFlagButton();
+    }
+    
+    // Update navigation buttons
+    function updateNavigation() {
+        currentQuestionEl.textContent = currentQuestion + 1;
+        
+        // Enable/disable buttons based on current position
+        prevBtn.disabled = (currentQuestion === 0);
+        
+        if (currentQuestion === allQuestions.length - 1) {
+            nextBtn.classList.add('d-none');
+            submitBtn.classList.remove('d-none');
+        } else {
+            nextBtn.classList.remove('d-none');
+            submitBtn.classList.add('d-none');
+        }
+    }
+    
+    // Update flag button
+    function updateFlagButton() {
+        if (allQuestions[currentQuestion].flagged) {
+            flagBtn.innerHTML = '<i class="bi bi-flag-fill"></i> Unflag Question';
+            flagBtn.classList.remove('btn-warning');
+            flagBtn.classList.add('btn-outline-warning');
+        } else {
+            flagBtn.innerHTML = '<i class="bi bi-flag"></i> Flag Question';
+            flagBtn.classList.remove('btn-outline-warning');
+            flagBtn.classList.add('btn-warning');
+        }
+    }
+    
+    // Render question summary
+    function renderQuestionSummary() {
+        let summaryHtml = '';
+        for (let i = 0; i < allQuestions.length; i++) {
+            const isAnswered = userAnswers[i] && userAnswers[i].length > 0;
+            const isFlagged = allQuestions[i].flagged;
+            const isCurrent = i === currentQuestion;
+            
+            let classes = 'question-summary-item';
+            if (isAnswered) classes += ' answered';
+            if (isFlagged) classes += ' flagged';
+            if (isCurrent) classes += ' current';
+            
+            summaryHtml += `<div class="${classes}" data-question="${i}">${i + 1}</div>`;
+        }
+        questionSummary.innerHTML = summaryHtml;
+        
+        // Add click event listeners to summary items
+        const summaryItems = questionSummary.querySelectorAll('.question-summary-item');
+        summaryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const questionIndex = parseInt(this.getAttribute('data-question'));
+                currentQuestion = questionIndex;
+                loadQuestion();
+            });
+        });
+    }
+    
+    // Navigation event listeners
+    prevBtn.addEventListener('click', function() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            loadQuestion();
+        }
+    });
+    
+    nextBtn.addEventListener('click', function() {
+        saveAnswer();
+        if (currentQuestion < allQuestions.length - 1) {
+            currentQuestion++;
+            loadQuestion();
+        }
+    });
+    
+    // Flag question
+    flagBtn.addEventListener('click', function() {
+        allQuestions[currentQuestion].flagged = !allQuestions[currentQuestion].flagged;
+        updateFlagButton();
+        renderQuestionSummary();
+    });
+    
+    // Review answers
+    reviewBtn.addEventListener('click', function() {
+        saveAnswer();
+        let reviewHtml = '<h5>Your Answers</h5>';
+        
+        for (let i = 0; i < allQuestions.length; i++) {
+            const question = allQuestions[i];
+            const userAnswer = userAnswers[i];
+            
+            reviewHtml += `
+                <div class="review-question">
+                    <h6>Question ${i + 1}: ${question.title.replace('Question ' + (i + 1), '')}</h6>
+                    <p><strong>Your Answer:</strong> `;
+            
+            if (userAnswer && userAnswer.length > 0) {
+                reviewHtml += userAnswer.join(', ');
+            } else {
+                reviewHtml += '<span class="text-muted">Not answered</span>';
+            }
+            
+            reviewHtml += `</p>
+                    ${question.flagged ? '<span class="badge bg-warning">Flagged</span>' : ''}
+                </div>
+            `;
+        }
+        
+        document.getElementById('reviewContent').innerHTML = reviewHtml;
+        reviewModal.show();
+    });
+    
+    // Submit exam via modal
+    submitExamBtn.addEventListener('click', function() {
+        saveAnswer();
+        clearInterval(timerInterval);
+        
+        // Create form to submit results
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/exam/exam/<%= exam.id %>/submit`;
+        
+        // Add user answers
+        const answersInput = document.createElement('input');
+        answersInput.type = 'hidden';
+        answersInput.name = 'userAnswers';
+        answersInput.value = JSON.stringify(userAnswers);
+        form.appendChild(answersInput);
+        
+        // Add time taken
+        const timeInput = document.createElement('input');
+        timeInput.type = 'hidden';
+        timeInput.name = 'timeTaken';
+        timeInput.value = timeTaken;
+        form.appendChild(timeInput);
+        
+        // Add flagged questions
+        const flaggedInput = document.createElement('input');
+        flaggedInput.type = 'hidden';
+        flaggedInput.name = 'flaggedQuestions';
+        flaggedInput.value = JSON.stringify(flaggedQuestions);
+        form.appendChild(flaggedInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    });
+    
+    // Submit exam directly (without review)
+    submitBtn.addEventListener('click', function() {
+        saveAnswer();
+        clearInterval(timerInterval);
+        
+        // Create form to submit results
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/exam/exam/<%= exam.id %>/submit`;
+        
+        // Add user answers
+        const answersInput = document.createElement('input');
+        answersInput.type = 'hidden';
+        answersInput.name = 'userAnswers';
+        answersInput.value = JSON.stringify(userAnswers);
+        form.appendChild(answersInput);
+        
+        // Add time taken
+        const timeInput = document.createElement('input');
+        timeInput.type = 'hidden';
+        timeInput.name = 'timeTaken';
+        timeInput.value = timeTaken;
+        form.appendChild(timeInput);
+        
+        // Add flagged questions
+        const flaggedInput = document.createElement('input');
+        flaggedInput.type = 'hidden';
+        flaggedInput.name = 'flaggedQuestions';
+        flaggedInput.value = JSON.stringify(flaggedQuestions);
+        form.appendChild(flaggedInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    });
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

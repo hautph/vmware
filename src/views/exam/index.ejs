@@ -1,0 +1,70 @@
+<%- include('../partials/header.ejs', { title: 'VMware Exam Modules' }) %>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4"><i class="bi bi-clipboard-check"></i> VMware Certification Practice Exams</h1>
+            <p class="lead">Prepare for your VMware certification exams with our comprehensive practice questions. Test your knowledge and identify areas for improvement.</p>
+            <div class="alert alert-info">
+                <h4><i class="bi bi-lightbulb"></i> Exam Tips</h4>
+                <ul>
+                    <li>All practice exams simulate the actual VMware certification exam experience</li>
+                    <li>Track your progress with our built-in question flagging feature</li>
+                    <li>Review your answers before submitting to ensure accuracy</li>
+                    <li>Detailed results help you focus your study efforts</li>
+                </ul>
+            </div>
+            
+            <div class="row">
+                <% if (exams && exams.length > 0) { %>
+                    <% exams.forEach(exam => { %>
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title"><%= exam.title %></h5>
+                                    <p class="card-text flex-grow-1">
+                                        <strong>Module:</strong> <%= exam.module %><br>
+                                        <strong>Total Questions:</strong> <%= exam.total_questions %>
+                                    </p>
+                                    <a href="/exam/exam/<%= exam.id %>" class="btn btn-primary mt-auto">
+                                        <i class="bi bi-play-circle"></i> Start Exam
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <h4><i class="bi bi-info-circle"></i> No Exam Modules Available</h4>
+                            <p>There are currently no exam modules available. Please check back later.</p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            
+            <div class="mt-5">
+                <h3><i class="bi bi-book"></i> About VMware Certification Exams</h3>
+                <p>VMware certification exams validate your skills and expertise in virtualization technologies. Our practice exams help you prepare by:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Testing your knowledge of VMware vSphere concepts</li>
+                            <li>Familiarizing you with exam question formats</li>
+                            <li>Identifying areas where you need additional study</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Providing realistic exam simulation environment</li>
+                            <li>Offering detailed performance feedback</li>
+                            <li>Helping build confidence for the actual exam</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>
