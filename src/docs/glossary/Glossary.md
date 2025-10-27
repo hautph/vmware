@@ -8,6 +8,8 @@ This glossary provides definitions and details for key terms and features relate
 *   [vCenter Server](vcenter.md)
 
 ## COMPUTE & RESOURCE MANAGEMENT
+*   [CPU (Central Processing Unit)](cpu.md)
+*   [GPU (Graphics Processing Unit)](gpu.md)
 *   [Virtual Machine (VM)](virtual-machine.md)
 *   [[VI] Guest Operating System (Guest OS)](../vi/guest-operating-system.md)
 *   [vSphere Client](vsphere-client.md)
@@ -27,9 +29,10 @@ This glossary provides definitions and details for key terms and features relate
 *   [[VI] VM-VM Affinity Rule](../vi/vm-vm-affinity-rule.md)
 *   [[VI] VM-VM Anti-Affinity Rule](../vi/vm-vm-anti-affinity-rule.md)
 *   [[VI] vSphere Enhanced vMotion Compatibility (EVC)](../vi/evc.md)
-*   [[VI] DirectPath I/O & PCI Passthrough](../vi/directpath-io-pci-passthrough.md)
+*   [[VI] DirectPath I/O & PCI Passthrough](../vi/directpath-io-pci-passthrough.md
 
 ## STORAGE
+*   [HBA/HCA Card (Host Bus Adapter/Host Channel Adapter)](hba-hca-card.md)
 *   [[VI] Virtual Disk File (.vmdk)](../vi/virtual-disk-file.md)
 *   [[VI] Virtual Machine File System (VMFS)](../vi/vmfs.md)
 *   [vSphere Storage APIs - Array Integration (VAAI)](vsphere-storage-apis-array-integration.md)
@@ -43,9 +46,14 @@ This glossary provides definitions and details for key terms and features relate
 *   [Logical Unit Number (LUN)](lun.md)
 *   [[VI] Logical Unit Number (LUN)](../vi/lun.md)
 *   [IOPS (Input/Output Operations Per Second)](iops.md)
-*   [[VI] IOPS (Input/Output Operations Per Second)](../vi/iops.md)
+*   [[VI] IOPS (Input/Output Operations Per Second)](../vi/iops.md
 
 ## NETWORKING
+*   [DNS (Domain Name System)](dns.md)
+*   [NIC Card (Network Interface Card)](nic-card.md)
+*   [NTP (Network Time Protocol)](ntp.md)
+*   [TCP (Transmission Control Protocol)](tcp.md)
+*   [UDP (User Datagram Protocol)](udp.md)
 *   [[VI] Virtual Switch (vSwitch)](../vi/virtual-switch.md)
 *   [[VI] vSphere Standard Switch (vSS)](../vi/vsphere-standard-switch.md)
 *   [[VI] vSphere Distributed Switch (vDS)](../vi/vsphere-distributed-switch.md)
@@ -53,16 +61,20 @@ This glossary provides definitions and details for key terms and features relate
 *   [[VI] Uplink](../vi/uplink.md)
 *   [[VI] VMkernel Port (vmknic)](../vi/vmkernel-port.md)
 *   [[VI] Network I/O Control (NIOC)](../vi/network-i-o-control.md)
-*   [[VI] Single Root I/O Virtualization (SR-IOV)](../vi/sr-iov.md)
+*   [[VI] Single Root I/O Virtualization (SR-IOV)](../vi/sr-iov.md
 
 ## AVAILABILITY & DATA PROTECTION
+*   [Open Tool Convert](open-tool-convert.md)
+*   [OVF/OVA (Open Virtualization Format/Open Virtualization Archive)](ovf-ova.md)
+*   [VMware vCenter Converter](vmware-vcenter-converter.md)
 *   [[VI] vSphere High Availability (HA)](../vi/vsphere-high-availability.md)
 *   [[VI] vSphere Fault Tolerance (FT)](../vi/fault-tolerance.md)
 *   [[VI] Synchronous Mirroring](../vi/synchronous-mirroring.md)
 *   [[VI] vSphere Replication](../vi/vsphere-replication.md)
-*   [[VI] Site Recovery Manager (SRM)](../vi/site-recovery-manager.md)
+*   [[VI] Site Recovery Manager (SRM)](../vi/site-recovery-manager.md
 
 ## SECURITY
+*   [Trusted Platform Module (TPM)](tpm.md)
 *   [[VI] vSphere Trust Authority (vTA)](../vi/vsphere-trust-authority.md)
 *   [[VI] vSphere Security Hardening Guide](../vi/vsphere-security-hardening-guide.md)
 *   [[VI] VMware Tools](../vi/vmware-tools.md)
