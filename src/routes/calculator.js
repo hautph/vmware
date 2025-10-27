@@ -10,6 +10,8 @@ import {
   calculateNetwork,
   getVSANSizing,
   calculateVSANSizing,
+  getVSANDetailed,
+  calculateVSANDetailed,
   getDisasterRecovery,
   calculateDisasterRecovery,
   getVSANCost,
@@ -34,6 +36,10 @@ router.post('/network', calculateNetwork);
 // vSAN Sizing calculator
 router.get('/vsan-sizing', getVSANSizing);
 router.post('/vsan-sizing', calculateVSANSizing);
+
+// Enhanced vSAN Detailed calculator
+router.get('/vsan-detailed', getVSANDetailed);
+router.post('/vsan-detailed', calculateVSANDetailed);
 
 // Disaster Recovery calculator
 router.get('/disaster-recovery', getDisasterRecovery);

@@ -1,0 +1,366 @@
+<%- include('../partials/header.ejs', { title: 'Enhanced vSAN Sizing Results' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-database"></i> Enhanced vSAN Sizing Results</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-info text-center">
+                            <h4>vSAN Cluster Configuration</h4>
+                            <p class="mb-0"><%= results.numHosts %> hosts, <%= results.dataUsableTB %> TB usable capacity, <%= results.requiredIOPS %> IOPS requirement</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd"></i> Raw Capacity</h5>
+                            <h3><%= results.totalRawCapacityTB.toFixed(2) %> TB</h3>
+                            <p class="text-muted">Total raw storage</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-hdd-fill"></i> Usable Capacity</h5>
+                            <h3><%= results.dataUsableTB %> TB</h3>
+                            <p class="text-muted">After redundancy</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-lightning"></i> Total IOPS</h5>
+                            <h3><%= results.totalIOPSCapability.toLocaleString() %></h3>
+                            <p class="text-muted">Available IOPS</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3 text-center">
+                            <h5><i class="bi bi-currency-dollar"></i> Total CAPEX</h5>
+                            <h3>$<%= results.totalCAPEX.toLocaleString() %></h3>
+                            <p class="text-muted">Initial investment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Capacity Planning</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Storage Requirements</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Usable Data Capacity</td>
+                                        <td><%= results.dataUsableTB %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Redundancy Overhead</td>
+                                        <td><%= results.redundancyOverheadTB.toFixed(2) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td>vSAN Metadata Overhead</td>
+                                        <td><%= results.metadataOverheadTB.toFixed(2) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Raw Capacity Required</td>
+                                        <td><%= results.totalRawCapacityTB.toFixed(2) %> TB</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Capacity per Host</td>
+                                        <td><%= results.capacityPerHostTB.toFixed(2) %> TB</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Drive Configuration</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Capacity Drives per Host</td>
+                                        <td><%= results.capacityDrivesPerHost %> drives</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Capacity Drives</td>
+                                        <td><%= results.totalCapacityDrives %> drives</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cache Drives per Host</td>
+                                        <td><%= results.cacheDrivesPerHost %> drives</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Cache Drives</td>
+                                        <td><%= results.totalCacheDrives %> drives</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Drives</td>
+                                        <td><%= results.totalDrives %> drives</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Performance Analysis</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>IOPS Capability</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Required IOPS</td>
+                                        <td><%= results.requiredIOPS.toLocaleString() %> IOPS</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Write Penalty (<%= results.vsanPolicy %>)</td>
+                                        <td><%= results.writePenalty %>x</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Adjusted Write IOPS</td>
+                                        <td><%= results.adjustedWriteIOPS.toLocaleString() %> IOPS</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Required IOPS</td>
+                                        <td><%= results.totalRequiredIOPS.toLocaleString() %> IOPS</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Provided IOPS</td>
+                                        <td><%= results.totalIOPSCapability.toLocaleString() %> IOPS</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Performance Status</strong></td>
+                                        <td><strong class="<%= results.performanceStatus === 'Sufficient' ? 'text-success' : 'text-danger' %>"><%= results.performanceStatus %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Host Validation</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Configured Hosts</td>
+                                        <td><%= results.numHosts %> hosts</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Minimum Required Hosts</td>
+                                        <td><%= results.minRequiredHosts %> hosts</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Host Status</strong></td>
+                                        <td><strong class="<%= results.hostStatus === 'Sufficient' ? 'text-success' : 'text-danger' %>"><%= results.hostStatus %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <% if (results.hostStatus !== 'Sufficient') { %>
+                        <div class="alert alert-warning">
+                            <strong>Recommendation:</strong> Increase number of hosts to at least <%= results.minRequiredHosts %> for <%= results.vsanPolicy %> policy.
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Cost Analysis</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>CAPEX (Capital Expenditure)</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Hosts (<%= results.numHosts %> × $<%= results.hostCost.toLocaleString() %>)</td>
+                                        <td>$<%= results.hostsCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Capacity Drives (<%= results.totalCapacityDrives %> × $<%= results.capacityDriveCost.toLocaleString() %>)</td>
+                                        <td>$<%= results.capacityDrivesCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cache Drives (<%= results.totalCacheDrives %> × $<%= results.cacheDriveCost.toLocaleString() %>)</td>
+                                        <td>$<%= results.cacheDrivesCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Network Adapters (<%= results.totalNetworkAdapters %> × $<%= results.networkAdapterCost.toLocaleString() %>)</td>
+                                        <td>$<%= results.networkAdaptersCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Hardware Cost</strong></td>
+                                        <td><strong>$<%= results.totalHardwareCost.toLocaleString() %></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>vSAN Licenses (<%= results.totalCPUs %> CPUs × $<%= results.vsanLicenseCost.toLocaleString() %>)</td>
+                                        <td>$<%= results.vsanLicensesCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td>vSphere Licenses (<%= results.totalCPUs %> CPUs × $<%= results.vsphereLicenseCost.toLocaleString() %>)</td>
+                                        <td>$<%= results.vsphereLicensesCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Software Cost</strong></td>
+                                        <td><strong>$<%= results.totalSoftwareCost.toLocaleString() %></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total CAPEX</strong></td>
+                                        <td><strong>$<%= results.totalCAPEX.toLocaleString() %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>OPEX (Operational Expenditure) - Annual</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Support (<%= results.supportRate %>% of CAPEX)</td>
+                                        <td>$<%= results.annualSupportCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Power & Cooling (<%= results.numHosts %> hosts × $<%= results.powerCostPerHost.toLocaleString() %>)</td>
+                                        <td>$<%= results.annualPowerCost.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Annual OPEX</strong></td>
+                                        <td><strong>$<%= results.totalAnnualOPEX.toLocaleString() %></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>3-Year OPEX</strong></td>
+                                        <td><strong>$<%= results.threeYearOPEX.toLocaleString() %></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>5-Year OPEX</strong></td>
+                                        <td><strong>$<%= results.fiveYearOPEX.toLocaleString() %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h5 class="mt-4">Total Cost of Ownership (TCO)</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>CAPEX</td>
+                                        <td>$<%= results.totalCAPEX.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3-Year OPEX</td>
+                                        <td>$<%= results.threeYearOPEX.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>3-Year TCO</strong></td>
+                                        <td><strong>$<%= results.threeYearTCO.toLocaleString() %></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>5-Year OPEX</td>
+                                        <td>$<%= results.fiveYearOPEX.toLocaleString() %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>5-Year TCO</strong></td>
+                                        <td><strong>$<%= results.fiveYearTCO.toLocaleString() %></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Recommendations</h3>
+            </div>
+            <div class="card-body">
+                <% if (results.recommendations.length > 0) { %>
+                    <ul>
+                        <% results.recommendations.forEach(rec => { %>
+                            <li><%= rec %></li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No specific recommendations available.</p>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="/calculators/vsan-detailed" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> New Calculation
+            </a>
+            <button class="btn btn-secondary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print Results
+            </button>
+            
+            <div class="float-end">
+                <form id="exportForm" method="POST" action="/calculators/vsan-detailed" class="d-inline">
+                    <input type="hidden" name="exportFormat" value="pdf">
+                    <!-- Include all form data as hidden fields -->
+                    <% Object.keys(results.formData).forEach(key => { %>
+                        <input type="hidden" name="<%= key %>" value="<%= results.formData[key] %>">
+                    <% }); %>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-file-earmark-pdf"></i> Export to PDF
+                    </button>
+                </form>
+                
+                <form id="exportCSVForm" method="POST" action="/calculators/vsan-detailed" class="d-inline">
+                    <input type="hidden" name="exportFormat" value="csv">
+                    <!-- Include all form data as hidden fields -->
+                    <% Object.keys(results.formData).forEach(key => { %>
+                        <input type="hidden" name="<%= key %>" value="<%= results.formData[key] %>">
+                    <% }); %>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-file-earmark-spreadsheet"></i> Export to CSV
+                    </button>
+                </form>
+                
+                <form id="exportExcelForm" method="POST" action="/calculators/vsan-detailed" class="d-inline">
+                    <input type="hidden" name="exportFormat" value="excel">
+                    <!-- Include all form data as hidden fields -->
+                    <% Object.keys(results.formData).forEach(key => { %>
+                        <input type="hidden" name="<%= key %>" value="<%= results.formData[key] %>">
+                    <% }); %>
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-file-earmark-excel"></i> Export to Excel
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer.ejs') %>

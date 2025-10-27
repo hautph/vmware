@@ -12,6 +12,7 @@ export const getVMDensity = (req, res) => {
 };
 
 import { exportToPDF, exportToCSV } from '../utils/export.js';
+import { exportVSANToExcel } from '../utils/excelExport.js';
 
 export const calculateVMDensity = (req, res) => {
   const { physicalCores, coreSpeed, memoryGB, vmCores, vmRamGB, exportFormat } = req.body;
@@ -209,6 +210,231 @@ export const calculateVSANSizing = (req, res) => {
   });
 };
 
+// Enhanced vSAN Detailed calculator
+export const getVSANDetailed = (req, res) => {
+  res.render('calculators/vsan-detailed', { 
+    title: 'Enhanced vSAN Sizing Calculator'
+  });
+};
+
+export const calculateVSANDetailed = (req, res) => {
+  // Extract all form data
+  const {
+    numHosts,
+    dataUsableTB,
+    requiredIOPS,
+    writePercentage,
+    latencyRequirement,
+    qosRequirement,
+    vsanPolicy,
+    numDiskGroups,
+    capacityDriveTB,
+    cacheDriveGB,
+    iopsPerCapacityDrive,
+    iopsPerCacheDrive,
+    networkBandwidth,
+    vsanLicense,
+    supportRate,
+    hostCost,
+    capacityDriveCost,
+    cacheDriveCost,
+    networkAdapterCost,
+    vsanLicenseCost,
+    vsphereLicenseCost,
+    powerCostPerHost,
+    exportFormat
+  } = req.body;
+  
+  // Parse all numeric values
+  const parsedData = {
+    numHosts: parseInt(numHosts),
+    dataUsableTB: parseFloat(dataUsableTB),
+    requiredIOPS: parseInt(requiredIOPS),
+    writePercentage: parseInt(writePercentage),
+    latencyRequirement: parseFloat(latencyRequirement),
+    qosRequirement,
+    vsanPolicy,
+    numDiskGroups: parseInt(numDiskGroups),
+    capacityDriveTB: parseFloat(capacityDriveTB),
+    cacheDriveGB: parseInt(cacheDriveGB),
+    iopsPerCapacityDrive: parseInt(iopsPerCapacityDrive),
+    iopsPerCacheDrive: parseInt(iopsPerCacheDrive),
+    networkBandwidth: parseInt(networkBandwidth),
+    vsanLicense,
+    supportRate: parseFloat(supportRate),
+    hostCost: parseInt(hostCost),
+    capacityDriveCost: parseInt(capacityDriveCost),
+    cacheDriveCost: parseInt(cacheDriveCost),
+    networkAdapterCost: parseInt(networkAdapterCost),
+    vsanLicenseCost: parseInt(vsanLicenseCost),
+    vsphereLicenseCost: parseInt(vsphereLicenseCost),
+    powerCostPerHost: parseInt(powerCostPerHost)
+  };
+  
+  // Calculate redundancy overhead based on policy
+  let redundancyFactor = 1.33; // Default for RAID-5 (FTT=1)
+  if (vsanPolicy === 'RAID-1 (FTT=1)') {
+    redundancyFactor = 2; // RAID 1 (2x overhead)
+  } else if (vsanPolicy === 'RAID-1 (FTT=2)') {
+    redundancyFactor = 3; // RAID 1 (3x overhead)
+  } else if (vsanPolicy === 'RAID-5 (FTT=1)') {
+    redundancyFactor = 1.33; // RAID 5 (1.33x overhead)
+  } else if (vsanPolicy === 'RAID-6 (FTT=2)') {
+    redundancyFactor = 1.5; // RAID 6 (1.5x overhead)
+  }
+  
+  // Calculate storage requirements
+  const redundancyOverheadTB = parsedData.dataUsableTB * (redundancyFactor - 1);
+  const totalRawCapacityTB = parsedData.dataUsableTB * redundancyFactor;
+  
+  // Add vSAN metadata overhead (10%)
+  const metadataOverheadTB = totalRawCapacityTB * 0.1;
+  const totalRawCapacityWithOverheadTB = totalRawCapacityTB + metadataOverheadTB;
+  
+  // Calculate per host capacity
+  const capacityPerHostTB = totalRawCapacityWithOverheadTB / parsedData.numHosts;
+  
+  // Calculate drive requirements
+  const capacityDrivesPerHost = Math.ceil(capacityPerHostTB / parsedData.capacityDriveTB);
+  const totalCapacityDrives = capacityDrivesPerHost * parsedData.numHosts;
+  
+  const cacheDrivesPerHost = parsedData.numDiskGroups;
+  const totalCacheDrives = cacheDrivesPerHost * parsedData.numHosts;
+  
+  const totalDrives = totalCapacityDrives + totalCacheDrives;
+  
+  // Calculate IOPS capability
+  const totalCacheIOPSCapability = totalCacheDrives * parsedData.iopsPerCacheDrive;
+  const totalCapacityIOPSCapability = totalCapacityDrives * parsedData.iopsPerCapacityDrive;
+  const totalIOPSCapability = totalCacheIOPSCapability + totalCapacityIOPSCapability;
+  
+  // Calculate write penalty based on policy
+  let writePenalty = 1.33; // Default for RAID-5
+  if (vsanPolicy === 'RAID-1 (FTT=1)') {
+    writePenalty = 2; // RAID 1 write penalty
+  } else if (vsanPolicy === 'RAID-1 (FTT=2)') {
+    writePenalty = 3; // RAID 1 (FTT=2) write penalty
+  } else if (vsanPolicy === 'RAID-5 (FTT=1)') {
+    writePenalty = 4; // RAID 5 write penalty
+  } else if (vsanPolicy === 'RAID-6 (FTT=2)') {
+    writePenalty = 6; // RAID 6 write penalty
+  }
+  
+  // Calculate required IOPS with write penalty
+  const writeIOPS = parsedData.requiredIOPS * (parsedData.writePercentage / 100);
+  const readIOPS = parsedData.requiredIOPS - writeIOPS;
+  const adjustedWriteIOPS = writeIOPS * writePenalty;
+  const totalRequiredIOPS = readIOPS + adjustedWriteIOPS;
+  
+  // Performance status
+  const performanceStatus = totalIOPSCapability >= totalRequiredIOPS ? 'Sufficient' : 'Insufficient';
+  
+  // Minimum required hosts based on policy
+  let minRequiredHosts = 3;
+  if (vsanPolicy === 'RAID-5 (FTT=1)') {
+    minRequiredHosts = 4;
+  } else if (vsanPolicy === 'RAID-6 (FTT=2)') {
+    minRequiredHosts = 6;
+  }
+  
+  const hostStatus = parsedData.numHosts >= minRequiredHosts ? 'Sufficient' : 'Insufficient';
+  
+  // Cost calculations
+  const hostsCost = parsedData.numHosts * parsedData.hostCost;
+  const capacityDrivesCost = totalCapacityDrives * parsedData.capacityDriveCost;
+  const cacheDrivesCost = totalCacheDrives * parsedData.cacheDriveCost;
+  const totalNetworkAdapters = parsedData.numHosts * 2; // Assuming 2 NICs per host
+  const networkAdaptersCost = totalNetworkAdapters * parsedData.networkAdapterCost;
+  const totalHardwareCost = hostsCost + capacityDrivesCost + cacheDrivesCost + networkAdaptersCost;
+  
+  // Assuming 16 CPUs per host for licensing
+  const totalCPUs = parsedData.numHosts * 16;
+  const vsanLicensesCost = totalCPUs * parsedData.vsanLicenseCost;
+  const vsphereLicensesCost = totalCPUs * parsedData.vsphereLicenseCost;
+  const totalSoftwareCost = vsanLicensesCost + vsphereLicensesCost;
+  
+  const totalCAPEX = totalHardwareCost + totalSoftwareCost;
+  
+  // Operational costs
+  const annualSupportCost = totalCAPEX * (parsedData.supportRate / 100);
+  const annualPowerCost = parsedData.numHosts * parsedData.powerCostPerHost;
+  const totalAnnualOPEX = annualSupportCost + annualPowerCost;
+  
+  const threeYearOPEX = totalAnnualOPEX * 3;
+  const fiveYearOPEX = totalAnnualOPEX * 5;
+  
+  const threeYearTCO = totalCAPEX + threeYearOPEX;
+  const fiveYearTCO = totalCAPEX + fiveYearOPEX;
+  
+  // Recommendations
+  const recommendations = [];
+  if (performanceStatus !== 'Sufficient') {
+    recommendations.push('Increase number of drives or select higher performance drives to meet IOPS requirements');
+  }
+  if (hostStatus !== 'Sufficient') {
+    recommendations.push(`Increase number of hosts to at least ${minRequiredHosts} for ${vsanPolicy} policy`);
+  }
+  if (parsedData.latencyRequirement < 5) {
+    recommendations.push('Consider all-flash configuration for lower latency requirements');
+  }
+  recommendations.push('Regularly monitor vSAN performance and capacity utilization');
+  recommendations.push('Plan for future growth when designing the cluster');
+  
+  const results = {
+    ...parsedData,
+    redundancyOverheadTB,
+    totalRawCapacityTB: totalRawCapacityWithOverheadTB,
+    metadataOverheadTB,
+    capacityPerHostTB,
+    capacityDrivesPerHost,
+    totalCapacityDrives,
+    cacheDrivesPerHost,
+    totalCacheDrives,
+    totalDrives,
+    totalIOPSCapability,
+    writePenalty,
+    adjustedWriteIOPS,
+    totalRequiredIOPS,
+    performanceStatus,
+    minRequiredHosts,
+    hostStatus,
+    hostsCost,
+    capacityDrivesCost,
+    cacheDrivesCost,
+    totalNetworkAdapters,
+    networkAdaptersCost,
+    totalHardwareCost,
+    totalCPUs,
+    vsanLicensesCost,
+    vsphereLicensesCost,
+    totalSoftwareCost,
+    totalCAPEX,
+    annualSupportCost,
+    annualPowerCost,
+    totalAnnualOPEX,
+    threeYearOPEX,
+    fiveYearOPEX,
+    threeYearTCO,
+    fiveYearTCO,
+    recommendations,
+    formData: req.body // Store form data for export functionality
+  };
+  
+  // Handle export requests
+  if (exportFormat === 'pdf') {
+    return exportToPDF(results, 'vsan-detailed', res);
+  } else if (exportFormat === 'csv') {
+    return exportToCSV(results, 'vsan-detailed', res);
+  } else if (exportFormat === 'excel') {
+    return exportVSANToExcel(results, res);
+  }
+  
+  res.render('calculators/vsan-detailed-results', { 
+    title: 'Enhanced vSAN Sizing Results',
+    results
+  });
+};
+
 // vSAN Cost calculator
 export const getVSANCost = (req, res) => {
   res.render('calculators/vsan-cost', { 
@@ -397,104 +623,47 @@ function calculateVSANCosts(data) {
     hardware: hardwareCosts.total,
     licensing: licenseCosts.total,
     deployment: hardwareCosts.total * 0.1, // 10% for deployment
-    total: 0
   };
   
-  capex.total = capex.hardware + capex.licensing + capex.deployment;
-  
   const opex = {
-    maintenance: operationalCosts.total3Year,
-    energy: operationalCosts.power3Year + operationalCosts.cooling3Year,
+    // Annual costs
+    maintenance: operationalCosts.maintenance,
+    power: operationalCosts.power,
+    cooling: operationalCosts.cooling,
+    totalAnnual: operationalCosts.maintenance + operationalCosts.power + operationalCosts.cooling,
+    // 3-year costs
+    maintenance3Year: operationalCosts.maintenance3Year,
+    power3Year: operationalCosts.power3Year,
+    cooling3Year: operationalCosts.cooling3Year,
     total3Year: operationalCosts.total3Year,
+    // 5-year costs
+    maintenance5Year: operationalCosts.maintenance5Year,
+    power5Year: operationalCosts.power5Year,
+    cooling5Year: operationalCosts.cooling5Year,
     total5Year: operationalCosts.total5Year
   };
   
-  // Calculate TCO
-  const tco = {
-    year3: capex.total + opex.total3Year,
-    year5: capex.total + opex.total5Year
-  };
-  
-  // Calculate ROI (simplified - would be more complex in a real implementation)
-  const savings = {
-    year3: tco.year3 * 0.2, // Assuming 20% savings from vSAN
-    year5: tco.year5 * 0.25 // Assuming 25% savings from vSAN
-  };
-  
-  const roi = {
-    year3: (savings.year3 / tco.year3) * 100,
-    year5: (savings.year5 / tco.year5) * 100,
-    breakEven3Year: 2.5, // Simplified break-even point
-    breakEven5Year: 3.2 // Simplified break-even point
-  };
-  
-  // Performance metrics
-  const performance = {
-    totalIOPS: data.totalIOPS,
-    totalThroughput: data.totalThroughput,
-    targetLatency: data.targetLatency,
-    achievedIOPS: data.totalIOPS * 1.2, // Assuming we can achieve 120% of requirement
-    achievedThroughput: data.totalThroughput * 1.1, // Assuming we can achieve 110% of requirement
-    estimatedLatency: data.targetLatency * 0.8, // Assuming we can achieve 80% of target
-    iopsAssessment: data.totalIOPS > 10000 ? 'Excellent' : data.totalIOPS > 5000 ? 'Good' : 'Fair',
-    throughputAssessment: data.totalThroughput > 500 ? 'Excellent' : data.totalThroughput > 250 ? 'Good' : 'Fair'
-  };
-  
-  // Resource utilization
-  const utilization = {
-    cpu: 70, // Percentage
-    memory: 75, // Percentage
-    storage: 80, // Percentage
-    network: 60 // Percentage
-  };
-  
-  // Sizing details
-  const sizing = {
-    storage: {
-      usableCapacity: data.usableCapacity,
-      rawCapacityBeforeFTT: rawCapacityBeforeFTT,
-      storageMultiplier: storageMultiplier,
-      rawCapacityAfterFTT: rawCapacityAfterFTT,
-      metadataOverhead: metadataOverhead,
-      slackSpace: slackSpace,
-      totalRawCapacity: totalRawCapacity,
-      capacityPerHost: capacityPerHost
-    },
-    cache: {
-      cacheTierSize: capacityPerHost * 0.1, // 10% rule of thumb
-      cacheDeviceSize: 200, // GB per host
-      numCacheDevices: data.numHosts * 2
-    },
-    compute: {
-      totalSockets: data.numHosts * data.numCpusPerHost,
-      totalCores: data.numHosts * data.numCpusPerHost * 16, // Assuming 16 cores per CPU
-      totalRAM: data.numHosts * data.ramPerHost
-    },
-    network: {
-      requiredBandwidth: data.totalThroughput * 1.5, // 50% overhead
-      achievedBandwidth: data.networkSpeed * data.numNetworkAdapters
-    }
-  };
-  
   return {
-    hardwareCosts,
-    licenseCosts,
-    operationalCosts,
-    capex,
-    opex,
-    tco,
-    roi,
-    savings,
-    performance,
-    utilization,
-    sizing,
-    recommendations: [
-      'Consider all-flash configuration for better performance',
-      'Ensure adequate network bandwidth for vSAN traffic',
-      'Plan for N+1 redundancy in your cluster design',
-      'Monitor cache hit ratios to optimize performance',
-      'Regularly review licensing requirements as your environment grows'
-    ]
+    storage: {
+      rawCapacityBeforeFTT,
+      rawCapacityAfterFTT,
+      metadataOverhead,
+      slackSpace,
+      totalRawCapacity,
+      capacityPerHost,
+      storageMultiplier
+    },
+    power: {
+      detailed: detailedPowerConsumption,
+      perHost: detailedPowerPerHost,
+      total: detailedTotalPower
+    },
+    costs: {
+      hardware: hardwareCosts,
+      licensing: licenseCosts,
+      capex,
+      opex
+    }
   };
 }
 
@@ -506,78 +675,60 @@ export const getDisasterRecovery = (req, res) => {
 };
 
 export const calculateDisasterRecovery = (req, res) => {
-  const { primaryVMs, avgVMSize, rto, rpo, replicationType, bandwidth } = req.body;
+  const { 
+    primaryVMs, 
+    avgVMSize, 
+    replicationType, 
+    rpoHours, 
+    bandwidthMbps,
+    exportFormat
+  } = req.body;
   
   // Calculate storage requirements
   const primaryStorage = primaryVMs * avgVMSize;
+  let drStorage = primaryStorage;
   
-  // Calculate replica storage (typically 1.2x to 1.5x primary storage)
-  const replicaMultiplier = 1.3; // Conservative estimate
-  const replicaStorage = primaryStorage * replicaMultiplier;
-  
-  // Calculate total storage needed
-  const totalStorage = primaryStorage + replicaStorage;
-  
-  // Calculate bandwidth requirements for replication
-  let bandwidthRequirement = 0;
-  let dailyChangeRate = 0;
-  
-  if (replicationType === 'synchronous') {
-    // Synchronous requires high bandwidth, low latency
-    dailyChangeRate = primaryStorage * 0.05; // 5% daily change rate
-    bandwidthRequirement = dailyChangeRate / 24; // MB/s
-  } else if (replicationType === 'asynchronous') {
-    // Asynchronous can handle lower bandwidth
-    dailyChangeRate = primaryStorage * 0.1; // 10% daily change rate
-    bandwidthRequirement = dailyChangeRate / 24; // MB/s
+  // Adjust for replication type
+  if (replicationType === 'full') {
+    drStorage = primaryStorage * 2; // Full copy
+  } else if (replicationType === 'incremental') {
+    drStorage = primaryStorage * 1.2; // 20% overhead for incremental
   }
   
-  // RTO/RPO assessment
-  let rtoAssessment = '';
-  let rpoAssessment = '';
+  // Calculate bandwidth requirements
+  const rpoSeconds = rpoHours * 3600;
+  const dataToTransfer = primaryStorage * 0.1; // Assume 10% change rate
+  const requiredBandwidthMbps = (dataToTransfer * 8) / rpoSeconds * 1000; // Convert to Mbps
   
-  if (rto <= 4) {
-    rtoAssessment = 'Excellent - Can recover quickly';
-  } else if (rto <= 24) {
-    rtoAssessment = 'Good - Standard recovery time';
-  } else {
-    rtoAssessment = 'Fair - Extended recovery time';
-  }
-  
-  if (rpo <= 15) {
-    rpoAssessment = 'Excellent - Near real-time protection';
-  } else if (rpo <= 60) {
-    rpoAssessment = 'Good - Hourly protection';
-  } else {
-    rpoAssessment = 'Fair - Daily protection';
-  }
+  const bandwidthStatus = requiredBandwidthMbps <= bandwidthMbps ? 'Sufficient' : 'Insufficient';
   
   const results = {
     primaryVMs: parseInt(primaryVMs),
     avgVMSize: parseFloat(avgVMSize),
-    rto: parseInt(rto),
-    rpo: parseInt(rpo),
     replicationType,
-    bandwidth: parseFloat(bandwidth),
+    rpoHours: parseFloat(rpoHours),
+    bandwidthMbps: parseFloat(bandwidthMbps),
     primaryStorage,
-    replicaStorage,
-    totalStorage,
-    dailyChangeRate,
-    bandwidthRequirement,
-    rtoAssessment,
-    rpoAssessment,
+    drStorage,
+    requiredBandwidthMbps: requiredBandwidthMbps.toFixed(2),
+    bandwidthStatus,
     recommendations: [
-      'Test DR failover regularly to ensure RTO/RPO targets are met',
-      'Consider using VMware Site Recovery for automated failover',
-      'Implement network quality of service (QoS) for replication traffic',
-      'Monitor replication lag to ensure RPO compliance',
-      'Plan for DR site sizing to accommodate peak workloads',
-      'Document and regularly update DR procedures'
+      'Consider network compression for replication traffic',
+      'Schedule replication during off-peak hours',
+      'Monitor bandwidth utilization during replication',
+      'Plan for network failures and alternative paths'
     ]
   };
   
+  // Handle export requests
+  if (exportFormat === 'pdf') {
+    return exportToPDF(results, 'disaster-recovery', res);
+  } else if (exportFormat === 'csv') {
+    return exportToCSV(results, 'disaster-recovery', res);
+  }
+  
   res.render('calculators/disaster-recovery-results', { 
-    title: 'Disaster Recovery Results',
+    title: 'Disaster Recovery Calculation Results',
     results
   });
 };

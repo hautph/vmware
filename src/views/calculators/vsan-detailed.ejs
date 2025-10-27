@@ -1,0 +1,250 @@
+<%- include('../partials/header.ejs', { title: 'Enhanced vSAN Sizing Calculator' }) %>
+
+<div class="row">
+    <div class="col-12">
+        <h1><i class="bi bi-database"></i> Enhanced vSAN Sizing Calculator</h1>
+        <p class="lead">Detailed vSAN sizing calculator with CAPEX and OPEX analysis</p>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>vSAN Infrastructure Configuration</h3>
+            </div>
+            <div class="card-body">
+                <form id="vsanDetailedForm" action="/calculators/vsan-detailed" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Infrastructure Requirements</h4>
+                            
+                            <div class="mb-3">
+                                <label for="numHosts" class="form-label">Number of ESXi Hosts</label>
+                                <input type="number" class="form-control" id="numHosts" name="numHosts" min="3" value="4" required>
+                                <div class="form-text">Minimum 3 hosts required for vSAN cluster</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="dataUsableTB" class="form-label">Usable Data Capacity (TB)</label>
+                                <input type="number" class="form-control" id="dataUsableTB" name="dataUsableTB" min="1" step="0.1" value="50" required>
+                                <div class="form-text">Required usable capacity after redundancy</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="requiredIOPS" class="form-label">Required IOPS (Total)</label>
+                                <input type="number" class="form-control" id="requiredIOPS" name="requiredIOPS" min="1" value="25000" required>
+                                <div class="form-text">Total IOPS requirement for all workloads</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="writePercentage" class="form-label">Write Percentage (%)</label>
+                                <input type="number" class="form-control" id="writePercentage" name="writePercentage" min="0" max="100" value="70" required>
+                                <div class="form-text">Percentage of write operations</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="latencyRequirement" class="form-label">Latency Requirement (ms)</label>
+                                <input type="number" class="form-control" id="latencyRequirement" name="latencyRequirement" min="1" value="5" required>
+                                <div class="form-text">Target latency for storage operations</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="qosRequirement" class="form-label">QoS Requirement</label>
+                                <select class="form-select" id="qosRequirement" name="qosRequirement" required>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high" selected>High</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4>vSAN Configuration</h4>
+                            
+                            <div class="mb-3">
+                                <label for="vsanPolicy" class="form-label">vSAN Policy (FTT/RAID)</label>
+                                <select class="form-select" id="vsanPolicy" name="vsanPolicy" required>
+                                    <option value="RAID-1 (FTT=1)">RAID-1 (FTT=1)</option>
+                                    <option value="RAID-1 (FTT=2)">RAID-1 (FTT=2)</option>
+                                    <option value="RAID-5 (FTT=1)" selected>RAID-5 (FTT=1)</option>
+                                    <option value="RAID-6 (FTT=2)">RAID-6 (FTT=2)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="numDiskGroups" class="form-label">Number of Disk Groups per Host</label>
+                                <input type="number" class="form-control" id="numDiskGroups" name="numDiskGroups" min="1" value="1" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="capacityDriveTB" class="form-label">Capacity Drive Size (TB)</label>
+                                <input type="number" class="form-control" id="capacityDriveTB" name="capacityDriveTB" min="0.1" step="0.1" value="3.84" required>
+                                <div class="form-text">Size of each capacity drive</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cacheDriveGB" class="form-label">Cache Drive Size (GB)</label>
+                                <input type="number" class="form-control" id="cacheDriveGB" name="cacheDriveGB" min="100" value="800" required>
+                                <div class="form-text">Size of each cache drive</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="iopsPerCapacityDrive" class="form-label">IOPS per Capacity Drive</label>
+                                <input type="number" class="form-control" id="iopsPerCapacityDrive" name="iopsPerCapacityDrive" min="1000" value="10000" required>
+                                <div class="form-text">IOPS capability of each capacity drive</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="iopsPerCacheDrive" class="form-label">IOPS per Cache Drive</label>
+                                <input type="number" class="form-control" id="iopsPerCacheDrive" name="iopsPerCacheDrive" min="10000" value="150000" required>
+                                <div class="form-text">IOPS capability of each cache drive</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h4>Network Configuration</h4>
+                            
+                            <div class="mb-3">
+                                <label for="networkBandwidth" class="form-label">vSAN Network Bandwidth (Gbps)</label>
+                                <select class="form-select" id="networkBandwidth" name="networkBandwidth" required>
+                                    <option value="10">10 Gbps</option>
+                                    <option value="25" selected>25 Gbps</option>
+                                    <option value="40">40 Gbps</option>
+                                    <option value="100">100 Gbps</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4>Licensing & Support</h4>
+                            
+                            <div class="mb-3">
+                                <label for="vsanLicense" class="form-label">vSAN License Type</label>
+                                <select class="form-select" id="vsanLicense" name="vsanLicense" required>
+                                    <option value="Standard">Standard</option>
+                                    <option value="Advanced">Advanced</option>
+                                    <option value="Enterprise">Enterprise</option>
+                                    <option value="Enterprise Plus" selected>Enterprise Plus</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="supportRate" class="form-label">Annual Support Rate (%)</label>
+                                <input type="number" class="form-control" id="supportRate" name="supportRate" min="0" max="100" step="0.1" value="20" required>
+                                <div class="form-text">Percentage of hardware + software cost</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h4>Cost Configuration</h4>
+                            
+                            <div class="mb-3">
+                                <label for="hostCost" class="form-label">Host Cost (USD)</label>
+                                <input type="number" class="form-control" id="hostCost" name="hostCost" min="1000" value="20000" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="capacityDriveCost" class="form-label">Capacity Drive Cost (USD)</label>
+                                <input type="number" class="form-control" id="capacityDriveCost" name="capacityDriveCost" min="100" value="2100" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cacheDriveCost" class="form-label">Cache Drive Cost (USD)</label>
+                                <input type="number" class="form-control" id="cacheDriveCost" name="cacheDriveCost" min="100" value="1100" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4>&nbsp;</h4>
+                            
+                            <div class="mb-3">
+                                <label for="networkAdapterCost" class="form-label">Network Adapter Cost (USD)</label>
+                                <input type="number" class="form-control" id="networkAdapterCost" name="networkAdapterCost" min="100" value="900" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="vsanLicenseCost" class="form-label">vSAN License Cost per CPU (USD)</label>
+                                <input type="number" class="form-control" id="vsanLicenseCost" name="vsanLicenseCost" min="100" value="3500" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="vsphereLicenseCost" class="form-label">vSphere License Cost per CPU (USD)</label>
+                                <input type="number" class="form-control" id="vsphereLicenseCost" name="vsphereLicenseCost" min="100" value="3500" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h4>Operational Costs</h4>
+                            
+                            <div class="mb-3">
+                                <label for="powerCostPerHost" class="form-label">Power & Cooling Cost per Host/Year (USD)</label>
+                                <input type="number" class="form-control" id="powerCostPerHost" name="powerCostPerHost" min="0" value="500" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary mt-3">
+                        <i class="bi bi-calculator"></i> Calculate vSAN Sizing & Costs
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>vSAN Sizing Guidelines</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Redundancy Policies</h5>
+                        <ul>
+                            <li><strong>RAID-1 (FTT=1):</strong> Data mirrored to 2 locations, requires minimum 2 hosts</li>
+                            <li><strong>RAID-1 (FTT=2):</strong> Data mirrored to 3 locations, requires minimum 3 hosts</li>
+                            <li><strong>RAID-5 (FTT=1):</strong> Erasure coding with 1 parity, requires minimum 4 hosts</li>
+                            <li><strong>RAID-6 (FTT=2):</strong> Erasure coding with 2 parities, requires minimum 6 hosts</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Performance Considerations</h5>
+                        <ul>
+                            <li>All-flash configurations provide better performance than hybrid</li>
+                            <li>Cache tier sizing affects write performance</li>
+                            <li>Network bandwidth impacts vSAN performance and resynchronization</li>
+                            <li>IOPS requirements should account for write penalties</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial focus
+    document.getElementById('numHosts').focus();
+    
+    // Add form validation
+    document.getElementById('vsanDetailedForm').addEventListener('submit', function(e) {
+        const numHosts = parseInt(document.getElementById('numHosts').value);
+        const vsanPolicy = document.getElementById('vsanPolicy').value;
+        
+        // Validate minimum host requirements based on policy
+        let minHosts = 3;
+        if (vsanPolicy === 'RAID-5 (FTT=1)') minHosts = 4;
+        if (vsanPolicy === 'RAID-6 (FTT=2)') minHosts = 6;
+        
+        if (numHosts < minHosts) {
+            e.preventDefault();
+            alert(`Minimum ${minHosts} hosts required for ${vsanPolicy} policy`);
+            return false;
+        }
+    });
+});
+</script>
+
+<%- include('../partials/footer.ejs') %>

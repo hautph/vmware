@@ -5,6 +5,7 @@
         <h1><i class="bi bi-book"></i> VMware Course Notes</h1>
         <p class="lead">Take notes on VMware course content and track your learning progress.</p>
         
+        <!-- Course Days Section -->
         <div class="card mb-4">
             <div class="card-header">
                 <h5 class="mb-0">Course Days</h5>
@@ -26,7 +27,34 @@
                         <% }); %>
                     </div>
                 <% } else { %>
-                    <p>No course content available.</p>
+                    <p>No course days available.</p>
+                <% } %>
+            </div>
+        </div>
+        
+        <!-- Extra Modules Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Extra Modules</h5>
+            </div>
+            <div class="card-body">
+                <% if (extraModules && extraModules.length > 0) { %>
+                    <div class="row">
+                        <% extraModules.forEach(extra => { %>
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Extra <%= extra.day %>: <%= extra.title %></h5>
+                                        <a href="/course/day/<%= extra.id %>" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-eye"></i> View Content
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p>No extra modules available.</p>
                 <% } %>
             </div>
         </div>

@@ -84,6 +84,7 @@ function generateTOCFromContent(content) {
 function loadCourseDays() {
   const courseDir = path.join(__dirname, '..', 'docs', 'course');
   const days = [];
+  const extras = [];
   
   if (fs.existsSync(courseDir)) {
     const files = fs.readdirSync(courseDir);
@@ -94,7 +95,12 @@ function loadCourseDays() {
         const dayData = parseMarkdownFile(filePath);
         
         if (dayData) {
-          days.push(dayData);
+          // Separate day modules from extra modules
+          if (file.startsWith('day')) {
+            days.push(dayData);
+          } else if (file.startsWith('extra')) {
+            extras.push(dayData);
+          }
         }
       }
     });
@@ -105,26 +111,35 @@ function loadCourseDays() {
       const dayB = parseInt(b.day) || 0;
       return dayA - dayB;
     });
+    
+    // Sort extras by their numeric part
+    extras.sort((a, b) => {
+      const extraNumA = parseInt(a.id.replace('extra', '')) || 0;
+      const extraNumB = parseInt(b.id.replace('extra', '')) || 0;
+      return extraNumA - extraNumB;
+    });
   }
   
-  return days;
+  return { days, extras };
 }
 
 // Get course index page
 export const getIndex = (req, res) => {
-  const courseDays = loadCourseDays();
+  const { days, extras } = loadCourseDays();
   
   res.render('course/index', { 
     title: 'Course Notes',
-    courseDays
+    courseDays: days,
+    extraModules: extras
   });
 };
 
 // Get specific course day
 export const getDay = (req, res) => {
   const dayId = req.params.id;
-  const courseDays = loadCourseDays();
-  const day = courseDays.find(d => d.id === dayId);
+  const { days, extras } = loadCourseDays();
+  const allDays = [...days, ...extras];
+  const day = allDays.find(d => d.id === dayId);
   
   if (!day) {
     return res.status(404).render('error', {
@@ -239,8 +254,10 @@ export const getDay = (req, res) => {
     headers: headers || []
   };
   
+  // Determine if this is a day module or extra module for the title
+  const moduleType = dayId.startsWith('extra') ? 'Extra' : 'Day';
   res.render('course/day', { 
-    title: `Day ${cleanDay.day}: ${cleanDay.title}`,
+    title: `${moduleType} ${cleanDay.day}: ${cleanDay.title}`,
     day: cleanDay
   });
 };
