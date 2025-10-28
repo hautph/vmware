@@ -147,14 +147,33 @@ export const getExam = (req, res) => {
       total_questions: totalQuestions
     },
     pages: pages,
-    content: htmlContent
+    content: htmlContent,
+    examState: 'introduction' // Add exam state: introduction, active, paused
   });
 };
 
 // Submit exam results
 export const submitExam = (req, res) => {
   const examId = req.params.id;
-  const { userAnswers, timeTaken, flaggedQuestions } = req.body;
+  let { userAnswers, timeTaken, flaggedQuestions } = req.body;
+  
+  // Parse userAnswers if it's a JSON string
+  if (typeof userAnswers === 'string') {
+    try {
+      userAnswers = JSON.parse(userAnswers);
+    } catch (e) {
+      userAnswers = {};
+    }
+  }
+  
+  // Parse flaggedQuestions if it's a JSON string
+  if (typeof flaggedQuestions === 'string') {
+    try {
+      flaggedQuestions = JSON.parse(flaggedQuestions);
+    } catch (e) {
+      flaggedQuestions = {};
+    }
+  }
   
   const exams = loadExams();
   const exam = exams.find(e => e.id === examId);

@@ -20,10 +20,56 @@
                     <button id="startExamBtn" class="btn btn-success">
                         <i class="bi bi-play-circle"></i> Start Exam
                     </button>
+                    <button id="pauseExamBtn" class="btn btn-warning d-none">
+                        <i class="bi bi-pause-circle"></i> Pause Exam
+                    </button>
+                    <button id="exitExamBtn" class="btn btn-danger d-none">
+                        <i class="bi bi-x-circle"></i> Exit Exam
+                    </button>
                 </div>
             </div>
             
-            <div id="examContent">
+            <!-- Exam Introduction Screen -->
+            <div id="examIntroduction">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Exam Instructions and Rules</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>General Information</h6>
+                        <ul>
+                            <li><strong>Total Questions:</strong> <%= exam.total_questions %></li>
+                            <li><strong>Module:</strong> <%= exam.module %></li>
+                            <li><strong>Time Limit:</strong> No time limit for practice exams</li>
+                        </ul>
+                        
+                        <h6>Exam Rules</h6>
+                        <ol>
+                            <li>This is a practice exam to help you prepare for the actual VMware certification exam</li>
+                            <li>Read each question carefully before answering</li>
+                            <li>Select the most appropriate answer(s) for each question</li>
+                            <li>Use the "Flag Question" feature to mark questions for review</li>
+                            <li>You can navigate between questions using the summary grid</li>
+                            <li>Review your answers before submitting the exam</li>
+                        </ol>
+                        
+                        <h6>Features</h6>
+                        <ul>
+                            <li>Question flagging for review</li>
+                            <li>Progress tracking</li>
+                            <li>Answer review before submission</li>
+                            <li>Detailed results with performance analysis</li>
+                        </ul>
+                        
+                        <div class="alert alert-warning">
+                            <h6><i class="bi bi-exclamation-triangle"></i> Important</h6>
+                            <p>Click "Start Exam" below to begin the practice exam. Once started, you can pause or exit the exam at any time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="examContent" class="d-none">
                 <%- content %>
             </div>
             
@@ -182,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 title: element.textContent,
                 content: '',
                 options: [],
-                type: 'single',
+                type: 'single', // Default to single choice
                 flagged: false
             };
             
@@ -191,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const contentElements = [];
             
             while (nextElement && nextElement.tagName !== 'H3') {
+                // Check for question type indicators
                 if (nextElement.textContent.includes('Select one or more:')) {
                     questionObj.type = 'multiple';
                 } else if (nextElement.textContent.includes('Select one:')) {
@@ -228,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let flaggedQuestions = {};
     let allQuestions = [];
     let timeTaken = '00:00';
+    let examState = '<%= examState %>'; // introduction, active, paused
     
     // Start exam
     startExamBtn.addEventListener('click', function() {
@@ -235,11 +283,84 @@ document.addEventListener('DOMContentLoaded', function() {
         allQuestions = extractQuestions();
         totalQuestionsEl.textContent = allQuestions.length;
         
+        // Hide introduction and show exam interface
+        document.getElementById('examIntroduction').classList.add('d-none');
         examContent.classList.add('d-none');
         examInterface.classList.remove('d-none');
+        
+        // Update button visibility
+        startExamBtn.classList.add('d-none');
+        pauseExamBtn.classList.remove('d-none');
+        exitExamBtn.classList.remove('d-none');
+        
+        // Set exam state to active
+        examState = 'active';
+        
         startTimer();
         loadQuestion();
         renderQuestionSummary();
+    });
+    
+    // Pause exam
+    pauseExamBtn.addEventListener('click', function() {
+        if (examState === 'active') {
+            // Pause the timer
+            clearInterval(timerInterval);
+            
+            // Update button text and state
+            pauseExamBtn.innerHTML = '<i class="bi bi-play-circle"></i> Resume Exam';
+            examState = 'paused';
+            
+            // Show a pause message
+            questionContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <h3><i class="bi bi-pause-circle text-warning"></i> Exam Paused</h3>
+                    <p class="lead">The exam is currently paused. Click "Resume Exam" to continue.</p>
+                </div>
+            `;
+        } else if (examState === 'paused') {
+            // Resume the timer
+            startTimer();
+            
+            // Update button text and state
+            pauseExamBtn.innerHTML = '<i class="bi bi-pause-circle"></i> Pause Exam';
+            examState = 'active';
+            
+            // Reload the current question
+            loadQuestion();
+        }
+    });
+    
+    // Exit exam
+    exitExamBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to exit this exam? Your progress will be lost.')) {
+            // Stop the timer
+            clearInterval(timerInterval);
+            
+            // Reset exam state
+            examState = 'introduction';
+            
+            // Reset UI to introduction state
+            document.getElementById('examIntroduction').classList.remove('d-none');
+            examContent.classList.add('d-none');
+            examInterface.classList.add('d-none');
+            
+            // Reset buttons
+            startExamBtn.classList.remove('d-none');
+            pauseExamBtn.classList.add('d-none');
+            exitExamBtn.classList.add('d-none');
+            pauseExamBtn.innerHTML = '<i class="bi bi-pause-circle"></i> Pause Exam'; // Reset button text
+            
+            // Reset exam data
+            currentQuestion = 0;
+            userAnswers = {};
+            flaggedQuestions = {};
+            allQuestions = [];
+            timeTaken = '00:00';
+            
+            // Reset timer display
+            timerEl.textContent = '00:00';
+        }
     });
     
     // Timer function
@@ -266,6 +387,8 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedOptions.push(input.value);
         });
         
+        // For single choice questions, we want to store only the selected option
+        // For multiple choice questions, we want to store all selected options
         if (selectedOptions.length > 0) {
             userAnswers[currentQuestion] = selectedOptions;
         } else {
@@ -305,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h5>${question.title}</h5>
                 <div class="question-content">${question.content}</div>
                 <div class="options mt-3">
+                    <p><strong>${question.type === 'multiple' ? 'Select one or more:' : 'Select one:'}</strong></p>
                     ${optionsHtml}
                 </div>
             </div>
@@ -379,33 +503,61 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Navigation event listeners
     prevBtn.addEventListener('click', function() {
-        if (currentQuestion > 0) {
+        if (examState === 'active' && currentQuestion > 0) {
             currentQuestion--;
             loadQuestion();
         }
     });
     
     nextBtn.addEventListener('click', function() {
-        saveAnswer();
-        if (currentQuestion < allQuestions.length - 1) {
-            currentQuestion++;
-            loadQuestion();
+        if (examState === 'active') {
+            saveAnswer();
+            if (currentQuestion < allQuestions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            }
         }
     });
     
     // Flag question
     flagBtn.addEventListener('click', function() {
-        allQuestions[currentQuestion].flagged = !allQuestions[currentQuestion].flagged;
-        updateFlagButton();
-        renderQuestionSummary();
+        if (examState === 'active') {
+            allQuestions[currentQuestion].flagged = !allQuestions[currentQuestion].flagged;
+            updateFlagButton();
+            renderQuestionSummary();
+        }
     });
     
     // Review answers
     reviewBtn.addEventListener('click', function() {
-        saveAnswer();
-        let reviewHtml = '<h5>Your Answers</h5>';
+        if (examState === 'active') {
+            saveAnswer();
+            // Show first page of review
+            showReviewPage(1);
+            reviewModal.show();
+        }
+    });
+    
+    // Pagination variables for review
+    const questionsPerPage = 10;
+    let currentPage = 1;
+    
+    // Show specific page of review
+    function showReviewPage(page) {
+        currentPage = page;
+        const startIndex = (page - 1) * questionsPerPage;
+        const endIndex = Math.min(startIndex + questionsPerPage, allQuestions.length);
         
-        for (let i = 0; i < allQuestions.length; i++) {
+        let reviewHtml = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Your Answers</h5>
+                <div>
+                    <span class="badge bg-primary">Page ${page} of ${Math.ceil(allQuestions.length / questionsPerPage)}</span>
+                </div>
+            </div>
+        `;
+        
+        for (let i = startIndex; i < endIndex; i++) {
             const question = allQuestions[i];
             const userAnswer = userAnswers[i];
             
@@ -426,78 +578,116 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
         
+        // Add pagination controls
+        reviewHtml += `
+            <div class="d-flex justify-content-between mt-4">
+                <button id="prevReviewPage" class="btn btn-secondary" ${page === 1 ? 'disabled' : ''}>
+                    <i class="bi bi-chevron-left"></i> Previous
+                </button>
+                <div class="text-center">
+                    Page ${page} of ${Math.ceil(allQuestions.length / questionsPerPage)}
+                </div>
+                <button id="nextReviewPage" class="btn btn-secondary" ${page === Math.ceil(allQuestions.length / questionsPerPage) ? 'disabled' : ''}>
+                    Next <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        `;
+        
         document.getElementById('reviewContent').innerHTML = reviewHtml;
-        reviewModal.show();
-    });
+        
+        // Add event listeners for pagination buttons
+        const prevReviewPageBtn = document.getElementById('prevReviewPage');
+        const nextReviewPageBtn = document.getElementById('nextReviewPage');
+        
+        if (prevReviewPageBtn) {
+            prevReviewPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    showReviewPage(currentPage - 1);
+                }
+            });
+        }
+        
+        if (nextReviewPageBtn) {
+            nextReviewPageBtn.addEventListener('click', function() {
+                if (currentPage < Math.ceil(allQuestions.length / questionsPerPage)) {
+                    showReviewPage(currentPage + 1);
+                }
+            });
+        }
+    }
     
     // Submit exam via modal
     submitExamBtn.addEventListener('click', function() {
-        saveAnswer();
-        clearInterval(timerInterval);
-        
-        // Create form to submit results
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/exam/exam/<%= exam.id %>/submit`;
-        
-        // Add user answers
-        const answersInput = document.createElement('input');
-        answersInput.type = 'hidden';
-        answersInput.name = 'userAnswers';
-        answersInput.value = JSON.stringify(userAnswers);
-        form.appendChild(answersInput);
-        
-        // Add time taken
-        const timeInput = document.createElement('input');
-        timeInput.type = 'hidden';
-        timeInput.name = 'timeTaken';
-        timeInput.value = timeTaken;
-        form.appendChild(timeInput);
-        
-        // Add flagged questions
-        const flaggedInput = document.createElement('input');
-        flaggedInput.type = 'hidden';
-        flaggedInput.name = 'flaggedQuestions';
-        flaggedInput.value = JSON.stringify(flaggedQuestions);
-        form.appendChild(flaggedInput);
-        
-        document.body.appendChild(form);
-        form.submit();
+        if (examState === 'active') {
+            saveAnswer();
+            clearInterval(timerInterval);
+            
+            // Create form to submit results
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/exam/<%= exam.id %>/submit`;
+            
+            // Add user answers
+            const answersInput = document.createElement('input');
+            answersInput.type = 'hidden';
+            answersInput.name = 'userAnswers';
+            answersInput.value = JSON.stringify(userAnswers);
+            form.appendChild(answersInput);
+            
+            // Add time taken
+            const timeInput = document.createElement('input');
+            timeInput.type = 'hidden';
+            timeInput.name = 'timeTaken';
+            timeInput.value = timeTaken;
+            form.appendChild(timeInput);
+            
+            // Add flagged questions
+            const flaggedInput = document.createElement('input');
+            flaggedInput.type = 'hidden';
+            flaggedInput.name = 'flaggedQuestions';
+            flaggedInput.value = JSON.stringify(flaggedQuestions);
+            form.appendChild(flaggedInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
     
     // Submit exam directly (without review)
     submitBtn.addEventListener('click', function() {
-        saveAnswer();
-        clearInterval(timerInterval);
-        
-        // Create form to submit results
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/exam/exam/<%= exam.id %>/submit`;
-        
-        // Add user answers
-        const answersInput = document.createElement('input');
-        answersInput.type = 'hidden';
-        answersInput.name = 'userAnswers';
-        answersInput.value = JSON.stringify(userAnswers);
-        form.appendChild(answersInput);
-        
-        // Add time taken
-        const timeInput = document.createElement('input');
-        timeInput.type = 'hidden';
-        timeInput.name = 'timeTaken';
-        timeInput.value = timeTaken;
-        form.appendChild(timeInput);
-        
-        // Add flagged questions
-        const flaggedInput = document.createElement('input');
-        flaggedInput.type = 'hidden';
-        flaggedInput.name = 'flaggedQuestions';
-        flaggedInput.value = JSON.stringify(flaggedQuestions);
-        form.appendChild(flaggedInput);
-        
-        document.body.appendChild(form);
-        form.submit();
+        if (examState === 'active') {
+            saveAnswer();
+            clearInterval(timerInterval);
+            
+            // Create form to submit results
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/exam/<%= exam.id %>/submit`;
+            
+            // Add user answers
+            const answersInput = document.createElement('input');
+            answersInput.type = 'hidden';
+            answersInput.name = 'userAnswers';
+            answersInput.value = JSON.stringify(userAnswers);
+            form.appendChild(answersInput);
+            
+            // Add time taken
+            const timeInput = document.createElement('input');
+            timeInput.type = 'hidden';
+            timeInput.name = 'timeTaken';
+            timeInput.value = timeTaken;
+            form.appendChild(timeInput);
+            
+            // Add flagged questions
+            const flaggedInput = document.createElement('input');
+            flaggedInput.type = 'hidden';
+            flaggedInput.name = 'flaggedQuestions';
+            flaggedInput.value = JSON.stringify(flaggedQuestions);
+            form.appendChild(flaggedInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
 });
 </script>

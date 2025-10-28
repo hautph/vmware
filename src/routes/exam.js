@@ -6,9 +6,9 @@ import { getIndex, getExam, submitExam } from '../controllers/exam.js';
 router.get('/', getIndex);
 
 // Get specific exam
-router.get('/exam/:id', getExam);
+router.get('/:id', getExam);
 
 // Submit exam results
-router.post('/exam/:id/submit', submitExam);
+router.post('/:id/submit', submitExam);
 
 export default router;
