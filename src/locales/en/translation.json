@@ -71,6 +71,7 @@
       "total_cpu": "Total CPU",
       "total_ram": "Total RAM",
       "total_storage": "Total Storage",
+      "total": "Total",
       "cores": "cores",
       "gb": "GB",
       "no_components_selected": "No components were selected for calculation.",
@@ -244,6 +245,24 @@
       "monitor_utilization": "Monitor network utilization to optimize allocation",
       "plan_bursts": "Plan for network bursts during VM migrations",
       "implement_qos": "Implement quality of service (QoS) policies"
+    },
+    "network_results": {
+      "title": "Network Bandwidth Calculation Results",
+      "summary": "Summary",
+      "vm_specifications": "VM Specifications",
+      "number_of_vms": "Number of VMs",
+      "average_bandwidth_per_vm": "Average Bandwidth per VM",
+      "planning_parameters": "Planning Parameters",
+      "peak_usage_multiplier": "Peak Usage Multiplier",
+      "redundancy_required": "Redundancy Required",
+      "bandwidth_requirements": "Bandwidth Requirements",
+      "current_bandwidth": "Current Bandwidth",
+      "projected_bandwidth": "Projected Bandwidth",
+      "redundant_bandwidth": "Redundant Bandwidth",
+      "total_required": "Total Required",
+      "recommendations": "Recommendations",
+      "new_calculation": "New Calculation",
+      "print_results": "Print Results"
     },
     "vsan_form": {
       "title": "vSAN Sizing Calculator",

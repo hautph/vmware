@@ -1,115 +1,160 @@
 <%- include('../partials/header.ejs', { title: t('resources.results.title') }) %>
 
-<div class="row">
-    <div class="col-12">
-        <h1><i class="bi bi-calculator"></i> <%= t('resources.results.title') %></h1>
-        
-        <div class="card">
-            <div class="card-header">
-                <h3><%= t('resources.results.summary') %></h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0"><i class="bi bi-calculator"></i> <%= t('resources.results.title') %></h1>
+                    <p class="text-muted mb-0">Resource requirements for your VMware environment</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/resources" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> <%= t('resources.results.new_calculation') %>
+                    </a>
+                    <button class="btn btn-secondary" onclick="window.print()">
+                        <i class="bi bi-printer"></i> <%= t('resources.results.print_results') %>
+                    </button>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-info text-center">
-                            <h4><%= t('resources.results.multi_tier_architecture') %></h4>
-                            <p class="mb-0"><%= t('resources.results.components') %>: <%= results.selectedComponents.join(', ') || t('resources.results.none_selected') %></p>
+            
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-primary h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-cpu text-primary" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2"><%= t('resources.results.total_cpu') %></h5>
+                            <h2 class="text-primary"><%= results.totalCPU %> <%= t('resources.results.cores') %></h2>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 100%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-4">
-                        <div class="border rounded p-3 text-center">
-                            <h5><i class="bi bi-cpu"></i> <%= t('resources.results.total_cpu') %></h5>
-                            <h3><%= results.totalCPU %> <%= t('resources.results.cores') %></h3>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-success h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-memory text-success" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2"><%= t('resources.results.total_ram') %></h5>
+                            <h2 class="text-success"><%= results.totalRAM %> <%= t('resources.results.gb') %></h2>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="border rounded p-3 text-center">
-                            <h5><i class="bi bi-memory"></i> <%= t('resources.results.total_ram') %></h5>
-                            <h3><%= results.totalRAM %> <%= t('resources.results.gb') %></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="border rounded p-3 text-center">
-                            <h5><i class="bi bi-hdd"></i> <%= t('resources.results.total_storage') %></h5>
-                            <h3><%= results.totalStorage %> <%= t('resources.results.gb') %></h3>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-info h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-hdd text-info" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mt-2"><%= t('resources.results.total_storage') %></h5>
+                            <h2 class="text-info"><%= results.totalStorage %> <%= t('resources.results.gb') %></h2>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="card mt-4">
-            <div class="card-header">
-                <h3><%= t('resources.results.component_details') %></h3>
+            
+            <!-- Multi-Tier Architecture Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0"><i class="bi bi-diagram-3"></i> <%= t('resources.results.multi_tier_architecture') %></h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong><%= t('resources.results.components') %>:</strong> 
+                        <%= results.selectedComponents.join(', ') || t('resources.results.none_selected') %>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <% if (results.componentDetails.length > 0) { %>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th><%= t('resources.results.component') %></th>
-                                    <th><%= t('resources.results.vms') %></th>
-                                    <th><%= t('resources.results.deployment') %></th>
-                                    <th><%= t('resources.results.cpu_per_vm') %></th>
-                                    <th><%= t('resources.results.ram_per_vm') %></th>
-                                    <th><%= t('resources.results.storage_per_vm') %></th>
-                                    <th><%= t('resources.results.total_cpu') %></th>
-                                    <th><%= t('resources.results.total_ram') %></th>
-                                    <th><%= t('resources.results.total_storage') %></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% results.componentDetails.forEach(detail => { %>
+            
+            <!-- Component Details -->
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="bi bi-list-check"></i> <%= t('resources.results.component_details') %></h3>
+                    <span class="badge bg-secondary"><%= results.componentDetails.length %> <%= t('resources.results.components') %></span>
+                </div>
+                <div class="card-body">
+                    <% if (results.componentDetails.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
                                     <tr>
-                                        <td><%= detail.type %></td>
-                                        <td><%= detail.numVMs %></td>
-                                        <td><%= detail.deploymentType %></td>
-                                        <td><%= detail.cpuPerVM %> <%= t('resources.results.cores') %></td>
-                                        <td><%= detail.ramPerVM %> <%= t('resources.results.gb') %></td>
-                                        <td><%= detail.storagePerVM %> <%= t('resources.results.gb') %></td>
-                                        <td><%= detail.totalCPU %> <%= t('resources.results.cores') %></td>
-                                        <td><%= detail.totalRAM %> <%= t('resources.results.gb') %></td>
-                                        <td><%= detail.totalStorage %> <%= t('resources.results.gb') %></td>
+                                        <th><%= t('resources.results.component') %></th>
+                                        <th><%= t('resources.results.vms') %></th>
+                                        <th><%= t('resources.results.deployment') %></th>
+                                        <th><%= t('resources.results.cpu_per_vm') %></th>
+                                        <th><%= t('resources.results.ram_per_vm') %></th>
+                                        <th><%= t('resources.results.storage_per_vm') %></th>
+                                        <th><%= t('resources.results.total_cpu') %></th>
+                                        <th><%= t('resources.results.total_ram') %></th>
+                                        <th><%= t('resources.results.total_storage') %></th>
                                     </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                <% } else { %>
-                    <div class="alert alert-warning">
-                        <%= t('resources.results.no_components_selected') %>
-                    </div>
-                <% } %>
+                                </thead>
+                                <tbody>
+                                    <% results.componentDetails.forEach(detail => { %>
+                                        <tr>
+                                            <td><strong><%= detail.type %></strong></td>
+                                            <td><span class="badge bg-primary"><%= detail.numVMs %></span></td>
+                                            <td><span class="badge bg-secondary"><%= detail.deploymentType %></span></td>
+                                            <td><%= detail.cpuPerVM %> <%= t('resources.results.cores') %></td>
+                                            <td><%= detail.ramPerVM %> <%= t('resources.results.gb') %></td>
+                                            <td><%= detail.storagePerVM %> <%= t('resources.results.gb') %></td>
+                                            <td><strong class="text-primary"><%= detail.totalCPU %> <%= t('resources.results.cores') %></strong></td>
+                                            <td><strong class="text-success"><%= detail.totalRAM %> <%= t('resources.results.gb') %></strong></td>
+                                            <td><strong class="text-info"><%= detail.totalStorage %> <%= t('resources.results.gb') %></strong></td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="6" class="text-end"><%= t('resources.results.total') %>:</th>
+                                        <th><%= results.totalCPU %> <%= t('resources.results.cores') %></th>
+                                        <th><%= results.totalRAM %> <%= t('resources.results.gb') %></th>
+                                        <th><%= results.totalStorage %> <%= t('resources.results.gb') %></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <%= t('resources.results.no_components_selected') %>
+                        </div>
+                    <% } %>
+                </div>
             </div>
-        </div>
-        
-        <div class="card mt-4">
-            <div class="card-header">
-                <h3><%= t('resources.results.recommendations') %></h3>
+            
+            <!-- Recommendations -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0"><i class="bi bi-lightbulb"></i> <%= t('resources.results.recommendations') %></h3>
+                </div>
+                <div class="card-body">
+                    <% if (results.recommendations.length > 0) { %>
+                        <div class="row">
+                            <% results.recommendations.forEach((rec, index) => { %>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+                                                <div><%= rec %></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <p class="text-muted"><%= t('resources.results.no_recommendations') %></p>
+                    <% } %>
+                </div>
             </div>
-            <div class="card-body">
-                <% if (results.recommendations.length > 0) { %>
-                    <ul>
-                        <% results.recommendations.forEach(rec => { %>
-                            <li><%= rec %></li>
-                        <% }); %>
-                    </ul>
-                <% } else { %>
-                    <p><%= t('resources.results.no_recommendations') %></p>
-                <% } %>
-            </div>
-        </div>
-        
-        <div class="mt-4">
-            <a href="/resources" class="btn btn-primary">
-                <i class="bi bi-arrow-left"></i> <%= t('resources.results.new_calculation') %>
-            </a>
-            <button class="btn btn-secondary" onclick="window.print()">
-                <i class="bi bi-printer"></i> <%= t('resources.results.print_results') %>
-            </button>
         </div>
     </div>
 </div>

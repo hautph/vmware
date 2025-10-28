@@ -1,0 +1,432 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.glossary-search-input');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    const suggestionsList = suggestionsContainer.querySelector('ul');
+    const glossaryContent = document.getElementById('glossaryContent');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const endOfContent = document.getElementById('endOfContent');
+    const resultsInfo = document.getElementById('resultsInfo');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const glossaryData = document.getElementById('glossary-data');
+    const categoryCount = document.getElementById('categoryCount');
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    
+    // Make sure glossaryData exists
+    if (!glossaryData) {
+        console.error('Glossary data element not found');
+        return;
+    }
+    
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = parseInt(glossaryData.getAttribute('data-total-pages')) > 1;
+    let currentCategory = glossaryData.getAttribute('data-category-filter') || 'all';
+    let totalTerms = parseInt(glossaryData.getAttribute('data-total-terms')) || 0;
+    let loadedTerms = parseInt(glossaryData.getAttribute('data-loaded-terms')) || 0;
+    
+    console.log('Initial state:', {
+        currentPage,
+        isLoading,
+        hasMore,
+        currentCategory,
+        totalTerms,
+        loadedTerms
+    });
+    
+    // Update category count
+    if (categoryCount) {
+        categoryCount.textContent = categories ? categories.length : 0;
+    }
+    
+    // Show load more button if there are more terms
+    if (hasMore && loadMoreContainer) {
+        loadMoreContainer.classList.remove('d-none');
+    }
+    
+    let debounceTimer;
+    
+    // Handle input for autocomplete
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            // Clear previous timer
+            clearTimeout(debounceTimer);
+            
+            // Hide suggestions if query is too short
+            if (query.length < 2) {
+                if (suggestionsContainer) {
+                    suggestionsContainer.classList.remove('show');
+                }
+                return;
+            }
+            
+            // Debounce API calls
+            debounceTimer = setTimeout(() => {
+                fetch(`/glossary/api/suggestions?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(suggestions => {
+                        if (!suggestionsList) return;
+                        
+                        if (suggestions.length > 0) {
+                            // Clear previous suggestions
+                            suggestionsList.innerHTML = '';
+                            
+                            // Add new suggestions
+                            suggestions.forEach(suggestion => {
+                                const li = document.createElement('li');
+                                li.className = 'list-group-item list-group-item-action';
+                                li.textContent = suggestion.title || suggestion.term;
+                                li.addEventListener('click', () => {
+                                    searchInput.value = suggestion.title || suggestion.term;
+                                    if (suggestionsContainer) {
+                                        suggestionsContainer.classList.remove('show');
+                                    }
+                                    const form = document.getElementById('glossarySearchForm');
+                                    if (form) {
+                                        form.submit();
+                                    }
+                                });
+                                suggestionsList.appendChild(li);
+                            });
+                            
+                            // Show suggestions
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.add('show');
+                            }
+                        } else {
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.remove('show');
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching suggestions:', error);
+                        if (suggestionsContainer) {
+                            suggestionsContainer.classList.remove('show');
+                        }
+                    });
+            }, 300); // 300ms debounce
+        });
+    }
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (suggestionsContainer && 
+            searchInput && 
+            !searchInput.contains(event.target) && 
+            !suggestionsContainer.contains(event.target)) {
+            suggestionsContainer.classList.remove('show');
+        }
+    });
+    
+    // Handle keyboard navigation
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function(event) {
+            if (!suggestionsList) return;
+            
+            const items = suggestionsList.querySelectorAll('li');
+            if (items.length === 0) return;
+            
+            const activeItem = suggestionsList.querySelector('li.active');
+            let activeIndex = activeItem ? Array.from(items).indexOf(activeItem) : -1;
+            
+            switch (event.key) {
+                case 'ArrowDown':
+                    event.preventDefault();
+                    activeIndex = (activeIndex + 1) % items.length;
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    activeIndex = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
+                    break;
+                case 'Enter':
+                    if (activeItem) {
+                        event.preventDefault();
+                        activeItem.click();
+                    }
+                    return;
+                case 'Escape':
+                    if (suggestionsContainer) {
+                        suggestionsContainer.classList.remove('show');
+                    }
+                    return;
+            }
+            
+            // Update active item
+            items.forEach((item, index) => {
+                item.classList.toggle('active', index === activeIndex);
+            });
+        });
+    }
+    
+    // Handle category filtering
+    if (categoryButtons) {
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const category = this.getAttribute('data-category');
+                
+                // Update active button
+                categoryButtons.forEach(btn => btn.classList.remove('active', 'btn-primary'));
+                categoryButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-primary', 'active');
+                
+                // Reset state
+                currentCategory = category;
+                currentPage = 1;
+                loadedTerms = 0;
+                hasMore = true;
+                
+                // Clear content and load new terms
+                if (glossaryContent) {
+                    glossaryContent.innerHTML = '';
+                }
+                if (loadingIndicator) {
+                    loadingIndicator.classList.remove('d-none');
+                }
+                if (endOfContent) {
+                    endOfContent.classList.add('d-none');
+                }
+                if (loadMoreContainer) {
+                    loadMoreContainer.classList.add('d-none');
+                }
+                
+                // Update total terms count for the selected category
+                // We need to fetch the actual count for the selected category
+                fetch(`/glossary/api/more-terms?category=${encodeURIComponent(category)}&page=1`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // For 'all' categories, use the total from initial data
+                        // For specific categories, we'll update this after loading the first page
+                        if (category === 'all') {
+                            const glossaryData = document.getElementById('glossary-data');
+                            if (glossaryData) {
+                                totalTerms = parseInt(glossaryData.getAttribute('data-total-terms')) || 0;
+                            }
+                        } else {
+                            // For specific categories, use the total terms count from the API response
+                            totalTerms = data.totalTerms || 0;
+                        }
+                        
+                        // Now load the terms
+                        loadMoreTerms();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching category count:', error);
+                        // Fallback to using the total terms from initial data
+                        const glossaryData = document.getElementById('glossary-data');
+                        if (glossaryData) {
+                            totalTerms = parseInt(glossaryData.getAttribute('data-total-terms')) || 0;
+                        }
+                        
+                        // Still load the terms even if we couldn't get the count
+                        loadMoreTerms();
+                    });
+            });
+        });
+    }
+    
+    // Handle load more button click
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            loadMoreTerms();
+        });
+    }
+    
+    // Function to load more terms
+    function loadMoreTerms() {
+        if (isLoading || !hasMore) {
+            console.log('Not loading more terms - isLoading:', isLoading, 'hasMore:', hasMore);
+            return;
+        }
+        
+        console.log('Loading more terms - page:', currentPage);
+        
+        isLoading = true;
+        if (loadingIndicator) {
+            loadingIndicator.classList.remove('d-none');
+        }
+        if (loadMoreContainer) {
+            loadMoreContainer.classList.add('d-none');
+        }
+        
+        fetch(`/glossary/api/more-terms?category=${encodeURIComponent(currentCategory)}&page=${currentPage}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Received data:', data);
+                
+                // Update state
+                hasMore = data.hasMore;
+                currentPage = data.nextPage;
+                
+                // Process the loaded terms
+                if (Object.keys(data.displayCategories).length > 0 && glossaryContent) {
+                    Object.keys(data.displayCategories).forEach(category => {
+                        const terms = data.displayCategories[category];
+                        
+                        // Check if category section already exists
+                        let categorySection = document.querySelector(`.category-section[data-category="${category}"]`);
+                        
+                        if (!categorySection) {
+                            // Create new category section
+                            categorySection = document.createElement('div');
+                            categorySection.className = 'category-section mb-5';
+                            categorySection.setAttribute('data-category', category);
+                            const normalizedCategory = category.replace(/\s+/g, '_');
+                            const categoryDisplayName = normalizedCategory.replace(/_/g, ' ');
+                            categorySection.innerHTML = `
+                                <div class="category-section-header bg-light p-3 rounded-top">
+                                    <h3 class="category-section-title mb-0 d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <i class="bi bi-folder me-2"></i> 
+                                            ${categoryDisplayName}
+                                        </span>
+                                        <span class="badge bg-primary">
+                                            0 terms
+                                        </span>
+                                    </h3>
+                                </div>
+                                <div class="row g-4 mt-2" id="category-${category.replace(/[^a-zA-Z0-9]/g, '-')}"></div>
+                            `;
+                            glossaryContent.appendChild(categorySection);
+                        }
+                        
+                        // Get the row container for this category
+                        const rowContainer = categorySection.querySelector(`#category-${category.replace(/[^a-zA-Z0-9]/g, '-')} `);
+                        
+                        // Add terms to the category
+                        if (rowContainer) {
+                            terms.forEach(term => {
+                                const termCard = document.createElement('div');
+                                termCard.className = 'col-md-6 col-lg-4';
+                                
+                                // Create proper term link
+                                const termLink = '/glossary/term/' + (term.fileKey || term.term.toLowerCase().replace(/\s+/g, '-'));
+                                
+                                termCard.innerHTML = `
+                                    <div class="card term-card h-100 border-0 shadow-sm hover-lift">
+                                        <div class="card-body d-flex flex-column">
+                                            <h4 class="term-card-title mb-2">${term.title || term.term}</h4>
+                                            <span class="term-card-category small text-muted mb-2">
+                                                <i class="bi bi-tag me-1"></i>
+                                                ${term.category || ''}
+                                            </span>
+                                            <p class="term-card-definition flex-grow-1 mb-3">${(term.definition || '').substring(0, 120)}...</p>
+                                            <a href="${termLink}" 
+                                               class="btn btn-primary term-card-btn mt-auto stretched-link">
+                                                <i class="bi bi-arrow-right-circle me-1"></i> 
+                                                Learn More
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
+                                rowContainer.appendChild(termCard);
+                            });
+                            
+                            // Update loaded terms count
+                            loadedTerms += terms.length;
+                            
+                            // Update category badge with total count for this category
+                            const badge = categorySection.querySelector('.badge');
+                            if (badge) {
+                                // For category filtering, show total terms in category
+                                if (currentCategory !== 'all') {
+                                    // Get the actual count of terms in this category
+                                    const categoryTerms = data.displayCategories[category] || [];
+                                    badge.textContent = `${categoryTerms.length} terms`;
+                                } else {
+                                    // For 'all' view, show terms in current batch
+                                    badge.textContent = `${terms.length} terms`;
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Update results info
+                const categoryText = currentCategory !== 'all' ? currentCategory.replace(/_/g, ' ') : 'All Categories';
+                if (resultsInfo) {
+                    resultsInfo.innerHTML = `Showing <strong>${loadedTerms}</strong> of <strong>${totalTerms}</strong> terms in <strong>${categoryText}</strong>`;
+                }
+                
+                // Hide loading indicator
+                if (loadingIndicator) {
+                    loadingIndicator.classList.add('d-none');
+                }
+                isLoading = false;
+                
+                // Show load more button if there are more terms
+                if (hasMore && loadMoreContainer) {
+                    loadMoreContainer.classList.remove('d-none');
+                }
+                
+                // Show end of content if no more terms
+                if (!hasMore) {
+                    if (endOfContent) {
+                        endOfContent.classList.remove('d-none');
+                    }
+                    if (loadMoreContainer) {
+                        loadMoreContainer.classList.add('d-none');
+                    }
+                }
+                
+                console.log('Finished loading terms - hasMore:', hasMore, 'loadedTerms:', loadedTerms);
+            })
+            .catch(error => {
+                console.error('Error loading more terms:', error);
+                if (loadingIndicator) {
+                    loadingIndicator.classList.add('d-none');
+                }
+                isLoading = false;
+                // Show load more button again in case of error
+                if (hasMore && loadMoreContainer) {
+                    loadMoreContainer.classList.remove('d-none');
+                }
+            });
+    }
+    
+    // Handle infinite scroll with better detection
+    let ticking = false;
+    
+    function updateScroll() {
+        if (!ticking && !isLoading && hasMore) {
+            ticking = true;
+            requestAnimationFrame(() => {
+                checkScrollPosition();
+                ticking = false;
+            });
+        }
+    }
+    
+    function checkScrollPosition() {
+        if (isLoading || !hasMore) return;
+        
+        // Check if we're near the bottom of the page
+        const scrollTop = (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+        const scrollHeight = (document.documentElement && document.documentElement.scrollHeight) || document.body.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+        const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight - 100;
+        
+        // Debug information
+        console.log('Scroll position check:', {
+            scrollTop: scrollTop,
+            scrollHeight: scrollHeight,
+            clientHeight: clientHeight,
+            scrolledToBottom: scrolledToBottom,
+            isLoading: isLoading,
+            hasMore: hasMore
+        });
+        
+        if (scrolledToBottom) {
+            console.log('Loading more terms due to scroll...');
+            loadMoreTerms();
+        }
+    }
+    
+    // Add scroll event listeners
+    window.addEventListener('scroll', updateScroll);
+    window.addEventListener('resize', updateScroll);
+});

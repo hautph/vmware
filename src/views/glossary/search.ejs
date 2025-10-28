@@ -1,29 +1,44 @@
 <%- include('../partials/header.ejs', { title: t('glossary.title') + ' - ' + t('glossary.search') }) %>
 
-<div class="container">
+<div class="container my-5">
     <div class="row">
         <div class="col-12">
-            <h1><i class="bi bi-search"></i> <%= t('glossary.search') %> <%= t('glossary.title') %></h1>
-            <p class="lead"><%= t('glossary.results_info', { count: results.length, total: results.length, categoryText: t('glossary.results_info_all') }) %> "<%= query %>"</p>
+            <div class="page-header mb-4">
+                <h1 class="display-5 fw-bold">
+                    <i class="bi bi-search me-2"></i>
+                    <%= t('glossary.search') %> <%= t('glossary.title') %>
+                </h1>
+                <p class="lead">
+                    <%= t('glossary.results_info', { 
+                        count: results.length, 
+                        total: results.length, 
+                        categoryText: t('glossary.results_info_all') 
+                    }) %> "<%= query %>"
+                </p>
+            </div>
             
-            <div class="mb-3">
+            <div class="mb-4">
                 <a href="/glossary" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Glossary
+                    <i class="bi bi-arrow-left me-1"></i> 
+                    Back to Glossary
                 </a>
             </div>
             
             <% if (results.length === 0) { %>
-                <div class="alert alert-warning" role="alert">
-                    <h4><%= t('glossary.no_results') %></h4>
-                    <p><%= t('glossary.search_placeholder') %></p>
+                <div class="alert alert-warning text-center" role="alert">
+                    <div class="py-5">
+                        <i class="bi bi-search display-1 text-muted mb-3"></i>
+                        <h4 class="mb-3"><%= t('glossary.no_results') %></h4>
+                        <p class="mb-0"><%= t('glossary.search_placeholder') %></p>
+                    </div>
                 </div>
             <% } else { %>
-                <div class="row">
+                <div class="row g-4">
                     <% results.forEach(term => { %>
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm hover-lift">
                                 <div class="card-body">
-                                    <h5 class="card-title">
+                                    <h5 class="card-title mb-2">
                                         <% if (term.language === 'vi') { %>
                                             <% const termTitle = term.title || term.term; %>
                                             <% if (termTitle.startsWith('[VI]')) { %>
@@ -35,14 +50,17 @@
                                             <%- term.title || term.term %>
                                         <% } %>
                                     </h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">
+                                    <h6 class="card-subtitle mb-3 text-muted">
+                                        <i class="bi bi-tag me-1"></i>
                                         <%= t('glossary.categories.' + (term.category || '').replace(/[^a-zA-Z0-9]+/g, '_')) || term.category %>
                                     </h6>
-                                    <p class="card-text">
+                                    <p class="card-text mb-3">
                                         <%- term.definition || '' %>
                                     </p>
-                                    <a href="/glossary/term/<%= term.fileKey || (term.term || '').toLowerCase().replace(/\s+/g, '-') %>" class="btn btn-primary btn-sm">
+                                    <a href="/glossary/term/<%= term.fileKey || (term.term || '').toLowerCase().replace(/\s+/g, '-') %>" 
+                                       class="btn btn-primary stretched-link">
                                         <%= t('glossary.learn_more') %>
+                                        <i class="bi bi-arrow-right-circle ms-1"></i>
                                     </a>
                                 </div>
                             </div>
@@ -53,5 +71,17 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Hover lift effect for cards */
+.hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>
 
 <%- include('../partials/footer.ejs') %>

@@ -75,13 +75,35 @@ function generateTOCFromContent(content) {
   const lines = content.split('\n');
   const headerIds = new Set(); // Keep track of IDs to ensure uniqueness
   
+  // Track if we're inside a code block
+  let inCodeBlock = false;
+  
   lines.forEach(line => {
+    // Check for code block markers
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      return; // Skip code block markers
+    }
+    
+    // Skip headers inside code blocks
+    if (inCodeBlock) {
+      return;
+    }
+    
+    // Look for headers outside of code blocks
     const headerMatch = line.match(/^(#{1,6})\s+(.+)$/);
     if (headerMatch) {
       const level = headerMatch[1].length;
       const text = headerMatch[2].trim();
       // Ensure text is a string before processing
       const headerText = typeof text === 'string' ? text : String(text);
+      
+      // Skip headers that are likely code comments or contain "copy"
+      if (headerText.toLowerCase().includes('copy') || 
+          headerText.startsWith('#') || 
+          headerText.match(/^[\$#>]/)) {
+        return;
+      }
       
       // Create a simple slug from the text
       let id = headerText.toLowerCase()
@@ -290,6 +312,57 @@ function calculateRelevance(term, query) {
   return score;
 }
 
+// Helper function to clean and prepare code content for clipboard
+function cleanCodeForClipboard(codeContent) {
+  // First decode HTML entities
+  let cleanCode = codeContent
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&apos;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&#x2F;/g, "/")
+    .replace(/&#(\d+);/g, function(match, dec) {
+      return String.fromCharCode(dec);
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, function(match, hex) {
+      return String.fromCharCode(parseInt(hex, 16));
+    });
+  
+  // Remove any remaining HTML tags
+  cleanCode = cleanCode.replace(/<[^>]*>/g, '');
+  
+  // Second pass to ensure all entities are decoded
+  cleanCode = cleanCode
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+  
+  // Clean up extra whitespace while preserving structure
+  cleanCode = cleanCode
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/\t/g, '    ') // Convert tabs to spaces
+    .trim();
+  
+  return cleanCode;
+}
+
+// Helper function to escape text for HTML attributes
+function escapeForHtmlAttribute(text) {
+  return text
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/\n/g, '\\n') // Use JavaScript-style escaping for newlines
+    .replace(/\r/g, '');
+}
+
 // Get glossary index page with pagination and categorization
 export const getIndex = (req, res) => {
   const terms = Object.values(loadGlossaryTerms(req));
@@ -489,6 +562,21 @@ export const getSearchSuggestions = (req, res) => {
     }
   });
   
+  // Sort suggestions by relevance (title match first, then term match)
+  suggestions.sort((a, b) => {
+    const aTitleMatch = a.title && a.title.toLowerCase().includes(query.toLowerCase());
+    const bTitleMatch = b.title && b.title.toLowerCase().includes(query.toLowerCase());
+    
+    // If one has title match and other doesn't, prioritize title match
+    if (aTitleMatch && !bTitleMatch) return -1;
+    if (!aTitleMatch && bTitleMatch) return 1;
+    
+    // If both have title match or both don't, sort alphabetically
+    const aTitle = (a.title || a.term).toLowerCase();
+    const bTitle = (b.title || b.term).toLowerCase();
+    return aTitle.localeCompare(bTitle);
+  });
+  
   // Limit to 10 suggestions
   const limitedSuggestions = suggestions.slice(0, 10);
   
@@ -639,18 +727,16 @@ export const getTerm = (req, res) => {
   // Add copy buttons to code blocks
   fullContentHtml = fullContentHtml.replace(/<pre><code class="([^"]*?)">([\s\S]*?)<\/code><\/pre>/g, 
     function(match, langClass, codeContent) {
-      // Remove HTML entities and clean up the code content for clipboard
-      const cleanCode = codeContent
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'");
+      // Clean the code content for clipboard
+      const cleanCode = cleanCodeForClipboard(codeContent);
+      
+      // Escape for HTML attribute
+      const escapedCleanCode = escapeForHtmlAttribute(cleanCode);
       
       return '<div class="code-block-wrapper">' +
         '<pre><code class="' + langClass + '">' + codeContent + '</code></pre>' +
-        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
-        '<i class="bi bi-clipboard"></i> Copy' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + escapedCleanCode + '">' +
+        '<i class="bi bi-clipboard"></i>' +
         '</button>' +
         '</div>';
     }
@@ -659,18 +745,16 @@ export const getTerm = (req, res) => {
   // Also handle code blocks without language class
   fullContentHtml = fullContentHtml.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, 
     function(match, codeContent) {
-      // Remove HTML entities and clean up the code content for clipboard
-      const cleanCode = codeContent
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'");
+      // Clean the code content for clipboard
+      const cleanCode = cleanCodeForClipboard(codeContent);
+      
+      // Escape for HTML attribute
+      const escapedCleanCode = escapeForHtmlAttribute(cleanCode);
       
       return '<div class="code-block-wrapper">' +
         '<pre><code>' + codeContent + '</code></pre>' +
-        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + cleanCode.trim() + '">' +
-        '<i class="bi bi-clipboard"></i> Copy' +
+        '<button class="btn btn-outline-primary btn-sm copy-btn" data-clipboard-text="' + escapedCleanCode + '">' +
+        '<i class="bi bi-clipboard"></i>' +
         '</button>' +
         '</div>';
     }
