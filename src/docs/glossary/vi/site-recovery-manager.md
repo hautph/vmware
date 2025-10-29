@@ -4,110 +4,146 @@ category: Backup_Disaster_Recovery
 language: vi
 ---
 
-Site Recovery Manager (SRM) là giải pháp quản lý phục hồi sau thảm họa của VMware tự động hóa quy trình failover và failback giữa site chính và site dự phòng. SRM giúp các tổ chức đảm bảo tính liên tục kinh doanh bằng cách cung cấp quy trình DR được kiểm thử và tự động hóa.
+VMware Site Recovery Manager (SRM) là giải pháp quản lý phục hồi sau thảm họa doanh nghiệp tự động hóa quy trình failover và failback các máy ảo và ứng dụng liên quan giữa site chính và site phục hồi. SRM cung cấp một framework toàn diện để triển khai, kiểm thử và thực thi các kế hoạch phục hồi thảm họa trong khi giảm thiểu thời gian ngừng hoạt động và đảm bảo tính liên tục kinh doanh.
 
 ## Tổng quan
 
-SRM có các đặc điểm chính sau:
-- Tự động hóa quy trình phục hồi sau thảm họa
-- Kiểm thử DR không ảnh hưởng đến production
-- Tích hợp với vSphere Replication và storage replication
-- Cung cấp orchestration cho các ứng dụng phức tạp
+Site Recovery Manager giải quyết nhu cầu thiết yếu của các tổ chức trong việc duy trì tính liên tục kinh doanh trước các thảm họa, sự cố phần cứng hoặc các sự kiện bảo trì có kế hoạch. Nó chuyển đổi các quy trình phục hồi thảm họa phức tạp, thủ công thành các thủ tục tự động, có thể lặp lại mà có thể được kiểm tra và xác nhận mà không ảnh hưởng đến môi trường sản xuất.
 
-## Kiến trúc
+### Giá trị cốt lõi
 
-### Các thành phần chính
-SRM bao gồm các thành phần sau:
-- **SRM Server**: Máy chủ quản lý tại mỗi site
-- **SRM Database**: Cơ sở dữ liệu lưu trữ cấu hình DR
-- **vCenter Server**: Quản lý các host và VM
-- **Replication**: vSphere Replication hoặc storage array replication
-
-### Cách thức hoạt động
-1. SRM thu thập thông tin về VM và phụ thuộc
-2. Tạo recovery plan dựa trên cấu hình
-3. Đồng bộ hóa dữ liệu giữa các site
-4. Khi thảm họa xảy ra, SRM thực hiện failover tự động
-5. Sau khi site chính phục hồi, SRM thực hiện failback
+- **Tự động hóa Orchestration**: Loại bỏ can thiệp thủ công trong quy trình phục hồi thảm họa
+- **Kiểm thử không gián đoạn**: Cho phép kiểm tra định kỳ kế hoạch phục hồi mà không ảnh hưởng đến khối lượng công việc sản xuất
+- **Đảm bảo tuân thủ**: Giúp các tổ chức đáp ứng các yêu cầu quy định về phục hồi thảm họa
+- **Giảm thiểu rủi ro**: Giảm rủi ro thời gian ngừng hoạt động kéo dài trong các kịch bản thảm họa
 
 ## Các tính năng chính
 
-### Orchestration
-- **Recovery Plans**: Kế hoạch phục hồi cho các ứng dụng
-- **Dependencies Mapping**: Ánh xạ phụ thuộc giữa các VM
-- **Boot Order**: Thứ tự khởi động cho các VM
-- **Custom Scripts**: Script tùy chỉnh trong quy trình DR
+### Tự động hóa Recovery Plan
+- **Failover tự động**: Điều phối việc phục hồi VM và ứng dụng theo trình tự được xác định trước
+- **Kế hoạch phục hồi tùy chỉnh**: Cho phép quản trị viên xác định các bước phục hồi và phụ thuộc
+- **Kiểm thử không gián đoạn**: Cho phép kiểm tra định kỳ kế hoạch phục hồi thảm họa mà không ảnh hưởng đến sản xuất
+- **Failback tự động**: Tự động hóa quy trình trả lại dịch vụ về site chính sau khi phục hồi
 
-### Tự động hóa
-- **Automated Failover**: Failover tự động khi thảm họa
-- **Automated Failback**: Failback tự động khi site chính phục hồi
-- **Test Failover**: Kiểm thử DR mà không ảnh hưởng production
-- **Reprotect**: Tự động bảo vệ lại VM sau failover
+### Tích hợp Replication
+- **Hỗ trợ vSphere Replication**: Làm việc với giải pháp replication gốc của VMware
+- **Replication dựa trên Array**: Tích hợp với các công nghệ replication mảng lưu trữ
+- **Giám sát Replication**: Cung cấp khả năng hiển thị trạng thái và sức khỏe của replication
+- **Tối ưu hóa băng thông**: Tối ưu hóa lưu lượng replication để giảm thiểu tác động mạng
 
-### Giám sát và báo cáo
-- **Dashboard**: Bảng điều khiển trạng thái DR
-- **Alerting**: Cảnh báo về trạng thái replication
-- **Reporting**: Báo cáo hiệu suất và compliance
-- **Audit Trail**: Nhật ký hoạt động DR
+### Quản lý tập trung
+- **Tích hợp vCenter Server**: Quản lý thông qua giao diện vSphere Client
+- **Mẫu Recovery Plan**: Các mẫu có thể tái sử dụng cho các kịch bản phục hồi phổ biến
+- **Kiểm soát truy cập dựa trên vai trò**: Quyền hạn chi tiết cho các hoạt động phục hồi
+- **Quản lý đa site**: Quản lý tập trung nhiều site phục hồi
 
-## SRM 8 Cải tiến
+### Khả năng nâng cao
+- **Cách ly mạng**: Đảm bảo an ninh mạng trong quá trình failover
+- **Tính nhất quán ứng dụng**: Duy trì tính nhất quán cấp ứng dụng trong quá trình phục hồi
+- **Ánh xạ lưu trữ**: Thông minh ánh xạ tài nguyên lưu trữ giữa các site
+- **Script tùy chỉnh**: Mở rộng khả năng phục hồi thông qua script tùy chỉnh
 
-### Tích hợp nâng cao
-- Tích hợp tốt hơn với Tanzu và Kubernetes
-- Hỗ trợ các workload cloud-native
-- Cải thiện khả năng làm việc với NSX
-- Hỗ trợ VMware Cloud on AWS
+## Kiến trúc
 
-### Giao diện người dùng
-- Giao diện trực quan hơn với vSphere Client
-- Cải thiện trải nghiệm người dùng
-- Hỗ trợ mobile cho các tác vụ cơ bản
-- Template và wizard cho cấu hình nhanh
+### Các thành phần cốt lõi
+- **Site Recovery Manager Server**: Thành phần quản lý chính được cài đặt tại cả hai site
+- **Recovery Plans**: Các định nghĩa dựa trên XML của các quy trình phục hồi và phụ thuộc
+- **Placeholder VMs**: Đại diện nhẹ của các VM được bảo vệ tại site phục hồi
+- **Mapping Objects**: Xác định mối quan hệ giữa tài nguyên site được bảo vệ và site phục hồi
 
-### Hiệu suất
-- Tối ưu hóa quy trình failover
-- Giảm thời gian RTO
-- Cải thiện hiệu suất test failover
-- Hỗ trợ các công nghệ mạng mới
+### Cấu hình Site
+- **Site được bảo vệ**: Trung tâm dữ liệu chính chạy khối lượng công việc sản xuất
+- **Site phục hồi**: Trung tâm dữ liệu phụ cho phục hồi thảm họa
+- **Các phiên bản vCenter Server**: Các phiên bản riêng biệt quản lý từng site
+- **Cấu hình mạng**: Xác định ánh xạ mạng giữa các site
 
-## Cấu hình
+### Công nghệ Replication
+- **vSphere Replication**: Giải pháp replication dựa trên hypervisor của VMware
+- **Replication dựa trên Array**: Các công nghệ replication cụ thể của nhà cung cấp lưu trữ
+- **Tích hợp bên thứ ba**: Hỗ trợ cho nhiều nhà cung cấp mảng lưu trữ khác nhau
+- **Chính sách Replication**: Kiểm soát chi tiết các tham số replication
 
-### Các bước cơ bản
-1. Cài đặt SRM Server tại cả hai site
-2. Cấu hình kết nối giữa các site
-3. Cấu hình replication (vSphere Replication hoặc array-based)
-4. Tạo protection groups
-5. Thiết kế recovery plans
-6. Kiểm thử và tinh chỉnh
+## Ví dụ cấu hình
 
-### Các khái niệm quan trọng
-- **Protection Groups**: Nhóm VM được bảo vệ cùng nhau
-- **Recovery Plans**: Kế hoạch phục hồi cho các ứng dụng
-- **RPO (Recovery Point Objective)**: Thời gian tối đa mất dữ liệu
-- **RTO (Recovery Time Objective)**: Thời gian tối đa downtime
+### Cấu hình PowerShell/PowerCLI
+```powershell
+# Kết nối đến vCenter Server
+Connect-VIServer -Server "vcenter-primary.local"
+
+# Tạo recovery plan mới
+New-SRMRecoveryPlan -Name "Production-DR-Plan" -Description "Kế hoạch phục hồi sản xuất chính"
+
+# Thêm VM vào nhóm bảo vệ
+Get-SRMProtectionGroup -Name "Production-PG" | Add-SRMProtectedVM -VM (Get-VM -Name "WebServer01", "AppServer01", "DBServer01")
+
+# Kiểm thử recovery plan
+Start-SRMRecoveryPlan -RecoveryPlan (Get-SRMRecoveryPlan -Name "Production-DR-Plan") -ValidateOnly
+
+# Thực hiện failover
+Start-SRMRecoveryPlan -RecoveryPlan (Get-SRMRecoveryPlan -Name "Production-DR-Plan")
+```
+
+### Cấu hình ESXi CLI
+```bash
+# Kiểm tra trạng thái dịch vụ SRM
+service-control --status vmware-srm
+
+# Xem trạng thái nhóm bảo vệ
+/usr/lib/vmware-srm/bin/srmctl protection-group list
+
+# Giám sát thực thi recovery plan
+tail -f /var/log/vmware/srm/*.log
+```
+
+## Cải tiến vSphere 8
+
+### Replication nâng cao
+Trong vSphere 8, Site Recovery Manager đã được nâng cấp với:
+- **Quản lý RPO cải tiến**: Kiểm soát chi tiết hơn đối với các mục tiêu điểm phục hồi
+- **Tối ưu hóa RTO nâng cao**: Tối ưu hóa tốt hơn mục tiêu thời gian phục hồi
+- **Thiết lập Replication đơn giản hóa**: Cấu hình đơn giản cho các chính sách replication
+- **Giám sát nâng cao**: Khả năng hiển thị nâng cao về trạng thái replication và phục hồi
+
+### Tích hợp quản lý hiện đại
+- **Quản lý vòng đời**: Tích hợp tốt hơn với vSphere Lifecycle Manager
+- **Quản lý dựa trên chính sách**: Tự động hóa dựa trên chính sách nâng cao
+- **Hoạt động đơn giản hóa**: Đơn giản hóa các hoạt động quản lý
+- **Khắc phục sự cố cải tiến**: Khả năng chẩn đoán tốt hơn
+
+### Tích hợp đám mây
+- **VMware Cloud on AWS**: Hỗ trợ nâng cao cho phục hồi thảm họa đám mây lai
+- **Orchestration đa đám mây**: Điều phối trên nhiều môi trường đám mây
+- **Khối lượng công việc Cloud-Native**: Hỗ trợ cho các kiến trúc ứng dụng hiện đại
+- **Tích hợp SDDC**: Tích hợp liền mạch với Trung tâm dữ liệu được xác định bằng phần mềm
 
 ## Thực hành tốt nhất
 
-1. **Lập kế hoạch**: Xác định RPO và RTO cho từng ứng dụng
-2. **Kiểm thử**: Kiểm tra quy trình DR định kỳ
-3. **Tài liệu**: Ghi chép chi tiết về cấu hình và quy trình
-4. **Đào tạo**: Đào tạo nhân viên về quy trình DR
-5. **Cập nhật**: Duy trì phiên bản mới nhất của SRM
+1. **Mục tiêu phục hồi**: Xác định giá trị RTO và RPO phù hợp cho các ứng dụng khác nhau
+2. **Kiểm tra định kỳ**: Kiểm tra định kỳ các kế hoạch phục hồi để đảm bảo chúng hoạt động như mong đợi
+3. **Lập kế hoạch mạng**: Lập kế hoạch cẩn thận cấu hình mạng để đảm bảo failover đúng cách
+4. **Kích thước tài nguyên**: Đảm bảo tài nguyên đầy đủ tại site phục hồi cho các kịch bản failover
+5. **Tài liệu**: Duy trì tài liệu chi tiết về quy trình phục hồi và phụ thuộc
+6. **Đào tạo**: Đào tạo nhân viên về quy trình và công cụ phục hồi
+7. **Giám sát**: Triển khai giám sát liên tục trạng thái replication và phục hồi
+8. **Tuân thủ**: Đảm bảo các kế hoạch phục hồi đáp ứng các yêu cầu quy định và tuân thủ
 
-## Lệnh quản lý
+## Lệnh khắc phục sự cố
 
-```powershell
-# Kết nối đến SRM Server
-Connect-SrmServer -Server "srm-server.domain.local"
+```bash
+# Kiểm tra trạng thái dịch vụ SRM
+service-control --status vmware-srm
 
-# Xem protection groups
-Get-SrmProtectionGroup
+# Xem log SRM
+tail -f /var/log/vmware/srm/*.log
 
-# Test recovery plan
-Start-SrmTestFailover -RecoveryPlan "RecoveryPlan01"
+# Kiểm tra trạng thái nhóm bảo vệ
+/usr/lib/vmware-srm/bin/srmctl protection-group list
 
-# Xem trạng thái SRM
-Get-SrmStatus
+# Giám sát trạng thái replication
+/usr/lib/vmware-srm/bin/srmctl replication-group list
+
+# Kiểm tra kết nối cơ sở dữ liệu SRM
+/usr/lib/vmware-srm/bin/srmctl database status
 ```
 
 ## Các công nghệ liên quan
@@ -116,3 +152,5 @@ Get-SrmStatus
 - [vSphere Lifecycle Manager](/glossary/term/vsphere-lifecycle-manager.md)
 - [Recovery Point Objective (RPO)](/glossary/term/recovery-point-objective.md)
 - [Recovery Time Objective (RTO)](/glossary/term/recovery-time-objective.md)
+- [VMware Cloud on AWS](/glossary/term/vmware-cloud-on-aws.md)
+- [vCenter Server](/glossary/term/vcenter.md)
