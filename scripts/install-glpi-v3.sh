@@ -10,7 +10,7 @@
 # --- CẤU HÌNH TOÀN CỤC ---
 # Thay đổi các giá trị này nếu cần
 DOMAIN_NAME="" # BẮT BUỘC: Nhập tên miền của bạn, ví dụ: glpi.yourdomain.com
-SSH_NEW_PORT="2222" # Port SSH mới để tăng cường bảo mật
+#SSH_NEW_PORT="2222" # Port SSH mới để tăng cường bảo mật
 
 # Danh sách các plugin cần cài đặt từ GitHub
 PLUGINS_TO_INSTALL=(
@@ -151,8 +151,10 @@ prompt_domain() {
         if [[ -n "$input_domain" ]]; then
             DOMAIN_NAME="$input_domain"
             # Kiểm tra DNS
-            local domain_ip
-            domain_ip=$(dig +short "$DOMAIN_NAME" | head -1 2>/dev/null)
+            local domain_ip=""
+            if [[ -n "$DOMAIN_NAME" ]]; then
+                domain_ip=$(dig +short "$DOMAIN_NAME" 2>/dev/null | head -1)
+            fi
             if [[ -n "$domain_ip" ]]; then
                 echo -e "Tên miền ${GREEN}$DOMAIN_NAME${NC} đã có thể phân giải thành IP: $domain_ip"
             else
@@ -215,6 +217,691 @@ cleanup_resources() {
     log_and_echo "Dọn dẹp hoàn tất."
 }
 
+check_glpi_status() {
+    local show_prompt=${1:-true}
+    if ! read_install_info; then 
+        echo -e "${RED}Chưa có thông tin cài đặt. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    # Check if GLPI is installed by checking for essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]] || [[ ! -f "$INSTALL_DIR/inc/define.php" ]] || [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        echo -e "${RED}GLPI chưa được cài đặt hoàn chỉnh. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}          THÔNG TIN PHIÊN BẢN GLPI         ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    CURRENT_VERSION=$(grep "define('GLPI_VERSION'" "$INSTALL_DIR/inc/define.php" | cut -d "'" -f 4)
+    LATEST_VERSION=$(curl -s --connect-timeout 10 https://api.github.com/repos/glpi-project/glpi/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    
+    echo -e "Phiên bản hiện tại: ${BLUE}$CURRENT_VERSION${NC}"
+    echo -e "Phiên bản mới nhất: ${GREEN}$LATEST_VERSION${NC}"
+    
+    if [[ "$CURRENT_VERSION" == "$LATEST_VERSION" ]]; then
+        echo -e "\n${GREEN}✅ GLPI đang ở phiên bản mới nhất!${NC}"
+    else
+        echo -e "\n${YELLOW}⚠️  Có phiên bản mới khả dụng. Chạy 'Cập nhật GLPI' để nâng cấp.${NC}"
+    fi
+    
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
+}
+
+list_plugins() {
+    local show_prompt=${1:-true}
+    if ! read_install_info; then 
+        echo -e "${RED}Chưa có thông tin cài đặt. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    # Check if GLPI is installed by checking for essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]] || [[ ! -f "$INSTALL_DIR/inc/define.php" ]] || [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        echo -e "${RED}GLPI chưa được cài đặt hoàn chỉnh. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    if [[ ! -d "$INSTALL_DIR/plugins" ]]; then
+        echo -e "${RED}Thư mục plugins không tồn tại.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}          DANH SÁCH PLUGIN ĐÃ CÀI ĐẶT     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    local plugins_installed=0
+    for plugin_dir in "$INSTALL_DIR/plugins"/*/; do
+        if [[ -d "$plugin_dir" ]]; then
+            local plugin_name=$(basename "$plugin_dir")
+            # Kiểm tra nếu plugin đã được kích hoạt
+            if [[ -f "$INSTALL_DIR/plugins/$plugin_name/setup.php" ]]; then
+                echo -e "📦 $plugin_name: ${GREEN}Đã cài đặt${NC}"
+                plugins_installed=$((plugins_installed + 1))
+            fi
+        fi
+    done
+    
+    if [[ $plugins_installed -eq 0 ]]; then
+        echo -e "${YELLOW}Không có plugin nào được cài đặt.${NC}"
+    else
+        echo -e "\nTổng cộng: ${GREEN}$plugins_installed${NC} plugin đã được cài đặt."
+    fi
+    
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
+}
+
+display_system_info() {
+    local show_prompt=${1:-true}
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}          THÔNG TIN HỆ THỐNG     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    # OS Information
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        echo -e "OS: ${GREEN}$PRETTY_NAME${NC}"
+    fi
+    
+    # Kernel version
+    echo -e "Kernel: ${GREEN}$(uname -r)${NC}"
+    
+    # Architecture
+    echo -e "Kiến trúc: ${GREEN}$(uname -m)${NC}"
+    
+    # CPU info
+    echo -e "CPU: ${GREEN}$(nproc) cores${NC}"
+    
+    # Memory info
+    local mem_total=$(free -h | awk 'NR==2{print $2}')
+    local mem_used=$(free -h | awk 'NR==2{print $3}')
+    echo -e "RAM: ${GREEN}$mem_used / $mem_total${NC}"
+    
+    # Disk usage
+    local disk_total=$(df -h / | awk 'NR==2{print $2}')
+    local disk_used=$(df -h / | awk 'NR==2{print $3}')
+    local disk_usage=$(df -h / | awk 'NR==2{print $5}')
+    echo -e "Disk: ${GREEN}$disk_used / $disk_total ($disk_usage)${NC}"
+    
+    # PHP version
+    if command -v php &> /dev/null; then
+        local php_version=$(php -r "echo PHP_VERSION;")
+        echo -e "PHP: ${GREEN}$php_version${NC}"
+    fi
+    
+    # MySQL version
+    if command -v mysql &> /dev/null; then
+        local mysql_version=$(mysql --version | awk '{print $3}' | sed 's/,//')
+        echo -e "MySQL: ${GREEN}$mysql_version${NC}"
+    fi
+    
+    # Nginx version
+    if command -v nginx &> /dev/null; then
+        local nginx_version=$(nginx -v 2>&1 | awk -F '/' '{print $2}')
+        echo -e "Nginx: ${GREEN}$nginx_version${NC}"
+    fi
+    
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
+}
+
+manage_multiple_instances() {
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}    QUẢN LÝ NHIỀU INSTANCE GLPI     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    echo -e "Chức năng này cho phép bạn cài đặt và quản lý nhiều instance GLPI trên cùng một server."
+    echo -e "Mỗi instance sẽ có:"
+    echo -e "  - Thư mục cài đặt riêng biệt"
+    echo -e "  - Database riêng biệt"
+    echo -e "  - Cấu hình Nginx riêng biệt"
+    echo -e "  - Port hoặc tên miền riêng biệt\n"
+    
+    echo -e "${GREEN}Các instance hiện tại:${NC}"
+    # Show main installation
+    if [[ -d "$INSTALL_DIR" && -f "$INSTALL_DIR/config/config_db.php" ]]; then
+        echo -e "  - main (Mặc định) (${GREEN}Đang hoạt động${NC})"
+    fi
+    
+    # Show additional instances
+    if [[ -d "/var/www" ]]; then
+        for dir in /var/www/glpi_*; do
+            if [[ -d "$dir" && "$dir" != "$INSTALL_DIR" && -f "$dir/config/config_db.php" ]]; then
+                local instance_name=$(basename "$dir" | sed 's/glpi_//')
+                echo -e "  - $instance_name (${GREEN}Đang hoạt động${NC})"
+            fi
+        done
+    fi
+    
+    echo -e "\n${GREEN}Tùy chọn:${NC}"
+    echo -e "  1. Tạo instance mới"
+    echo -e "  2. Xóa instance"
+    echo -e "  3. Danh sách instance"
+    echo -e "  99. Quay lại menu chính"
+    
+    read -p "Nhập lựa chọn của bạn [1-3] hoặc 99 để quay lại: " multi_choice
+    case $multi_choice in
+        1) create_new_instance ;;
+        2) delete_instance ;;
+        3) list_instances ;;
+        99) return ;;
+        *) echo -e "${RED}Lựa chọn không hợp lệ${NC}"; read -p "Nhấn Enter để tiếp tục..." ;;
+    esac
+    
+    read -p "Nhấn Enter để quay lại menu..."
+}
+
+create_new_instance() {
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}      TẠO INSTANCE GLPI MỚI     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    read -p "Nhập tên cho instance mới (ví dụ: company1, project2): " instance_name
+    
+    if [[ -z "$instance_name" ]]; then
+        echo -e "${RED}Tên instance không được để trống!${NC}"
+        read -p "Nhấn Enter để tiếp tục..."
+        return
+    fi
+    
+    # Validate instance name (no spaces, special chars)
+    if [[ ! "$instance_name" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+        echo -e "${RED}Tên instance chỉ được chứa chữ cái, số, dấu gạch dưới và dấu gạch ngang!${NC}"
+        return
+    fi
+    
+    local instance_dir="/var/www/glpi_$instance_name"
+    
+    if [[ -d "$instance_dir" ]]; then
+        echo -e "${RED}Instance '$instance_name' đã tồn tại!${NC}"
+        return
+    fi
+    
+    # Get domain or IP for this instance
+    local instance_domain=""
+    read -p "Nhập tên miền cho instance này (để trống để dùng IP): " instance_domain
+    
+    if [[ -z "$instance_domain" ]]; then
+        get_public_ip > /dev/null
+        instance_domain="$PUBLIC_IP"
+        echo -e "${YELLOW}Sẽ sử dụng IP: $instance_domain${NC}"
+    fi
+    
+    # Create database for this instance
+    local db_name="glpi_${instance_name}"
+    local db_user="glpi_${instance_name}_user"
+    local db_password=$(openssl rand -base64 32)
+    local mysql_root_password=""
+    
+    # Try to get root password from existing config
+    if [[ -f "$INFO_FILE" ]]; then
+        mysql_root_password=$(grep "MySQL Root Password:" "$INFO_FILE" | cut -d' ' -f4)
+    fi
+    
+    # If still no root password, try to get it from any instance info file
+    if [[ -z "$mysql_root_password" ]]; then
+        for info_file in glpi_*_info.txt; do
+            if [[ -f "$info_file" ]]; then
+                mysql_root_password=$(grep "MySQL Root Password:" "$info_file" | cut -d' ' -f4)
+                if [[ -n "$mysql_root_password" ]]; then
+                    break
+                fi
+            fi
+        done
+    fi
+    
+    # If still no root password, try alternative patterns
+    if [[ -z "$mysql_root_password" ]]; then
+        # Try with different field separators
+        if [[ -f "$INFO_FILE" ]]; then
+            mysql_root_password=$(awk -F': ' '/MySQL Root Password:/ {print $2}' "$INFO_FILE" | xargs)
+        fi
+        
+        # If still not found, try other info files
+        if [[ -z "$mysql_root_password" ]]; then
+            for info_file in glpi_*_info.txt; do
+                if [[ -f "$info_file" ]]; then
+                    mysql_root_password=$(awk -F': ' '/MySQL Root Password:/ {print $2}' "$info_file" | xargs)
+                    if [[ -n "$mysql_root_password" ]]; then
+                        break
+                    fi
+                fi
+            done
+        fi
+    fi
+    
+    # If still no root password, prompt user (should not happen in automated flow)
+    if [[ -z "$mysql_root_password" ]]; then
+        echo -e "${RED}Không tìm thấy MySQL root password. Vui lòng nhập:${NC}"
+        read -s -p "Nhập MySQL root password: " mysql_root_password
+        echo
+    fi
+    
+    echo -e "\n${GREEN}Đang tạo database cho instance...${NC}"
+    mysql -u root -p"$mysql_root_password" <<EOF 2>/dev/null
+DROP USER IF EXISTS '$db_user'@'localhost';
+DROP DATABASE IF EXISTS $db_name;
+CREATE DATABASE $db_name CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER '$db_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '$db_password';
+GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+    
+    if [[ $? -ne 0 ]]; then
+        echo -e "${RED}Lỗi khi tạo database!${NC}"
+        return
+    fi
+    
+    # Download and install GLPI
+    echo -e "${GREEN}Đang tải và cài đặt GLPI...${NC}"
+    cd /tmp
+    
+    # Get latest GLPI version
+    local glpi_version=$(curl -s --connect-timeout 10 https://api.github.com/repos/glpi-project/glpi/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    
+    if [[ -z "$glpi_version" ]]; then
+        echo -e "${RED}Không thể lấy phiên bản GLPI mới nhất!${NC}"
+        return
+    fi
+    
+    wget -q "https://github.com/glpi-project/glpi/releases/download/$glpi_version/glpi-$glpi_version.tgz"
+    
+    if [[ $? -ne 0 ]]; then
+        echo -e "${RED}Lỗi khi tải GLPI!${NC}"
+        return
+    fi
+    
+    tar -xzf "glpi-$glpi_version.tgz"
+    rm -rf "$instance_dir"
+    mv glpi "$instance_dir"
+    rm "glpi-$glpi_version.tgz"
+    
+    chown -R www-data:www-data "$instance_dir"
+    find "$instance_dir" -type d -exec chmod 755 {} \;
+    find "$instance_dir" -type f -exec chmod 644 {} \;
+    
+    # Configure PHP
+    echo -e "${GREEN}Đang cấu hình PHP...${NC}"
+    PHP_INI_FILE="/etc/php/8.3/fpm/php.ini"
+    if [[ -f "$PHP_INI_FILE" ]]; then
+        sed -i "s/memory_limit = .*/memory_limit = 256M/; s/upload_max_filesize = .*/upload_max_filesize = 64M/; s/post_max_size = .*/post_max_size = 64M/; s/max_execution_time = .*/max_execution_time = 300/; s/;date.timezone.*/date.timezone = Asia\/Ho_Chi_Minh/; s/expose_php = On/expose_php = Off/" "$PHP_INI_FILE"
+        systemctl restart php8.3-fpm
+    fi
+    
+    # Configure database for GLPI
+    echo -e "${GREEN}Đang cấu hình database cho GLPI...${NC}"
+    cd "$instance_dir"
+    
+    # Check and load MySQL timezones if needed
+    if ! mysql -u root -p"$mysql_root_password" -e "SELECT COUNT(*) FROM mysql.time_zone_name;" | grep -q "[1-9]"; then
+        echo -e "${GREEN}Đang tải timezones cho MySQL...${NC}"
+        # Suppress warnings about non-timezone files as they are normal
+        mysql_tzinfo_to_sql /usr/share/zoneinfo 2>/dev/null | mysql -u root -p"$mysql_root_password" mysql 2>/dev/null
+    fi
+    
+    sudo -u www-data php bin/console glpi:database:install \
+        --db-host=localhost \
+        --db-name="$db_name" \
+        --db-user="$db_user" \
+        --db-password="$db_password" \
+        --default-language=vi_VN \
+        --no-interaction
+    
+    # Create config file
+    cat > "$instance_dir/config/config_db.php" <<EOF
+<?php
+class DB extends DBmysql {
+    public \$dbhost = 'localhost';
+    public \$dbuser = '$db_user';
+    public \$dbpassword = '$db_password';
+    public \$dbdefault = '$db_name';
+}
+EOF
+    
+    chown www-data:www-data "$instance_dir/config/config_db.php"
+    rm -rf "$instance_dir/install"
+    
+    # Configure Nginx
+    echo -e "${GREEN}Đang cấu hình Nginx...${NC}"
+    NGINX_CONF_FILE="/etc/nginx/sites-available/glpi_$instance_name"
+    cat > "$NGINX_CONF_FILE" <<EOF
+server {
+    listen 80;
+    server_name $instance_domain;
+
+    root $instance_dir;
+    index index.php index.html index.htm;
+
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    server_tokens off;
+
+    location ~ \\.php\$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg)\$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location ~ /\\. { deny all; }
+    location ~ ^/(config|templates|inc|vendor|tests|scripts|tools|install)/ { deny all; }
+}
+EOF
+    
+    ln -sf "$NGINX_CONF_FILE" "/etc/nginx/sites-enabled/"
+    nginx -t && systemctl restart nginx
+    
+    # Save instance info
+    local instance_info_file="glpi_${instance_name}_info.txt"
+    echo "=== THÔNG TIN INSTANCE GLPI - $(date) ===" > "$instance_info_file"
+    echo "Tên instance: $instance_name" >> "$instance_info_file"
+    echo "Thư mục: $instance_dir" >> "$instance_info_file"
+    echo "Tên miền/IP: $instance_domain" >> "$instance_info_file"
+    echo "Database name: $db_name" >> "$instance_info_file"
+    echo "Database user: $db_user" >> "$instance_info_file"
+    echo "Database password: $db_password" >> "$instance_info_file"
+    echo "MySQL root password: $mysql_root_password" >> "$instance_info_file"
+    
+    echo -e "\n${GREEN}Instance GLPI '$instance_name' đã được tạo thành công!${NC}"
+    echo -e "Thông tin chi tiết đã được lưu vào: ${YELLOW}$instance_info_file${NC}"
+    echo -e "URL truy cập: ${YELLOW}http://$instance_domain${NC}"
+    echo -e "Tài khoản mặc định: ${YELLOW}glpi / glpi${NC}"
+}
+
+delete_instance() {
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}      XÓA INSTANCE GLPI     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    list_instances
+    
+    read -p "Nhập tên instance cần xóa: " instance_name
+    
+    if [[ -z "$instance_name" ]]; then
+        echo -e "${RED}Tên instance không được để trống!${NC}"
+        return
+    fi
+    
+    # Handle main instance specially
+    local instance_dir=""
+    if [[ "$instance_name" == "main" ]]; then
+        instance_dir="$INSTALL_DIR"
+    else
+        instance_dir="/var/www/glpi_$instance_name"
+    fi
+    
+    if [[ ! -d "$instance_dir" ]]; then
+        echo -e "${RED}Instance '$instance_name' không tồn tại!${NC}"
+        return
+    fi
+    
+    read -p "Bạn có chắc chắn muốn xóa instance '$instance_name'? (y/N): " confirm
+    
+    if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+        echo -e "${YELLOW}Hủy xóa instance.${NC}"
+        return
+    fi
+    
+    # Get database info
+    local db_name=""
+    local db_user=""
+    local mysql_root_password=""
+    
+    # Handle main instance specially
+    if [[ "$instance_name" == "main" ]]; then
+        # For main instance, get database info from main info file
+        if [[ -f "$INFO_FILE" ]]; then
+            db_name=$(grep "GLPI Database Name:" "$INFO_FILE" | cut -d' ' -f4)
+            db_user=$(grep "GLPI Database User:" "$INFO_FILE" | cut -d' ' -f4)
+            mysql_root_password=$(grep "MySQL Root Password:" "$INFO_FILE" | cut -d' ' -f4)
+        fi
+    else
+        # For additional instances
+        local db_name="glpi_${instance_name}"
+        local db_user="glpi_${instance_name}_user"
+        
+        # Try to get root password from instance info file
+        local instance_info_file="glpi_${instance_name}_info.txt"
+        if [[ -f "$instance_info_file" ]]; then
+            mysql_root_password=$(grep "MySQL Root Password:" "$instance_info_file" | cut -d' ' -f4)
+        fi
+        
+        # If not found, try to get it from main info file
+        if [[ -z "$mysql_root_password" ]] && [[ -f "$INFO_FILE" ]]; then
+            mysql_root_password=$(grep "MySQL Root Password:" "$INFO_FILE" | cut -d' ' -f4)
+        fi
+        
+        # If still not found, try to get it from any other instance info file
+        if [[ -z "$mysql_root_password" ]]; then
+            for info_file in glpi_*_info.txt; do
+                if [[ -f "$info_file" && "$info_file" != "$instance_info_file" ]]; then
+                    mysql_root_password=$(grep "MySQL Root Password:" "$info_file" | cut -d' ' -f4)
+                    if [[ -n "$mysql_root_password" ]]; then
+                        break
+                    fi
+                fi
+            done
+        fi
+    fi
+    
+    # If still no root password, try alternative patterns
+    if [[ -z "$mysql_root_password" ]]; then
+        # Try with different field separators
+        if [[ -f "$INFO_FILE" ]]; then
+            mysql_root_password=$(awk -F': ' '/MySQL Root Password:/ {print $2}' "$INFO_FILE" | xargs)
+        fi
+        
+        # If still not found, try other info files
+        if [[ -z "$mysql_root_password" ]]; then
+            for info_file in glpi_*_info.txt; do
+                if [[ -f "$info_file" ]]; then
+                    mysql_root_password=$(awk -F': ' '/MySQL Root Password:/ {print $2}' "$info_file" | xargs)
+                    if [[ -n "$mysql_root_password" ]]; then
+                        break
+                    fi
+                fi
+            done
+        fi
+    fi
+    
+    # If still no root password, prompt user (should not happen in automated flow)
+    if [[ -z "$mysql_root_password" ]]; then
+        echo -e "${RED}Không tìm thấy MySQL root password. Vui lòng nhập:${NC}"
+        read -s -p "Nhập MySQL root password: " mysql_root_password
+        echo
+    fi
+    
+    echo -e "${GREEN}Đang xóa database...${NC}"
+    mysql -u root -p"$mysql_root_password" <<EOF 2>/dev/null
+DROP USER IF EXISTS '$db_user'@'localhost';
+DROP DATABASE IF EXISTS $db_name;
+FLUSH PRIVILEGES;
+EOF
+    
+    echo -e "${GREEN}Đang xóa thư mục instance...${NC}"
+    rm -rf "$instance_dir"
+    
+    echo -e "${GREEN}Đang xóa cấu hình Nginx...${NC}"
+    # Handle main instance specially
+    if [[ "$instance_name" == "main" ]]; then
+        # For main instance, remove the domain-based config or default glpi config
+        if [[ -n "$DOMAIN_NAME" ]]; then
+            rm -f "/etc/nginx/sites-available/$DOMAIN_NAME"
+            rm -f "/etc/nginx/sites-enabled/$DOMAIN_NAME"
+        else
+            rm -f "/etc/nginx/sites-available/glpi"
+            rm -f "/etc/nginx/sites-enabled/glpi"
+        fi
+    else
+        rm -f "/etc/nginx/sites-available/glpi_$instance_name"
+        rm -f "/etc/nginx/sites-enabled/glpi_$instance_name"
+    fi
+    nginx -t && systemctl restart nginx
+    
+    echo -e "${GREEN}Đang xóa file thông tin...${NC}"
+    # Handle main instance specially
+    if [[ "$instance_name" != "main" ]]; then
+        rm -f "glpi_${instance_name}_info.txt"
+    else
+        # For main instance, also remove the main info file
+        rm -f "$INFO_FILE"
+    fi
+    
+    echo -e "${GREEN}Instance '$instance_name' đã được xóa thành công!${NC}"
+}
+
+list_instances() {
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}      DANH SÁCH INSTANCE GLPI     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    local found_instances=false
+    
+    # Check for main GLPI installation
+    if [[ -d "$INSTALL_DIR" && -f "$INSTALL_DIR/config/config_db.php" ]]; then
+        local main_domain="Không xác định"
+        if [[ -f "$INFO_FILE" ]]; then
+            main_domain=$(grep "Tên miền:" "$INFO_FILE" | cut -d' ' -f3-)
+        fi
+        
+        echo -e "Instance: ${GREEN}main${NC} (Mặc định)"
+        echo -e "  Đường dẫn: $INSTALL_DIR"
+        echo -e "  Tên miền/IP: $main_domain"
+        echo -e "  Trạng thái: ${GREEN}Đang hoạt động${NC}\n"
+        found_instances=true
+    fi
+    
+    # Check for additional instances
+    if [[ -d "/var/www" ]]; then
+        for dir in /var/www/glpi_*; do
+            if [[ -d "$dir" && "$dir" != "$INSTALL_DIR" ]]; then
+                local instance_name=$(basename "$dir" | sed 's/glpi_//')
+                local instance_info_file="glpi_${instance_name}_info.txt"
+                local domain="Không xác định"
+                
+                if [[ -f "$instance_info_file" ]]; then
+                    domain=$(grep "Tên miền/IP:" "$instance_info_file" | cut -d' ' -f3-)
+                fi
+                
+                echo -e "Instance: ${GREEN}$instance_name${NC}"
+                echo -e "  Đường dẫn: $dir"
+                echo -e "  Tên miền/IP: $domain"
+                echo -e "  Trạng thái: ${GREEN}Đang hoạt động${NC}\n"
+                found_instances=true
+            fi
+        done
+    fi
+    
+    if [[ "$found_instances" = false ]]; then
+        echo -e "${YELLOW}Không tìm thấy instance nào.${NC}"
+    fi
+}
+
+detailed_disk_usage() {
+    local show_prompt=${1:-true}
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}          CHI TIẾT SỬ DỤNG DISK     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    echo -e "${GREEN}Sử dụng disk chi tiết:${NC}"
+    df -h | grep -v "tmpfs\|devtmpfs\|none"
+    
+    echo -e "\n${GREEN}Thư mục GLPI:${NC}"
+    if [[ -d "$INSTALL_DIR" ]]; then
+        du -sh "$INSTALL_DIR" 2>/dev/null || echo -e "${RED}Không thể xác định kích thước thư mục GLPI${NC}"
+    else
+        echo -e "${YELLOW}Thư mục GLPI chưa được tạo${NC}"
+    fi
+    
+    echo -e "\n${GREEN}Thư mục backup:${NC}"
+    if [[ -d "$BACKUP_DIR" ]]; then
+        du -sh "$BACKUP_DIR" 2>/dev/null || echo -e "${RED}Không thể xác định kích thước thư mục backup${NC}"
+    else
+        echo -e "${YELLOW}Thư mục backup chưa được tạo${NC}"
+    fi
+    
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
+}
+
+database_stats() {
+    local show_prompt=${1:-true}
+    if ! read_install_info; then 
+        echo -e "${RED}Chưa có thông tin cài đặt. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    # Check if GLPI is installed by checking for essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]] || [[ ! -f "$INSTALL_DIR/inc/define.php" ]] || [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        echo -e "${RED}GLPI chưa được cài đặt hoàn chỉnh. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
+        return
+    fi
+    
+    echo -e "\n${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}          THỐNG KÊ DATABASE GLPI     ${NC}"
+    echo -e "${YELLOW}========================================${NC}\n"
+    
+    # Check if database exists and is accessible
+    if mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" &>/dev/null; then
+        echo -e "✅ Kết nối database: ${GREEN}Thành công${NC}"
+        
+        # Get database size
+        local db_size=$(mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'DB Size in MB' FROM information_schema.tables WHERE table_schema='$DB_NAME';" -sN 2>/dev/null)
+        echo -e "📊 Kích thước database: ${GREEN}${db_size} MB${NC}"
+        
+        # Get table count
+        local table_count=$(mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME';" -sN 2>/dev/null)
+        echo -e "📋 Số lượng bảng: ${GREEN}$table_count${NC}"
+        
+        # Get some key table info
+        echo -e "\n${YELLOW}Thông tin các bảng chính:${NC}"
+        mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT table_name AS 'Bảng', table_rows AS 'Số dòng', ROUND(((data_length + index_length) / 1024 / 1024), 2) AS 'Kích thước (MB)' FROM information_schema.tables WHERE table_schema = '$DB_NAME' ORDER BY (data_length + index_length) DESC LIMIT 5;" 2>/dev/null || echo -e "${RED}Không thể lấy thông tin bảng${NC}"
+    else
+        echo -e "❌ Kết nối database: ${RED}Thất bại${NC}"
+        echo -e "${YELLOW}Vui lòng kiểm tra lại thông tin kết nối database.${NC}"
+    fi
+    
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
+}
+
 health_check() {
     echo -e "\n${YELLOW}========================================${NC}"
     echo -e "${YELLOW}          KIỂM TRA SỨC KHỎE HỆ THỐNG     ${NC}"
@@ -261,9 +948,12 @@ health_check() {
 # MODULE 1: CÀI ĐẶT GLPI (ĐÃ VIẾT LẠI THEO TÀI LIỆU CHÍNH THỨC)
 # ==============================================================================
 install_glpi_module() {
+    local show_prompt=${1:-true}
     if [[ -d "$INSTALL_DIR" && -f "$INSTALL_DIR/config/config_db.php" && -f "$INSTALL_DIR/inc/define.php" && -f "$INSTALL_DIR/bin/console" ]]; then
         echo -e "${YELLOW}GLPI đã được cài đặt và hoạt động tốt. Bỏ qua bước cài đặt.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
 
@@ -284,7 +974,7 @@ install_glpi_module() {
     fi
 
     local use_saved_domain=false
-    if read_install_info; then
+    if read_install_info && [[ -n "$DOMAIN_NAME" ]]; then
         echo -e "Tìm thấy thông tin cài đặt cũ với tên miền: ${YELLOW}$DOMAIN_NAME${NC}"
         read -p "Bạn có muốn sử dụng lại tên miền này không? (Y/n): " choice
         case "$choice" in
@@ -301,14 +991,22 @@ install_glpi_module() {
     get_public_ip > /dev/null
     
     echo -e "\n${YELLOW}--- GỢI Ý CẤU HÌNH DNS ---${NC}"
-    local domain_ip
-    domain_ip=$(dig +short "$DOMAIN_NAME" | head -1 2>/dev/null)
-    if [[ -n "$domain_ip" ]]; then
-        echo -e "Tên miền ${GREEN}$DOMAIN_NAME${NC} đã có thể phân giải thành IP: $domain_ip"
+    if [[ -n "$DOMAIN_NAME" ]]; then
+        local domain_ip=""
+        # Only run dig if domain name is not an IP address
+        if [[ ! "$DOMAIN_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            domain_ip=$(dig +short "$DOMAIN_NAME" 2>/dev/null | head -1)
+        fi
+        
+        if [[ -n "$domain_ip" ]]; then
+            echo -e "Tên miền ${GREEN}$DOMAIN_NAME${NC} đã có thể phân giải thành IP: $domain_ip"
+        else
+            echo -e "Hãy tạo bản ghi DNS loại ${GREEN}'A'${NC} với nội dung:"
+            echo -e "${BLUE}Tên miền: $DOMAIN_NAME${NC}"
+            echo -e "${BLUE}Trỏ đến IP: $PUBLIC_IP${NC}"
+        fi
     else
-        echo -e "Hãy tạo bản ghi DNS loại ${GREEN}'A'${NC} với nội dung:"
-        echo -e "${BLUE}Tên miền: $DOMAIN_NAME${NC}"
-        echo -e "${BLUE}Trỏ đến IP: $PUBLIC_IP${NC}"
+        echo -e "${YELLOW}Không có tên miền được cấu hình. Bạn có thể truy cập GLPI qua IP: $PUBLIC_IP${NC}"
     fi
     read -p "Nhấn Enter để tiếp tục..."
 
@@ -372,11 +1070,19 @@ EOF
     systemctl restart php8.3-fpm
 
     log_and_echo "Tạo file cấu hình Nginx ban đầu (chỉ HTTP)..."
-    NGINX_CONF_FILE="/etc/nginx/sites-available/$DOMAIN_NAME"
+    local nginx_server_name="_"
+    if [[ -n "$DOMAIN_NAME" ]]; then
+        nginx_server_name="$DOMAIN_NAME"
+    fi
+    
+    NGINX_CONF_FILE="/etc/nginx/sites-available/glpi"
+    if [[ -n "$DOMAIN_NAME" ]]; then
+        NGINX_CONF_FILE="/etc/nginx/sites-available/$DOMAIN_NAME"
+    fi
     cat > "$NGINX_CONF_FILE" <<EOF
 server {
     listen 80;
-    server_name $DOMAIN_NAME;
+    server_name $nginx_server_name;
 
     root $INSTALL_DIR;
     index index.php index.html index.htm;
@@ -409,11 +1115,14 @@ EOF
     nginx -t && systemctl restart nginx
 
     log_and_echo "Cài đặt chứng chỉ SSL với Certbot..."
-    if [[ "$DOMAIN_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    if [[ -z "$DOMAIN_NAME" ]] || [[ "$DOMAIN_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         echo -e "${YELLOW}Phát hiện bạn đang sử dụng địa chỉ IP. Bỏ qua cài đặt SSL.${NC}"
     else
-        local domain_ip
-        domain_ip=$(dig +short "$DOMAIN_NAME" | head -1)
+        local domain_ip=""
+        # Only run dig if domain name is not empty
+        if [[ -n "$DOMAIN_NAME" ]]; then
+            domain_ip=$(dig +short "$DOMAIN_NAME" 2>/dev/null | head -1)
+        fi
         if [[ "$domain_ip" == "$PUBLIC_IP" ]]; then
             certbot --nginx -d "$DOMAIN_NAME" --non-interactive --agree-tos --email "admin@$DOMAIN_NAME" --redirect
             log_and_echo "Certbot đã cài đặt SSL và cấu hình Nginx."
@@ -424,13 +1133,25 @@ EOF
     fi
 
     log_and_echo "Cấu hình database cho GLPI..."
+    
+    # Check and load MySQL timezones if needed
+    log_and_echo "Kiểm tra và cấu hình timezones cho MySQL..."
+    if ! mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "SELECT COUNT(*) FROM mysql.time_zone_name;" | grep -q "[1-9]"; then
+        log_and_echo "Đang tải timezones cho MySQL..."
+        # Suppress warnings about non-timezone files as they are normal
+        mysql_tzinfo_to_sql /usr/share/zoneinfo 2>/dev/null | mysql -u root -p"$MYSQL_ROOT_PASSWORD" mysql 2>/dev/null || {
+            echo -e "${YELLOW}Cảnh báo: Không thể tải timezones. GLPI sẽ tiếp tục mà không có timezone đầy đủ.${NC}"
+        }
+    fi
+    
     cd "$INSTALL_DIR"
     sudo -u www-data php bin/console glpi:database:install \
         --db-host=localhost \
         --db-name="$DB_NAME" \
         --db-user="$DB_USER" \
         --db-password="$DB_PASSWORD" \
-        --default-language=vi_VN
+        --default-language=vi_VN \
+        --no-interaction
 
     cat > "$INSTALL_DIR/config/config_db.php" <<EOF
 <?php
@@ -447,26 +1168,37 @@ EOF
     
     cleanup_resources
     log_and_echo "Cài đặt GLPI hoàn tất."
-    read -p "Nhấn Enter để quay lại menu..."
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
 }
 
 # ==============================================================================
 # MODULE 2: BACKUP TỰ ĐỘNG
 # ==============================================================================
 setup_backup_module() {
+    local show_prompt=${1:-true}
     if ! read_install_info; then 
         echo -e "${RED}Chưa có thông tin cài đặt. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
-    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]]; then
-        echo -e "${RED}File cấu hình database của GLPI không tồn tại. Cài đặt có thể bị lỗi.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+    
+    # Check if GLPI is installed by checking for essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]] || [[ ! -f "$INSTALL_DIR/inc/define.php" ]] || [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        echo -e "${RED}GLPI chưa được cài đặt hoàn chỉnh. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
     if crontab -l 2>/dev/null | grep -q "glpi_backup.sh"; then 
         echo -e "${YELLOW}Backup tự động đã được cấu hình.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
 
@@ -533,21 +1265,30 @@ EOF
     (crontab -l 2>/dev/null; echo "0 2 * * * /usr/local/bin/glpi_backup.sh") | crontab -
     log_and_echo "Đã cấu hình backup tự động hàng ngày lúc 2:00 sáng."
     log_and_echo "Sử dụng lệnh: ${GREEN}sudo /usr/local/bin/glpi_rollback.sh${NC} để khôi phục"
-    read -p "Nhấn Enter để quay lại menu..."
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
 }
 
 # ==============================================================================
 # MODULE 3: CẬP NHẬT GLPI
 # ==============================================================================
 update_glpi_module() {
+    local show_prompt=${1:-true}
     if ! read_install_info; then 
         echo -e "${RED}Chưa có thông tin cài đặt. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
-    if [[ ! -f "$INSTALL_DIR/inc/define.php" ]]; then
-        echo -e "${RED}File cốt lõi của GLPI không tồn tại. Cài đặt có thể bị lỗi hoặc chưa hoàn tất.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+    
+    # Check if GLPI is installed by checking for essential files
+    if [[ ! -f "$INSTALL_DIR/inc/define.php" ]] || [[ ! -f "$INSTALL_DIR/config/config_db.php" ]] || [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        echo -e "${RED}GLPI chưa được cài đặt hoàn chỉnh. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
 
@@ -599,89 +1340,100 @@ update_glpi_module() {
             log_and_echo "Cập nhật GLPI thành công đến phiên bản $LATEST_VERSION."
         fi
     fi
-    read -p "Nhấn Enter để quay lại menu..."
-}
-
-# ==============================================================================
-# MODULE 4: BẢO MẬT SERVER (HARDENING)
-# ==============================================================================
-harden_server_module() {
-    echo -e "\n${YELLOW}========================================${NC}"
-    echo -e "${YELLOW}      BẢO MẬT SERVER (HARDENING)      ${NC}"
-    echo -e "${YELLOW}========================================${NC}\n"
-
-    log_and_echo "Đảm bảo tường lửa UFW đang hoạt động..."
-    ufw --force enable
-
-    if ! systemctl is-active --quiet fail2ban; then
-        log_and_echo "Cấu hình Fail2Ban..."
-        cat > /etc/fail2ban/jail.local <<EOF
-[DEFAULT]
-bantime = 3600; findtime = 600; maxretry = 3
-[sshd]
-enabled = true; port = $SSH_NEW_PORT; logpath = /var/log/auth.log
-[glpi]
-enabled = true; port = http,https; filter = glpi-auth; logpath = $INSTALL_DIR/files/_log/php-errors.log; maxretry = 5
-EOF
-        cat > /etc/fail2ban/filter.d/glpi-auth.conf <<'EOF'
-[Definition]
-failregex = .*Failed login for .* from <HOST>.*
-ignoreregex =
-EOF
-        systemctl enable fail2ban
-        systemctl restart fail2ban
-    else
-        log_and_echo "Fail2ban đã được cài đặt và đang chạy."
-    fi
-
-    echo -e "${RED}⚠️  CẢNH BÁO QUAN TRỌNG:${NC}"
-    echo -e "Bạn sắp thay đổi port SSH từ 22 thành $SSH_NEW_PORT"
-    echo -e "Hãy đảm bảo bạn đã cấu hình firewall cho phép port $SSH_NEW_PORT"
-    echo -e "Nếu không, bạn có thể bị mất kết nối SSH!"
-    read -p "Bạn có chắc chắn muốn tiếp tục? (yes/NO): " confirm
-    if [[ "$confirm" != "yes" ]]; then
-        echo -e "${YELLOW}Đã hủy thay đổi SSH.${NC}"
+    if [[ "$show_prompt" = true ]]; then
         read -p "Nhấn Enter để quay lại menu..."
-        return
     fi
-
-    log_and_echo "Hardening SSH..."
-    sed -i "s/#Port 22/Port $SSH_NEW_PORT/" /etc/ssh/sshd_config
-    sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
-    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-    
-    ufw delete allow OpenSSH &>/dev/null
-    ufw allow "$SSH_NEW_PORT/tcp" &>/dev/null
-    ufw --force reload &>/dev/null
-    
-    echo -e "${RED}CẢNH BÁO: Đã thay đổi port SSH thành $SSH_NEW_PORT và vô hiệu hóa đăng nhập root/mật khẩu.${NC}"
-    read -p "Khởi động lại dịch vụ SSH ngay bây giờ? (y/N): " restart_ssh
-    if [[ "$restart_ssh" == "y" || "$restart_ssh" == "Y" ]]; then
-        systemctl restart sshd
-        log_and_echo "Đã khởi động lại dịch vụ SSH. Port mới: $SSH_NEW_PORT."
-    else
-        log_and_echo "Vui lòng khởi động lại SSH thủ công: systemctl restart sshd"
-    fi
-    read -p "Nhấn Enter để quay lại menu..."
 }
+
+# ==============================================================================
+# MODULE 4: BẢO MẬT SERVER (HARDENING) - DISABLED
+# ==============================================================================
+# harden_server_module() {
+#     echo -e "\n${YELLOW}========================================${NC}"
+#     echo -e "${YELLOW}      BẢO MẬT SERVER (HARDENING)      ${NC}"
+#     echo -e "${YELLOW}========================================${NC}\n"
+#
+#     log_and_echo "Đảm bảo tường lửa UFW đang hoạt động..."
+#     ufw --force enable
+#
+#     if ! systemctl is-active --quiet fail2ban; then
+#         log_and_echo "Cấu hình Fail2Ban..."
+#         cat > /etc/fail2ban/jail.local <<EOF
+# [DEFAULT]
+# bantime = 3600; findtime = 600; maxretry = 3
+# [sshd]
+# enabled = true; port = $SSH_NEW_PORT; logpath = /var/log/auth.log
+# [glpi]
+# enabled = true; port = http,https; filter = glpi-auth; logpath = $INSTALL_DIR/files/_log/php-errors.log; maxretry = 5
+# EOF
+#         cat > /etc/fail2ban/filter.d/glpi-auth.conf <<'EOF'
+# [Definition]
+# failregex = .*Failed login for .* from <HOST>.*
+# ignoreregex =
+# EOF
+#         systemctl enable fail2ban
+#         systemctl restart fail2ban
+#     else
+#         log_and_echo "Fail2ban đã được cài đặt và đang chạy."
+#     fi
+#
+#     echo -e "${RED}⚠️  CẢNH BÁO QUAN TRỌNG:${NC}"
+#     echo -e "Bạn sắp thay đổi port SSH từ 22 thành $SSH_NEW_PORT"
+#     echo -e "Hãy đảm bảo bạn đã cấu hình firewall cho phép port $SSH_NEW_PORT"
+#     echo -e "Nếu không, bạn có thể bị mất kết nối SSH!"
+#     read -p "Bạn có chắc chắn muốn tiếp tục? (yes/NO): " confirm
+#     if [[ "$confirm" != "yes" ]]; then
+#         echo -e "${YELLOW}Đã hủy thay đổi SSH.${NC}"
+#         read -p "Nhấn Enter để quay lại menu..."
+#         return
+#     fi
+#
+#     log_and_echo "Hardening SSH..."
+#     sed -i "s/#Port 22/Port $SSH_NEW_PORT/" /etc/ssh/sshd_config
+#     sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+#     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+#     
+#     ufw delete allow OpenSSH &>/dev/null
+#     ufw allow "$SSH_NEW_PORT/tcp" &>/dev/null
+#     ufw --force reload &>/dev/null
+#     
+#     echo -e "${RED}CẢNH BÁO: Đã thay đổi port SSH thành $SSH_NEW_PORT và vô hiệu hóa đăng nhập root/mật khẩu.${NC}"
+#     read -p "Khởi động lại dịch vụ SSH ngay bây giờ? (y/N): " restart_ssh
+#     if [[ "$restart_ssh" == "y" || "$restart_ssh" == "Y" ]]; then
+#         systemctl restart sshd
+#         log_and_echo "Đã khởi động lại dịch vụ SSH. Port mới: $SSH_NEW_PORT."
+#     else
+#         log_and_echo "Vui lòng khởi động lại SSH thủ công: systemctl restart sshd"
+#     fi
+#     read -p "Nhấn Enter để quay lại menu..."
+# }
 
 # ==============================================================================
 # MODULE 5: CÀI ĐẶT PLUGIN
 # ==============================================================================
 install_plugins_module() {
+    local show_prompt=${1:-true}
     if ! read_install_info; then 
         echo -e "${RED}Chưa có thông tin cài đặt. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
-    if [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
-        echo -e "${RED}Lệnh quản lý GLPI (bin/console) không tồn tại. Cài đặt có thể bị lỗi hoặc chưa hoàn tất.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+    
+    # Check if GLPI is installed by checking for essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]] || [[ ! -f "$INSTALL_DIR/inc/define.php" ]] || [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        echo -e "${RED}GLPI chưa được cài đặt hoàn chỉnh. Vui lòng chạy 'Cài đặt GLPI' trước.${NC}"
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
     if [[ ${#PLUGINS_TO_INSTALL[@]} -eq 0 ]]; then 
         echo -e "${YELLOW}Không có plugin nào trong danh sách để cài.${NC}"
-        read -p "Nhấn Enter để quay lại menu..."
+        if [[ "$show_prompt" = true ]]; then
+            read -p "Nhấn Enter để quay lại menu..."
+        fi
         return
     fi
 
@@ -707,7 +1459,9 @@ install_plugins_module() {
             echo -e "${RED}Không thể clone repository từ $PLUGIN_URL${NC}"
         fi
     done
-    read -p "Nhấn Enter để quay lại menu..."
+    if [[ "$show_prompt" = true ]]; then
+        read -p "Nhấn Enter để quay lại menu..."
+    fi
 }
 
 # ==============================================================================
@@ -724,14 +1478,20 @@ show_management_menu() {
     echo -e "  4. Rollback từ backup"
     echo -e "  5. Kiểm tra sức khỏe hệ thống"
     echo -e "  6. Dọn dẹp hệ thống"
-    echo -e "  7. Quay lại menu chính"
+    echo -e "  7. Kiểm tra phiên bản GLPI"
+    echo -e "  8. Danh sách plugin đã cài đặt"
+    echo -e "  9. Thông tin hệ thống"
+    echo -e "  10. Chi tiết sử dụng disk"
+    echo -e "  11. Thống kê database"
+    echo -e "  12. Quản lý nhiều instance GLPI"
+    echo -e "  99. Quay lại menu chính"
     echo -e "${GREEN}========================================${NC}"
 }
 
 management_loop() {
     while true; do
         show_management_menu
-        read -p "Nhập lựa chọn [1-7]: " choice
+        read -p "Nhập lựa chọn [1-12] hoặc 99 để quay lại: " choice
         case $choice in
             1) 
                 echo -e "\n${YELLOW}--- TRẠNG THÁI DỊCH VỤ ---${NC}"
@@ -763,7 +1523,13 @@ management_loop() {
                 ;;
             5) health_check ;;
             6) cleanup_resources ;;
-            7) break ;;
+            7) check_glpi_status true ;;
+            8) list_plugins true ;;
+            9) display_system_info true ;;
+            10) detailed_disk_usage true ;;
+            11) database_stats true ;;
+            12) manage_multiple_instances ;;
+            99) break ;;
             *) echo -e "${RED}Lựa chọn không hợp lệ${NC}" ;;
         esac
         read -p "Nhấn Enter để tiếp tục..."
@@ -778,15 +1544,17 @@ show_menu() {
     echo -e "${GREEN}========================================${NC}"
     echo -e "${GREEN}   CÔNG CỤ QUẢN LÝ GLPI TOÀN DIỆN   ${NC}"
     echo -e "${GREEN}========================================${NC}"
-    echo -e "  1. Chạy tất cả (Cài đặt + Cấu hình + Bảo mật)"
+    echo -e "  1. Chạy tất cả (Cài đặt + Cấu hình)"
     echo -e "  2. Cài đặt GLPI (mới)"
     echo -e "  3. Cấu hình Backup Tự động"
     echo -e "  4. Cập nhật GLPI"
-    echo -e "  5. Bảo mật Server (Hardening)"
-    echo -e "  6. Cài đặt Plugin từ GitHub"
-    echo -e "  7. Quản lý hệ thống"
+    # echo -e "  5. Bảo mật Server (Hardening)" # Disabled for security module removal
+    echo -e "  5. Cài đặt Plugin từ GitHub"
+    echo -e "  6. Quản lý hệ thống"
+    echo -e "  7. Kiểm tra phiên bản GLPI"
     echo -e "  8. Kiểm tra sức khỏe hệ thống"
-    echo -e "  9. Thoát"
+    echo -e "  9. Quản lý nhiều instance GLPI"
+    echo -e "  99. Thoát"
     echo -e "${GREEN}========================================${NC}"
 }
 
@@ -819,26 +1587,27 @@ show_final_info() {
 main_loop() {
     while true; do
         show_menu
-        read -p "Nhập lựa chọn của bạn [1-9]: " choice
+        read -p "Nhập lựa chọn của bạn [1-9] hoặc 99 để thoát: " choice
         case $choice in
             1) 
                 echo -e "${GREEN}Chạy tất cả các module...${NC}"
-                install_glpi_module
-                read_install_info
-                setup_backup_module
-                update_glpi_module
-                harden_server_module
-                install_plugins_module
+                install_glpi_module false
+                setup_backup_module false
+                update_glpi_module false
+                # harden_server_module # Disabled for security module removal
+                install_plugins_module false
                 show_final_info
                 ;;
-            2) install_glpi_module ;;
-            3) setup_backup_module ;;
-            4) update_glpi_module ;;
-            5) harden_server_module ;;
-            6) install_plugins_module ;;
-            7) management_loop ;;
-            8) health_check; read -p "Nhấn Enter để quay lại menu..." ;;
-            9) echo -e "Thoát script."; exit 0 ;;
+            2) install_glpi_module true ;;
+            3) setup_backup_module true ;;
+            4) update_glpi_module true ;;
+            # 5) harden_server_module ;; # Disabled for security module removal
+            5) install_plugins_module true ;;
+            6) management_loop ;;
+            7) check_glpi_status true ;;
+            8) health_check ;;
+            9) manage_multiple_instances ;;
+            99) echo -e "Thoát script."; exit 0 ;;
             *) echo -e "${RED}Lựa chọn không hợp lệ. Vui lòng chọn lại.${NC}"; sleep 2 ;;
         esac
     done
@@ -862,7 +1631,7 @@ check_dependencies || {
 
 log_and_echo "Đang cài đặt các gói công cụ cần thiết cho script..."
 apt update
-apt install -y curl wget unzip vim dnsutils openssl git cron ufw fail2ban composer
+apt install -y curl wget unzip vim dnsutils openssl git cron composer
 
 # Kiểm tra PHP compatibility
 check_php_compatibility || {
