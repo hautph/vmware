@@ -867,10 +867,9 @@ Tổng Chi phí sở hữu (3 năm)	=B11 + B13	USD
 **SHEET `05_DASHBOARD`**
 Sheet này bạn sẽ tự thiết kế dựa trên hướng dẫn ở trên, dùng các công cụ Chart và lấy dữ liệu từ sheet `04_OUTPUT` và `02_PROCESSING`.
 
-Chúc bạn xây dựng thành công công cụ calculator vSAN của riêng mình! Đây sẽ là một tài sản vô giá cho công việc của bạn.
 
-###################
 Sau khi chạy thêm chat yêu cầu tạo file excel bằng python jupyter code sau:
+```python
 import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
@@ -881,8 +880,9 @@ from openpyxl.chart.shapes import GraphicalProperties
 from openpyxl.drawing.line import LineProperties
 from openpyxl.chart.series import DataPoint
 from openpyxl.chart.data_source import NumDataSource
-
-# --- 1. Cấu hình chung ---
+```
+## 1. Cấu hình chung
+```python
 file_name = "vSAN_sizer-V8x.xlsx"
 sheet_names = [
     "01_INPUTS",
@@ -908,9 +908,10 @@ ws_pricing = wb["03_PRICING"]
 ws_processing = wb["02_PROCESSING"]
 ws_output = wb["04_OUTPUT"]
 ws_dashboard = wb["05_DASHBOARD"]
+```
 
-
-# --- 2. Định nghĩa các Named Ranges ---
+## 2. Định nghĩa các Named Ranges
+```python
 # Named ranges cho INPUTS sheet
 named_ranges_inputs = {
     "num_hosts": "B2",
@@ -957,9 +958,10 @@ ws_processing["G3"] = 20000
 
 wb.create_named_range("iops_per_cache_drive", ws_processing, "$G$2")
 wb.create_named_range("iops_per_capacity_drive", ws_processing, "$G$3")
+```
 
-
-# --- 3. Định nghĩa Styles chung ---
+## 3. Định nghĩa Styles chung
+```python
 header_font = Font(bold=True, size=11, color="FFFFFF")
 header_fill = PatternFill(start_color="0070C0", end_color="0070C0", fill_type="solid")
 sub_header_font = Font(bold=True, size=10)
@@ -988,10 +990,10 @@ def apply_subheader_style(cell):
 def apply_data_style(cell):
     cell.alignment = Alignment(horizontal="left", vertical="center")
     cell.border = border_thin
+```
 
-
-# --- 4. Xây dựng từng Sheet ---
-
+## 4. Xây dựng từng Sheet
+```python
 # --- 4.1. Sheet 01_INPUTS ---
 ws_inputs.title = sheet_names[0]
 ws_inputs.column_dimensions["A"].width = 30
@@ -1408,14 +1410,17 @@ tco_chart.series.append(series2)
 tco_chart.height = 7
 tco_chart.width = 10
 ws_dashboard.add_chart(tco_chart, "K20") # Anchor chart at K20
+```
 
-
-# --- 5. Lưu Workbook ---
+## 5. Lưu Workbook
+```python
 wb.save(file_name)
 
 print(f"File Excel '{file_name}' đã được tạo thành công!")
+```
 
-tôi chạy và gặp lỗi sau: 
+Tôi chạy và gặp lỗi sau:
+```bash
 C:\Users\thang\AppData\Local\Temp\ipykernel_6296\1729286492.py:71: DeprecationWarning: Call to deprecated function create_named_range (Assign scoped named ranges directly to worksheets or global ones to the workbook. Deprecated in 3.1).
   wb.create_named_range(name, ws_inputs, f"${get_column_letter(ws_inputs[cell_ref].column)}${ws_inputs[cell_ref].row}")
 C:\Users\thang\AppData\Local\Temp\ipykernel_6296\1729286492.py:74: DeprecationWarning: Call to deprecated function create_named_range (Assign scoped named ranges directly to worksheets or global ones to the workbook. Deprecated in 3.1).
@@ -1441,11 +1446,9 @@ Cell In[1], line 524
     530                  categories=Reference(ws_dashboard, min_col=1, min_row=22, max_row=24))
 
 TypeError: SeriesFactory() got an unexpected keyword argument 'categories'
+```
 
-hãy debug và sửa giúp
-#######################
-
-
+## Hãy debug và sửa giúp
 
 Chào bạn,
 
@@ -1456,8 +1459,6 @@ Có 2 vấn đề chính trong kịch bản của bạn:
 2.  **Cảnh báo `DeprecationWarning`**: Đây là cảnh báo về việc sử dụng hàm đã cũ.
 
 Hãy cùng đi vào chi tiết cách sửa chữa.
-
----
 
 ### **1. Sửa lỗi `TypeError: SeriesFactory() got an unexpected keyword argument 'categories'`**
 
@@ -2083,8 +2084,9 @@ print(f"File Excel '{file_name}' đã được tạo thành công!")
 
 Sau khi áp dụng các sửa đổi trên, kịch bản của bạn sẽ chạy thành công, tạo ra file `vSAN_sizer-V8x_fixed.xlsx` mà không có bất kỳ lỗi hay cảnh báo nào. Chúc bạn thành công
 
-##################
-Khi tôi chạy theo code sửa trên gặp lỗi: AttributeError                            Traceback (most recent call last)
+Khi tôi chạy theo code sửa trên gặp lỗi: 
+```bash
+AttributeError                            Traceback (most recent call last)
 Cell In[3], line 70
      68 for name, cell_ref in named_ranges_inputs.items():
      69     attr_text = f"'{ws_inputs.title}'!{cell_ref}"
@@ -2093,13 +2095,7 @@ Cell In[3], line 70
      73     attr_text = f"'{ws_pricing.title}'!{cell_ref}"
 
 AttributeError: 'DefinedNameDict' object has no attribute 'append'
-
-bạn có thể sửa để cho cide chạy tự động ?
-################
-
-
-
-Chào bạn,
+```
 
 Rất vui khi bạn đã phản hồi lại. Lỗi `AttributeError: 'DefinedNameDict' object has no attribute 'append'` là một lỗi rất hay gặp khi làm việc với các phiên bản `openpyxl` khác nhau. Cách `openpyxl` quản lý các đối tượng "Named Range" (tên đã định nghĩa) đã thay đổi.
 

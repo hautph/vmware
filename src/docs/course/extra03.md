@@ -21,16 +21,17 @@ The guide covers essential concepts, Excel calculator structure, detailed formul
 
 ---
 
-# Tối ưu hóa cách tính Calculator Sizing vSAN v8x và các dự toán chi phí đầu tư vận hành TCO=CAPEX + OPEX · Issue #4 · PhDLeToanThang/automation · GitHub
+**Tối ưu hóa cách tính Calculator Sizing vSAN v8x và các dự toán chi phí đầu tư vận hành TCO=CAPEX + OPEX · Issue #4 · PhDLeToanThang/automation · GitHub**
+
 Phần 1. Trình bày bài viết tổng thể cách dựng vSAN V8X sizer Calculator:
 ------------------------------------------------------------------------
 
-> > > FAQ1. Hãy hướng dẫn viết ra file excel kiểu calculator sizer cho capex và opex vsan 8.0  
-> > > các thông tin input text như số esxi, số bandwidth, throughtput network,  
-> > > Số lượng và loại RAID HW L{0,1,5,6,10}, số lượng và loại RAID SW L{0,1,5,6,10},  
-> > > kiểu License vSAN, số capcity data, số iops, số cache read, số cache write, số cache data,  
-> > > số latency, yêu cầu QoS, sau đó có bảng dashboard các biểu đồ chart.  
-> > > Cuối cùng hãy viết ra file vSAN-PD.xlsx excel có tất cả các công thức và thiết kế Dashboard và biểu đồ nói trên?
+> FAQ1. Hãy hướng dẫn viết ra file excel kiểu calculator sizer cho capex và opex vsan 8.0  
+> các thông tin input text như số esxi, số bandwidth, throughtput network,  
+> Số lượng và loại RAID HW L{0,1,5,6,10}, số lượng và loại RAID SW L{0,1,5,6,10},  
+> kiểu License vSAN, số capcity data, số iops, số cache read, số cache write, số cache data,  
+> số latency, yêu cầu QoS, sau đó có bảng dashboard các biểu đồ chart.  
+> Cuối cùng hãy viết ra file vSAN-PD.xlsx excel có tất cả các công thức và thiết kế Dashboard và biểu đồ nói trên?
 
 * * *
 
@@ -371,7 +372,7 @@ Công cụ này sẽ là một điểm khởi đầu tuyệt vời để bạn �
 Phần 2. Các công thức lõi trong vSAN, Storage
 ---------------------------------------------
 
-> > > FAQ2. IOPS trong vSAN 8 là gì ? công thức tính như thế nào ?
+> FAQ2. IOPS trong vSAN 8 là gì ? công thức tính như thế nào ?
 
 Chào bạn, đây là một câu hỏi rất hay và quan trọng, là cốt lõi của việc thiết kế và sizing một hệ thống vSAN. IOPS trong vSAN 8 không chỉ là một con số đơn giản mà nó phụ thuộc rất nhiều vào kiến trúc lưu trữ bạn chọn.
 
@@ -512,7 +513,7 @@ Giả sử bạn có yêu cầu như sau:
 Phần 3. Tính toán sizing vSAN V8.X theo các mô hình triển khai hạ tầng
 ----------------------------------------------------------------------
 
-> > > FAQ3. Hãy chi tiết từng bước dựng vsan 8 theo 5 điều kiện vsphere vsan, với 3 mô hình : mô hình 1. 03 esxi host, mô hình 2. 04 esxi stresched/ witness , mô hình 3. scale - out vsan.
+> FAQ3. Hãy chi tiết từng bước dựng vsan 8 theo 5 điều kiện vsphere vsan, với 3 mô hình : mô hình 1. 03 esxi host, mô hình 2. 04 esxi stresched/ witness , mô hình 3. scale - out vsan.
 
 * * *
 
@@ -1231,6 +1232,7 @@ Sheet này bạn sẽ tự thiết kế dựa trên hướng dẫn ở trên, d�
 
 Phần 5. Dùng hàm python jupyter notebook soạn file Excel theo hướng dẫn trên
 
+```python
 import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
@@ -1238,8 +1240,10 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.chart import PieChart, Reference, Series, BarChart
 from openpyxl.chart.label import DataLabelList
 from openpyxl.workbook.defined_name import DefinedName
+```
 
-# --- 1. Cấu hình chung ---
+## 1. Cấu hình chung
+```python
 file_name = "vSAN_sizer-V8x_final.xlsx" # Đổi tên file để tránh ghi đè
 sheet_names = [
     "01_INPUTS",
@@ -1265,9 +1269,10 @@ ws_pricing = wb["03_PRICING"]
 ws_processing = wb["02_PROCESSING"]
 ws_output = wb["04_OUTPUT"]
 ws_dashboard = wb["05_DASHBOARD"]
+```
 
-
-# --- 2. Định nghĩa các Named Ranges ---
+## 2. Định nghĩa các Named Ranges
+```python
 # Named ranges cho INPUTS sheet
 named_ranges_inputs = {
     "num_hosts": "B2",
@@ -1314,9 +1319,10 @@ ws_processing["G3"] = 20000
 
 wb.defined_names["iops_per_cache_drive"] = DefinedName("iops_per_cache_drive", attr_text="'02_PROCESSING'!$G$2")
 wb.defined_names["iops_per_capacity_drive"] = DefinedName("iops_per_capacity_drive", attr_text="'02_PROCESSING'!$G$3")
+```
 
-
-# --- 3. Định nghĩa Styles chung ---
+## 3. Định nghĩa Styles chung
+```python
 header_font = Font(bold=True, size=11, color="FFFFFF")
 header_fill = PatternFill(start_color="0070C0", end_color="0070C0", fill_type="solid")
 sub_header_font = Font(bold=True, size=10)
@@ -1345,10 +1351,10 @@ def apply_subheader_style(cell):
 def apply_data_style(cell):
     cell.alignment = Alignment(horizontal="left", vertical="center")
     cell.border = border_thin
+```
 
-
-# --- 4. Xây dựng từng Sheet ---
-
+## 4. Xây dựng từng Sheet
+```python
 # --- 4.1. Sheet 01_INPUTS ---
 ws_inputs.title = sheet_names[0]
 ws_inputs.column_dimensions["A"].width = 30
@@ -1756,9 +1762,11 @@ tco_chart.set_categories(Reference(ws_dashboard, min_col=1, min_row=21, max_row=
 tco_chart.height = 7
 tco_chart.width = 10
 ws_dashboard.add_chart(tco_chart, "K20")
+```
 
-
-# --- 5. Lưu Workbook ---
+## 5. Lưu Workbook
+```python
 wb.save(file_name)
 
 print(f"File Excel '{file_name}' đã được tạo thành công!")
+```
