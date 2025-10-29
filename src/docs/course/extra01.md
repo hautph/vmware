@@ -868,8 +868,11 @@ Sheet này bạn sẽ tự thiết kế dựa trên hướng dẫn ở trên, d�
 
 Chúc bạn xây dựng thành công công cụ calculator vSAN của riêng mình! Đây sẽ là một tài sản vô giá cho công việc của bạn.
 
-###################
-Sau khi chạy thêm chat yêu cầu tạo file excel bằng python jupyter code sau:
+## Tự động tạo file Excel bằng Python Jupyter
+
+Dưới đây là đoạn code Python để tự động tạo file Excel `vSAN_sizer-V8x.xlsx` với tất cả các sheet và công thức đã được mô tả ở trên:
+
+```python
 import openpyxl
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side

@@ -79,16 +79,19 @@
     <!-- Table of Contents Sidebar -->
     <% if (day.headers && day.headers.length > 0) { %>
         <div class="col-12 col-lg-3">
-            <div id="toc-sidebar" class="card sticky-top" style="top: 20px;">
-                <div class="card-header">
-                    <h5 class="mb-0">Table of Contents</h5>
+            <div id="toc-sidebar" class="card sticky-top border-0 shadow-sm" style="top: 20px;">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list me-2"></i> 
+                        Contents
+                    </h5>
                 </div>
                 <div class="card-body">
                     <nav id="table-of-contents">
                         <ul class="nav flex-column">
                             <% day.headers.forEach(header => { %>
-                                <li class="nav-item toc-level-<%= header.level %>">
-                                    <a class="nav-link toc-link" href="#<%= header.id %>">
+                                <li class="nav-item toc-level-<%= header.level %> mb-1">
+                                    <a class="nav-link toc-link py-2 px-3 rounded" href="#<%= header.id %>">
                                         <%= header.text %>
                                     </a>
                                 </li>
@@ -117,20 +120,44 @@
 document.addEventListener('DOMContentLoaded', function() {
     const backToTopBtn = document.getElementById('back-to-top');
     
-    // Initialize clipboard.js for any code blocks
-    const clipboard = new ClipboardJS('.copy-btn');
+    // Initialize clipboard.js for any code blocks with custom text processing
+    const clipboard = new ClipboardJS('.copy-btn', {
+        text: function(trigger) {
+            // Get the raw clipboard text from data attribute
+            let clipboardText = trigger.getAttribute('data-clipboard-text');
+            
+            // Process escaped newlines
+            if (clipboardText) {
+                clipboardText = clipboardText.replace(/\\n/g, '\n');
+            }
+            
+            return clipboardText;
+        }
+    });
     
     // Add success and error handlers
     clipboard.on('success', function(e) {
         const originalText = e.trigger.innerHTML;
-        e.trigger.innerHTML = '<i class="bi bi-check"></i> Copied!';
+        e.trigger.innerHTML = '<i class="bi bi-check"></i>';
         e.trigger.classList.remove('btn-outline-primary');
         e.trigger.classList.add('btn-success');
+        
+        // Add tooltip text
+        e.trigger.setAttribute('data-bs-toggle', 'tooltip');
+        e.trigger.setAttribute('data-bs-placement', 'top');
+        e.trigger.setAttribute('title', 'Copied!');
+        // Initialize tooltip if Bootstrap is available
+        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+            new bootstrap.Tooltip(e.trigger);
+        }
         
         setTimeout(function() {
             e.trigger.innerHTML = originalText;
             e.trigger.classList.remove('btn-success');
             e.trigger.classList.add('btn-outline-primary');
+            e.trigger.removeAttribute('data-bs-toggle');
+            e.trigger.removeAttribute('data-bs-placement');
+            e.trigger.removeAttribute('title');
         }, 2000);
         
         e.clearSelection();
@@ -138,14 +165,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
     clipboard.on('error', function(e) {
         const originalText = e.trigger.innerHTML;
-        e.trigger.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Failed!';
+        e.trigger.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
         e.trigger.classList.remove('btn-outline-primary');
         e.trigger.classList.add('btn-danger');
+        
+        // Add tooltip text
+        e.trigger.setAttribute('data-bs-toggle', 'tooltip');
+        e.trigger.setAttribute('data-bs-placement', 'top');
+        e.trigger.setAttribute('title', 'Copy failed!');
+        // Initialize tooltip if Bootstrap is available
+        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+            new bootstrap.Tooltip(e.trigger);
+        }
         
         setTimeout(function() {
             e.trigger.innerHTML = originalText;
             e.trigger.classList.remove('btn-danger');
             e.trigger.classList.add('btn-outline-primary');
+            e.trigger.removeAttribute('data-bs-toggle');
+            e.trigger.removeAttribute('data-bs-placement');
+            e.trigger.removeAttribute('title');
         }, 2000);
     });
     
@@ -165,8 +204,47 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize highlighting
     highlightActiveSection();
 });
-</script>
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function highlightActiveSection() {
+    const headers = document.querySelectorAll('#course-content h1[id], #course-content h2[id], #course-content h3[id], #course-content h4[id], #course-content h5[id], #course-content h6[id]');
+    const tocLinks = document.querySelectorAll('.toc-link');
     
+    // Remove active class from all links
+    tocLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    if (headers.length === 0) return;
+    
+    let currentHeaderId = '';
+    
+    // Find the header that is currently in view
+    for (let i = headers.length - 1; i >= 0; i--) {
+        const header = headers[i];
+        const rect = header.getBoundingClientRect();
+        if (rect.top <= 150) { // Adjust this value as needed
+            currentHeaderId = header.id;
+            break;
+        }
+    }
+    
+    // Add active class to the current link
+    if (currentHeaderId) {
+        const activeLink = document.querySelector(`.toc-link[href="#${currentHeaderId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
+}
+</script>
+
 <style>
 .toc-level-1 {
     margin-left: 0;
@@ -196,14 +274,17 @@ document.addEventListener('DOMContentLoaded', function() {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     transition: all 0.2s ease;
+    color: #6c757d;
 }
 
 .toc-link:hover {
     background-color: #e9ecef;
+    color: #0d6efd;
+    transform: translateX(3px);
 }
 
 .toc-link.active {
-    background-color: #007bff;
+    background-color: #0d6efd;
     color: white;
 }
 
@@ -225,22 +306,17 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .back-to-top-btn .btn {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    background: #007bff;
-    color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     font-size: 1.2rem;
+    border-radius: 50%;
 }
 
 .back-to-top-btn .btn:hover {
-    background: #0056b3;
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
 }
@@ -263,23 +339,136 @@ document.addEventListener('DOMContentLoaded', function() {
 .code-block-wrapper {
     position: relative;
     margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    background-color: #f8f9fa;
+}
+
+.code-block-wrapper:hover {
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 .code-block-wrapper .copy-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.75rem;
+    right: 0.75rem;
     z-index: 10;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-weight: 500;
+    color: #495057;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
 }
 
 .code-block-wrapper:hover .copy-btn {
     opacity: 1;
 }
 
+.code-block-wrapper .copy-btn:hover {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    transform: translateY(-1px);
+    box-shadow: 0 0.25rem 0.5rem rgba(13, 110, 253, 0.25);
+}
+
+.code-block-wrapper .copy-btn.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.code-block-wrapper .copy-btn.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
 .code-block-wrapper pre {
     margin: 0;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.code-block-wrapper code {
+    background-color: transparent;
+}
+
+/* Course content styling */
+#course-content h1, 
+#course-content h2, 
+#course-content h3, 
+#course-content h4, 
+#course-content h5, 
+#course-content h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    scroll-margin-top: 80px;
+}
+
+#course-content p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+#course-content ul, 
+#course-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+#course-content li {
+    margin-bottom: 0.5rem;
+}
+
+#course-content code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+}
+
+#course-content pre {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+#course-content blockquote {
+    border-left: 4px solid #0d6efd;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    background-color: #f8f9fa;
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+
+#course-content table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+}
+
+#course-content table th,
+#course-content table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border: 1px solid #dee2e6;
+}
+
+#course-content table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
 }
 </style>
 
