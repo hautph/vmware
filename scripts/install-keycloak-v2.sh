@@ -223,7 +223,7 @@ install_packages_module() {
     echo -e "${YELLOW}========================================${NC}\n"
     
     log_and_echo "Đang cài đặt các gói cần thiết..."
-    apt install -y wget curl gnupg software-properties-common apt-transport-https ca-certificates gnupg lsb-release unzip net-tools nginx certbot python3-certbot-nginx default-jre
+    apt install -y wget curl gnupg software-properties-common apt-transport-https ca-certificates gnupg lsb-release unzip net-tools nginx certbot python3-certbot-nginx default-jre netcat-openbsd
     
     if [[ $? -eq 0 ]]; then
         log_and_echo "Cài đặt gói cần thiết thành công."
@@ -653,22 +653,44 @@ check_status_module() {
     
     # Kiểm tra port
     echo -e "\nKiểm tra port:"
-    if nc -z localhost 8080; then
-        echo -e "  ✅ Port 8080 (Keycloak): ${GREEN}Mở${NC}"
+    if command -v nc &> /dev/null; then
+        # Sử dụng netcat nếu có
+        if nc -z localhost 8080 2>/dev/null; then
+            echo -e "  ✅ Port 8080 (Keycloak): ${GREEN}Mở${NC}"
+        else
+            echo -e "  ❌ Port 8080 (Keycloak): ${RED}Đóng${NC}"
+        fi
+        
+        if nc -z localhost 80 2>/dev/null; then
+            echo -e "  ✅ Port 80 (HTTP): ${GREEN}Mở${NC}"
+        else
+            echo -e "  ❌ Port 80 (HTTP): ${RED}Đóng${NC}"
+        fi
+        
+        if nc -z localhost 443 2>/dev/null; then
+            echo -e "  ✅ Port 443 (HTTPS): ${GREEN}Mở${NC}"
+        else
+            echo -e "  ❌ Port 443 (HTTPS): ${RED}Đóng${NC}"
+        fi
     else
-        echo -e "  ❌ Port 8080 (Keycloak): ${RED}Đóng${NC}"
-    fi
-    
-    if nc -z localhost 80; then
-        echo -e "  ✅ Port 80 (HTTP): ${GREEN}Mở${NC}"
-    else
-        echo -e "  ❌ Port 80 (HTTP): ${RED}Đóng${NC}"
-    fi
-    
-    if nc -z localhost 443; then
-        echo -e "  ✅ Port 443 (HTTPS): ${GREEN}Mở${NC}"
-    else
-        echo -e "  ❌ Port 443 (HTTPS): ${RED}Đóng${NC}"
+        # Sử dụng cách kiểm tra port thay thế nếu netcat không có
+        if timeout 3 bash -c "echo >/dev/tcp/localhost/8080" 2>/dev/null; then
+            echo -e "  ✅ Port 8080 (Keycloak): ${GREEN}Mở${NC}"
+        else
+            echo -e "  ❌ Port 8080 (Keycloak): ${RED}Đóng${NC}"
+        fi
+        
+        if timeout 3 bash -c "echo >/dev/tcp/localhost/80" 2>/dev/null; then
+            echo -e "  ✅ Port 80 (HTTP): ${GREEN}Mở${NC}"
+        else
+            echo -e "  ❌ Port 80 (HTTP): ${RED}Đóng${NC}"
+        fi
+        
+        if timeout 3 bash -c "echo >/dev/tcp/localhost/443" 2>/dev/null; then
+            echo -e "  ✅ Port 443 (HTTPS): ${GREEN}Mở${NC}"
+        else
+            echo -e "  ❌ Port 443 (HTTPS): ${RED}Đóng${NC}"
+        fi
     fi
     
     # Hiển thị thông tin cấu hình nếu có
@@ -781,7 +803,7 @@ check_dependencies || {
 
 log_and_echo "Đang cài đặt các gói công cụ cần thiết cho script..."
 apt update
-apt install -y curl wget openssl dnsutils netcat
+apt install -y curl wget openssl dnsutils netcat-openbsd
 
 # Bắt đầu vòng lặp menu
 main_loop
