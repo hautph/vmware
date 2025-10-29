@@ -942,6 +942,8 @@ health_check() {
     # Kiểm tra memory
     local mem_usage=$(free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }')
     echo -e "💾 Memory usage: $mem_usage"
+    
+    read -p "Nhấn Enter để quay lại menu..."
 }
 
 # ==============================================================================
@@ -1010,10 +1012,22 @@ install_glpi_module() {
     fi
     read -p "Nhấn Enter để tiếp tục..."
 
-    echo "=== THÔNG TIN CÀI ĐẶT GLPI - $(date) ===" > "$INFO_FILE"
-    echo "Tên miền: $DOMAIN_NAME" >> "$INFO_FILE"
-    echo "IP công khai: $PUBLIC_IP" >> "$INFO_FILE"
-    echo "" >> "$INFO_FILE"
+    # Preserve existing info if available, otherwise create new
+    local temp_info_file="${INFO_FILE}.tmp"
+    echo "=== THÔNG TIN CÀI ĐẶT GLPI - $(date) ===" > "$temp_info_file"
+    echo "Tên miền: $DOMAIN_NAME" >> "$temp_info_file"
+    echo "IP công khai: $PUBLIC_IP" >> "$temp_info_file"
+    echo "" >> "$temp_info_file"
+    
+    # Preserve existing database credentials if they exist
+    if [[ -f "$INFO_FILE" ]]; then
+        grep "MySQL Root Password:" "$INFO_FILE" >> "$temp_info_file" 2>/dev/null || true
+        grep "GLPI Database Name:" "$INFO_FILE" >> "$temp_info_file" 2>/dev/null || true
+        grep "GLPI Database User:" "$INFO_FILE" >> "$temp_info_file" 2>/dev/null || true
+        grep "GLPI Database Password:" "$INFO_FILE" >> "$temp_info_file" 2>/dev/null || true
+    fi
+    
+    mv "$temp_info_file" "$INFO_FILE"
 
     log_and_echo "Cập nhật hệ thống và cài đặt các gói LEMP stack và PHP..."
     apt update && apt upgrade -y
@@ -1023,13 +1037,34 @@ install_glpi_module() {
     DB_NAME="glpi_db"
     DB_USER="glpi_user"
     DB_PASSWORD=$(generate_password)
-    MYSQL_ROOT_PASSWORD=$(generate_password)
+    MYSQL_ROOT_PASSWORD=""
     
-    # Cấu hình MySQL root password
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';" 2>/dev/null || {
-        echo -e "${RED}Lỗi cấu hình MySQL root password${NC}"
-        exit 1
-    }
+    # Try to get existing MySQL root password from info file
+    if [[ -f "$INFO_FILE" ]]; then
+        local existing_mysql_root_password=$(grep "MySQL Root Password:" "$INFO_FILE" | cut -d' ' -f4)
+        if [[ -n "$existing_mysql_root_password" ]]; then
+            # Test if the existing password works
+            if mysql -u root -p"$existing_mysql_root_password" -e "SELECT 1;" &>/dev/null; then
+                echo -e "${GREEN}Sử dụng MySQL root password từ cài đặt trước${NC}"
+                MYSQL_ROOT_PASSWORD="$existing_mysql_root_password"
+            else
+                echo -e "${YELLOW}MySQL root password từ cài đặt trước không hợp lệ${NC}"
+            fi
+        fi
+    fi
+    
+    # If no valid existing password, generate new one
+    if [[ -z "$MYSQL_ROOT_PASSWORD" ]]; then
+        MYSQL_ROOT_PASSWORD=$(generate_password)
+        # Cấu hình MySQL root password
+        if ! mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';" 2>/dev/null; then
+            echo -e "${YELLOW}Không thể cấu hình MySQL root password. Sẽ tiếp tục với mật khẩu hiện tại.${NC}"
+            # Try to get current root password if we can
+            if [[ -f "$INFO_FILE" ]]; then
+                MYSQL_ROOT_PASSWORD=$(grep "MySQL Root Password:" "$INFO_FILE" | cut -d' ' -f4)
+            fi
+        fi
+    fi
 
     # Dọn dẹp user/database cũ và tạo mới
     mysql -u root -p"$MYSQL_ROOT_PASSWORD" <<EOF 2>/dev/null
@@ -1043,10 +1078,19 @@ EOF
 
     secure_mysql_installation
     
-    echo "MySQL Root Password: $MYSQL_ROOT_PASSWORD" >> "$INFO_FILE"
-    echo "GLPI Database Name: $DB_NAME" >> "$INFO_FILE"
-    echo "GLPI Database User: $DB_USER" >> "$INFO_FILE"
-    echo "GLPI Database Password: $DB_PASSWORD" >> "$INFO_FILE"
+    # Only add database credentials if they don't already exist in the file
+    if ! grep -q "MySQL Root Password:" "$INFO_FILE" 2>/dev/null; then
+        echo "MySQL Root Password: $MYSQL_ROOT_PASSWORD" >> "$INFO_FILE"
+    fi
+    if ! grep -q "GLPI Database Name:" "$INFO_FILE" 2>/dev/null; then
+        echo "GLPI Database Name: $DB_NAME" >> "$INFO_FILE"
+    fi
+    if ! grep -q "GLPI Database User:" "$INFO_FILE" 2>/dev/null; then
+        echo "GLPI Database User: $DB_USER" >> "$INFO_FILE"
+    fi
+    if ! grep -q "GLPI Database Password:" "$INFO_FILE" 2>/dev/null; then
+        echo "GLPI Database Password: $DB_PASSWORD" >> "$INFO_FILE"
+    fi
 
     log_and_echo "Tải và cài đặt GLPI phiên bản $GLPI_VERSION từ file nén..."
     cd /tmp
@@ -1056,9 +1100,24 @@ EOF
         exit 1
     fi
     tar -xzf "glpi-$GLPI_VERSION.tgz"
+    
+    # Verify GLPI package structure before installation
+    if [[ ! -d "glpi" ]] || [[ ! -f "glpi/inc/define.php" ]]; then
+        echo -e "${RED}Gói GLPI không hợp lệ hoặc thiếu file cần thiết.${NC}"
+        ls -la glpi/inc/ 2>/dev/null || echo -e "${RED}Không thể liệt kê thư mục inc${NC}"
+        exit 1
+    fi
+    
     rm -rf "$INSTALL_DIR"
     mv glpi "$INSTALL_DIR"
     rm "glpi-$GLPI_VERSION.tgz"
+    
+    # Verify installation directory structure
+    if [[ ! -d "$INSTALL_DIR" ]] || [[ ! -f "$INSTALL_DIR/inc/define.php" ]]; then
+        echo -e "${RED}Cài đặt GLPI thất bại. Thiếu file define.php${NC}"
+        ls -la "$INSTALL_DIR/inc/" 2>/dev/null || echo -e "${RED}Không thể liệt kê thư mục $INSTALL_DIR/inc/${NC}"
+        exit 1
+    fi
 
     chown -R www-data:www-data "$INSTALL_DIR"
     find "$INSTALL_DIR" -type d -exec chmod 755 {} \;
@@ -1145,13 +1204,23 @@ EOF
     fi
     
     cd "$INSTALL_DIR"
-    sudo -u www-data php bin/console glpi:database:install \
+    # Verify console script exists before running database installation
+    if [[ ! -f "bin/console" ]]; then
+        echo -e "${RED}Lỗi: File bin/console không tồn tại. Cài đặt GLPI có thể không hoàn chỉnh.${NC}"
+        exit 1
+    fi
+    
+    # Run database installation with error checking
+    if ! sudo -u www-data php bin/console glpi:database:install \
         --db-host=localhost \
         --db-name="$DB_NAME" \
         --db-user="$DB_USER" \
         --db-password="$DB_PASSWORD" \
         --default-language=vi_VN \
-        --no-interaction
+        --no-interaction; then
+        echo -e "${RED}Lỗi cài đặt database GLPI. Vui lòng kiểm tra log và thử lại.${NC}"
+        exit 1
+    fi
 
     cat > "$INSTALL_DIR/config/config_db.php" <<EOF
 <?php
@@ -1163,11 +1232,82 @@ class DB extends DBmysql {
 }
 EOF
     chown www-data:www-data "$INSTALL_DIR/config/config_db.php"
+    
+    # Verify database configuration file
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]]; then
+        echo -e "${RED}Lỗi: Không thể tạo file cấu hình database.${NC}"
+        exit 1
+    fi
+    
+    # Test database connection using the config file
+    if ! php -r "require '$INSTALL_DIR/config/config_db.php'; \\$db = new DB(); \\$link = new mysqli(\\$db->dbhost, \\$db->dbuser, \\$db->dbpassword, \\$db->dbdefault); if (\\$link->connect_error) { exit(1); } else { exit(0); }" 2>/dev/null; then
+        echo -e "${RED}Lỗi: Không thể kết nối database với cấu hình đã tạo.${NC}"
+        exit 1
+    fi
+    
     rm -rf "$INSTALL_DIR/install"
     (crontab -l 2>/dev/null; echo "*/2 * * * * www-data /usr/bin/php $INSTALL_DIR/front/cron.php &>/dev/null") | crontab -
     
     cleanup_resources
-    log_and_echo "Cài đặt GLPI hoàn tất."
+    
+    # Verify installation is complete
+    local installation_complete=true
+    local missing_components=()
+    
+    # Check essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]]; then
+        missing_components+=("config_db.php")
+        installation_complete=false
+    fi
+    
+    if [[ ! -f "$INSTALL_DIR/inc/define.php" ]]; then
+        missing_components+=("define.php")
+        installation_complete=false
+    fi
+    
+    if [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        missing_components+=("console")
+        installation_complete=false
+    fi
+    
+    # Check database connection
+    if ! mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" &>/dev/null; then
+        missing_components+=("database connection")
+        installation_complete=false
+    fi
+    
+    # Check Nginx configuration
+    if ! nginx -t &>/dev/null; then
+        missing_components+=("nginx config")
+        installation_complete=false
+    fi
+    
+    # Check services are running
+    if ! systemctl is-active --quiet nginx; then
+        missing_components+=("nginx service")
+        installation_complete=false
+    fi
+    
+    if ! systemctl is-active --quiet mysql; then
+        missing_components+=("mysql service")
+        installation_complete=false
+    fi
+    
+    if ! systemctl is-active --quiet php8.3-fpm; then
+        missing_components+=("php-fpm service")
+        installation_complete=false
+    fi
+    
+    if [[ "$installation_complete" = true ]]; then
+        log_and_echo "Cài đặt GLPI hoàn tất."
+    else
+        echo -e "${RED}Cảnh báo: Cài đặt GLPI chưa hoàn tất. Thiếu các thành phần:${NC}"
+        for component in "${missing_components[@]}"; do
+            echo -e "  - ${RED}$component${NC}"
+        done
+        echo -e "${YELLOW}Vui lòng kiểm tra lại cài đặt.${NC}"
+    fi
+    
     if [[ "$show_prompt" = true ]]; then
         read -p "Nhấn Enter để quay lại menu..."
     fi
@@ -1560,24 +1700,86 @@ show_menu() {
 
 show_final_info() {
     if ! read_install_info; then return; fi
-    echo -e "\n${GREEN}================================================================================================${NC}"
-    echo -e "${GREEN}            TẤT CẢ CÁC TÁC VỤ ĐÃ HOÀN TẤT!${NC}"
-    echo -e "${GREEN}================================================================================================${NC}"
     
-    local url_scheme="http"
-    if [[ ! "$DOMAIN_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        url_scheme="https"
+    # Verify installation is complete before showing final info
+    local installation_complete=true
+    local missing_components=()
+    
+    # Check essential files
+    if [[ ! -f "$INSTALL_DIR/config/config_db.php" ]]; then
+        missing_components+=("config_db.php")
+        installation_complete=false
     fi
+    
+    if [[ ! -f "$INSTALL_DIR/inc/define.php" ]]; then
+        missing_components+=("define.php")
+        installation_complete=false
+    fi
+    
+    if [[ ! -f "$INSTALL_DIR/bin/console" ]]; then
+        missing_components+=("console")
+        installation_complete=false
+    fi
+    
+    # Check database connection
+    if ! mysql -u "$DB_USER" -p"$DB_PASSWORD" -e "USE $DB_NAME;" &>/dev/null; then
+        missing_components+=("database connection")
+        installation_complete=false
+    fi
+    
+    # Check Nginx configuration
+    if ! nginx -t &>/dev/null; then
+        missing_components+=("nginx config")
+        installation_complete=false
+    fi
+    
+    # Check services are running
+    if ! systemctl is-active --quiet nginx; then
+        missing_components+=("nginx service")
+        installation_complete=false
+    fi
+    
+    if ! systemctl is-active --quiet mysql; then
+        missing_components+=("mysql service")
+        installation_complete=false
+    fi
+    
+    if ! systemctl is-active --quiet php8.3-fpm; then
+        missing_components+=("php-fpm service")
+        installation_complete=false
+    fi
+    
+    if [[ "$installation_complete" = true ]]; then
+        echo -e "\n${GREEN}================================================================================================${NC}"
+        echo -e "${GREEN}            TẤT CẢ CÁC TÁC VỤ ĐÃ HOÀN TẤT!${NC}"
+        echo -e "${GREEN}================================================================================================${NC}"
+        
+        local url_scheme="http"
+        if [[ ! "$DOMAIN_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            url_scheme="https"
+        fi
 
-    echo -e "URL truy cập: ${YELLOW}$url_scheme://$DOMAIN_NAME${NC}"
-    echo -e "Tài khoản mặc định: ${YELLOW}glpi / glpi${NC}"
-    echo -e "Port SSH mới: ${YELLOW}$SSH_NEW_PORT${NC}"
-    echo -e "\n${RED}LƯU Ý QUAN TRỌNG:${NC}"
-    echo -e "1. Hãy đổi mật khẩu cho các tài khoản mặc định ngay lập tức."
-    echo -e "2. Toàn bộ thông tin quan trọng đã được lưu vào file: ${YELLOW}$(pwd)/$INFO_FILE${NC}"
-    echo -e "3. Hãy kiểm tra lại các cấu hình và đảm bảo hệ thống của bạn hoạt động đúng."
-    echo -e "4. Sử dụng menu 'Quản lý hệ thống' để theo dõi và bảo trì."
-    echo -e "${GREEN}================================================================================================${NC}"
+        echo -e "URL truy cập: ${YELLOW}$url_scheme://$DOMAIN_NAME${NC}"
+        echo -e "Tài khoản mặc định: ${YELLOW}glpi / glpi${NC}"
+        echo -e "Port SSH mới: ${YELLOW}$SSH_NEW_PORT${NC}"
+        echo -e "\n${RED}LƯU Ý QUAN TRỌNG:${NC}"
+        echo -e "1. Hãy đổi mật khẩu cho các tài khoản mặc định ngay lập tức."
+        echo -e "2. Toàn bộ thông tin quan trọng đã được lưu vào file: ${YELLOW}$(pwd)/$INFO_FILE${NC}"
+        echo -e "3. Hãy kiểm tra lại các cấu hình và đảm bảo hệ thống của bạn hoạt động đúng."
+        echo -e "4. Sử dụng menu 'Quản lý hệ thống' để theo dõi và bảo trì."
+        echo -e "${GREEN}================================================================================================${NC}"
+    else
+        echo -e "\n${RED}================================================================================================${NC}"
+        echo -e "${RED}            CẢNH BÁO: CÀI ĐẶT CHƯA HOÀN TẤT!${NC}"
+        echo -e "${RED}================================================================================================${NC}"
+        echo -e "${RED}Thiếu các thành phần sau:${NC}"
+        for component in "${missing_components[@]}"; do
+            echo -e "  - ${RED}$component${NC}"
+        done
+        echo -e "\n${YELLOW}Vui lòng kiểm tra lại cài đặt.${NC}"
+        echo -e "${YELLOW}Bạn có thể chạy lại các module cần thiết để hoàn tất cài đặt.${NC}"
+        echo -e "${RED}================================================================================================${NC}"
+    fi
     read -p "Nhấn Enter để quay lại menu..."
 }
 
