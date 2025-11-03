@@ -63,6 +63,7 @@ import raidRoutes from './routes/raid.js';
 import backupRoutes from './routes/backup.js';
 import performanceRoutes from './routes/performance.js';
 import licensingRoutes from './routes/licensing.js';
+import documentationRoutes from './routes/documentation.js';
 
 // Use routes
 app.use('/resources', resourceRoutes);
@@ -77,6 +78,7 @@ app.use('/raid', raidRoutes);
 app.use('/backup', backupRoutes);
 app.use('/calculators/performance', performanceRoutes);
 app.use('/calculators/licensing', licensingRoutes);
+app.use('/documentation', documentationRoutes);
 
 // Language switcher route
 app.get('/lang/:lang', (req, res) => {

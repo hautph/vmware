@@ -1,0 +1,269 @@
+<%- include('../partials/header') %>
+
+<div class="container my-4">
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/documentation">Documentation</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= article.title %></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-9">
+      <article>
+        <header class="mb-4">
+          <h1 class="display-5"><%= article.title %></h1>
+          
+          <% if (article.category) { %>
+            <div class="mb-3">
+              <span class="badge bg-secondary"><%= article.category %></span>
+            </div>
+          <% } %>
+          
+          <div class="d-flex flex-wrap align-items-center text-muted mb-3">
+            <% if (article.created) { %>
+              <div class="me-3">
+                <i class="bi bi-calendar-event me-1"></i>
+                <strong>Created:</strong> 
+                <span class="text-dark"><%= new Date(article.created).toLocaleDateString() %></span>
+              </div>
+            <% } %>
+            
+            <% if (article.updated) { %>
+              <div class="me-3">
+                <i class="bi bi-pencil me-1"></i>
+                <strong>Updated:</strong> 
+                <span class="text-dark"><%= new Date(article.updated).toLocaleDateString() %></span>
+              </div>
+            <% } %>
+          </div>
+        </header>
+
+        <% if (article.changelog) { %>
+          <div class="card border-primary shadow-sm mb-4">
+            <div class="card-header bg-primary text-white d-flex align-items-center">
+              <i class="bi bi-clock-history me-2"></i>
+              <h5 class="mb-0">Change Log</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <% 
+                  // Split changelog entries by line and process each one
+                  // Trim the changelog content to remove leading/trailing whitespace
+                  const trimmedChangelog = article.changelog.trim();
+                  const changelogEntries = trimmedChangelog.split('\n').filter(entry => entry.trim() !== '');
+                  for (let i = 0; i < changelogEntries.length; i++) {
+                    const entry = changelogEntries[i];
+                    // Extract date and description
+                    const entryMatch = entry.match(/^(\d{4}-\d{2}-\d{2}):(.*)$/);
+                    if (entryMatch) {
+                %>
+                  <li class="list-group-item px-0 py-2">
+                    <div class="d-flex">
+                      <div class="flex-shrink-0">
+                        <span class="badge bg-primary"><%= entryMatch[1] %></span>
+                      </div>
+                      <div class="flex-grow-1 ms-3">
+                        <%= entryMatch[2].trim() %>
+                      </div>
+                    </div>
+                  </li>
+                <% 
+                    } else {
+                %>
+                  <li class="list-group-item px-0 py-2">
+                    <%= entry.trim() %>
+                  </li>
+                <% 
+                    }
+                  }
+                %>
+              </ul>
+            </div>
+          </div>
+        <% } %>
+
+        <div class="content">
+          <%- article.contentHtml %>
+        </div>
+      </article>
+    </div>
+
+    <div class="col-lg-3 d-none d-lg-block">
+      <% if (article.headers && article.headers.length > 0) { %>
+        <div class="card sticky-top" style="top: 1rem;">
+          <div class="card-header">
+            <h5 class="mb-0">On this page</h5>
+          </div>
+          <div class="card-body">
+            <nav class="toc-sidebar">
+              <ul class="list-unstyled">
+                <% article.headers.forEach(function(header) { %>
+                  <li class="mb-1 toc-level-<%= header.level %>">
+                    <a href="#<%= header.id %>" class="text-decoration-none d-block py-1">
+                      <%= header.text %>
+                    </a>
+                  </li>
+                <% }); %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Content Heading Styling */
+.content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.content h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.content h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.content h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.content h5 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.content h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #6c757d;
+}
+
+/* Table of Contents Styling */
+.toc-level-1 {
+  margin-left: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.toc-level-2 {
+  margin-left: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.toc-level-3 {
+  margin-left: 30px;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.toc-level-4 {
+  margin-left: 45px;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.toc-level-5 {
+  margin-left: 60px;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.toc-level-6 {
+  margin-left: 75px;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.toc-sidebar a {
+  color: #495057;
+  transition: all 0.2s ease;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.toc-sidebar a:hover {
+  background-color: #e9ecef;
+  color: #007bff;
+}
+
+.toc-sidebar a.active {
+  background-color: #007bff;
+  color: white;
+}
+</style>
+
+<script>
+// Highlight active section in TOC
+document.addEventListener('DOMContentLoaded', function() {
+  function highlightActiveSection() {
+    const headers = document.querySelectorAll('.content h1[id], .content h2[id], .content h3[id], .content h4[id], .content h5[id], .content h6[id]');
+    const tocLinks = document.querySelectorAll('.toc-sidebar a');
+    
+    // Remove active class from all links
+    tocLinks.forEach(link => {
+      link.classList.remove('active');
+    });
+    
+    if (headers.length === 0) return;
+    
+    let currentHeaderId = '';
+    
+    // Find the header that is currently in view
+    for (let i = headers.length - 1; i >= 0; i--) {
+      const header = headers[i];
+      const rect = header.getBoundingClientRect();
+      if (rect.top <= 150) { // Adjust this value as needed
+        currentHeaderId = header.id;
+        break;
+      }
+    }
+    
+    // Add active class to the current link
+    if (currentHeaderId) {
+      const activeLink = document.querySelector(`.toc-sidebar a[href="#${currentHeaderId}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+    }
+  }
+  
+  // Initialize highlighting
+  highlightActiveSection();
+  
+  // Update highlighting on scroll
+  window.addEventListener('scroll', highlightActiveSection);
+});
+</script>
+
+<%- include('../partials/footer') %>
