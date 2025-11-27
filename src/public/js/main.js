@@ -47,12 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add focus to first input field in forms
-    const firstInputs = document.querySelectorAll('form input:first-of-type');
-    if (firstInputs.length > 0) {
-        firstInputs[0].focus();
-    }
-    
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {

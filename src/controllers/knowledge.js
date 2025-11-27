@@ -129,8 +129,9 @@ function loadKnowledgeArticles(req) {
   const knowledgeDir = path.join(__dirname, '..', 'docs', 'knowledge');
   const articles = [];
   
-  // Determine current language from request
-  const currentLanguage = req && req.language ? req.language : 'en';
+  // Determine current language from request, mapping language variants to base languages
+  const currentLanguage = req && req.language ? 
+    (req.language.startsWith('en') ? 'en' : req.language) : 'en';
   
   // Load articles from main directory
   if (fs.existsSync(knowledgeDir)) {

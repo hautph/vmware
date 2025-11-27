@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= language || 'en' %>">
+<html lang="<%= (language && language.startsWith('en')) ? 'en' : (language || 'en') %>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,7 +54,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-globe me-1"></i> <%= t(`language.${language || 'en'}`) %>
+                            <i class="bi bi-globe me-1"></i> <%= t(`language.${(language && language.startsWith('en')) ? 'en' : (language || 'en')}`) %>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/lang/en?redirect=<%= encodeURIComponent(req.originalUrl || '/') %>">English</a></li>

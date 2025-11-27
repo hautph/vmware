@@ -106,8 +106,9 @@ function loadDocumentationArticles(req) {
   const documentationDir = path.join(__dirname, '..', 'docs', 'documentation');
   const articles = [];
   
-  // Determine current language from request
-  const currentLanguage = req && req.language ? req.language : 'en';
+  // Determine current language from request, mapping language variants to base languages
+  const currentLanguage = req && req.language ? 
+    (req.language.startsWith('en') ? 'en' : req.language) : 'en';
   
   // Load articles from main directory
   if (fs.existsSync(documentationDir)) {
@@ -291,5 +292,131 @@ export const getArticle = (req, res) => {
   res.render('documentation/article', { 
     title: article.title,
     article: cleanArticle
+  });
+};
+
+// Function to highlight search terms in text
+function highlightText(text, query) {
+  if (!text || !query) return text;
+  
+  // Escape special regex characters in query
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  
+  // Create regex to match the query (case insensitive)
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  
+  // Replace matches with highlighted version
+  return text.replace(regex, '<mark>$1</mark>');
+}
+
+// Function to calculate search relevance score
+function calculateRelevance(article, query) {
+  const lowerQuery = query.toLowerCase();
+  let score = 0;
+  
+  // Title match (highest priority)
+  if (article.title && article.title.toLowerCase().includes(lowerQuery)) {
+    score += 100;
+  }
+  
+  // Category match (medium priority)
+  if (article.category && article.category.toLowerCase().includes(lowerQuery)) {
+    score += 50;
+  }
+  
+  // Excerpt match (lower priority)
+  if (article.excerpt && article.excerpt.toLowerCase().includes(lowerQuery)) {
+    score += 30;
+  }
+  
+  // Content match (lowest priority)
+  if (article.content && article.content.toLowerCase().includes(lowerQuery)) {
+    score += 10;
+  }
+  
+  return score;
+}
+
+// API endpoint to get search suggestions
+export const getSearchSuggestions = (req, res) => {
+  const query = req.query.q || '';
+  
+  if (!query || query.length < 2) {
+    return res.json([]);
+  }
+  
+  const articles = loadDocumentationArticles(req);
+  const suggestions = [];
+  
+  // Collect unique articles that match the query
+  const uniqueArticles = new Set();
+  
+  articles.forEach(article => {
+    // Check if article title or category matches the query
+    if ((article.title && article.title.toLowerCase().includes(query.toLowerCase())) ||
+        (article.category && article.category.toLowerCase().includes(query.toLowerCase()))) {
+      // Only add if not already added
+      if (!uniqueArticles.has(article.title)) {
+        uniqueArticles.add(article.title);
+        suggestions.push({
+          id: article.id,
+          title: article.title,
+          category: article.category
+        });
+      }
+    }
+  });
+  
+  // Limit to 10 suggestions
+  const limitedSuggestions = suggestions.slice(0, 10);
+  
+  res.json(limitedSuggestions);
+};
+
+// Search documentation articles with improved ranking and highlighting
+export const searchArticles = (req, res) => {
+  const query = req.query.q ? req.query.q.toLowerCase() : '';
+  
+  if (!query) {
+    return res.redirect('/documentation');
+  }
+  
+  const articles = loadDocumentationArticles(req);
+  
+  // Filter and rank articles
+  const rankedResults = articles
+    .map(article => {
+      // Check if article matches the query
+      const matches = 
+        (article.title && article.title.toLowerCase().includes(query)) ||
+        (article.category && article.category.toLowerCase().includes(query)) ||
+        (article.excerpt && article.excerpt.toLowerCase().includes(query)) ||
+        (article.content && article.content.toLowerCase().includes(query));
+      
+      if (!matches) return null;
+      
+      // Calculate relevance score
+      const relevance = calculateRelevance(article, query);
+      
+      // Highlight query in title, category, and excerpt
+      const highlightedTitle = article.title ? highlightText(article.title, query) : article.title;
+      const highlightedCategory = article.category ? highlightText(article.category, query) : article.category;
+      const highlightedExcerpt = article.excerpt ? highlightText(article.excerpt, query) : article.excerpt;
+      
+      return {
+        ...article,
+        relevance,
+        title: highlightedTitle,
+        category: highlightedCategory,
+        excerpt: highlightedExcerpt
+      };
+    })
+    .filter(article => article !== null)
+    .sort((a, b) => b.relevance - a.relevance); // Sort by relevance (highest first)
+  
+  res.render('documentation/search', { 
+    title: 'Documentation Search Results',
+    results: rankedResults,
+    query
   });
 };

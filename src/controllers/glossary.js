@@ -132,8 +132,9 @@ function loadGlossaryTerms(req) {
   const glossaryDir = path.join(__dirname, '..', 'docs', 'glossary');
   const terms = {};
   
-  // Determine current language from request
-  const currentLanguage = req && req.language ? req.language : 'en';
+  // Determine current language from request, mapping language variants to base languages
+  const currentLanguage = req && req.language ? 
+    (req.language.startsWith('en') ? 'en' : req.language) : 'en';
   
   // Load terms from main directory
   if (fs.existsSync(glossaryDir)) {

@@ -230,7 +230,9 @@ function highlightActiveSection() {
     for (let i = headers.length - 1; i >= 0; i--) {
         const header = headers[i];
         const rect = header.getBoundingClientRect();
-        if (rect.top <= 150) { // Adjust this value as needed
+        // Only consider headers that are at or above the viewport (top <= 150)
+        // But don't scroll to them automatically
+        if (rect.top <= 150 && rect.top >= -50) {
             currentHeaderId = header.id;
             break;
         }

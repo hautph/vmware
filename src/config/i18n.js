@@ -18,6 +18,8 @@ i18next
     preload: ['en', 'vi'],
     ns: ['translation'],
     defaultNS: 'translation',
+    supportedLngs: ['en', 'vi'],
+    nonExplicitSupportedLngs: true,
     detection: {
       // order and from where user language should be detected
       order: ['querystring', 'cookie', 'header'],

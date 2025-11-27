@@ -30,7 +30,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use((req, res, next) => {
   res.locals.title = 'VMware Tool';
   res.locals.t = req.t; // Make translation function available in templates
-  res.locals.language = req.language || 'en'; // Make current language available
+  // Ensure language defaults to 'en' if not set or is a variant like 'en-GB'
+  res.locals.language = req.language && req.language.startsWith('en') ? 'en' : (req.language || 'en');
   res.locals.req = req; // Make request object available in templates
   next();
 });
